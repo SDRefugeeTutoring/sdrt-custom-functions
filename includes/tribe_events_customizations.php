@@ -63,18 +63,25 @@ function embed_give_events_single() {
         $loop = new WP_Query( $args );
 
         if ( $loop->have_posts() && current_user_can('update_plugins') ) :
-
+            $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
+            $createDate = new DateTime($eventdate);
+            $finaldate = $createDate->format('F d, Y');
             ?>
 
             <h2 class="give-title current_rsvps">Current RSVPS:</h2>
             <button class="rsvp-download" onClick ="jQuery('#RSVPs').tableExport({type:'pdf',escape:'false', htmlContent:'true'});">Download RSVPs</button>
             <table class="rwd-table" id="RSVPs">
                 <thead>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Teacher?</th>
-                <th>Referral</th>
+                <th colspan="4">
+                    Tutoring on <?php echo $finaldate; ?>
+                </th>
                 </thead>
+                <tr>
+                <td>Name</td>
+                <td>Email</td>
+                <td>Teacher?</td>
+                <td>Referral</td>
+                </tr>
                 <?php
 
                 global $post;
