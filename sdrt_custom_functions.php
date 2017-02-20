@@ -36,6 +36,7 @@ function sdrt_includes() {
 		return false;
 	} else {
 		include( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_customizations.php' );
+        include( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_custom_fields.php' );
 	}
 
 	// Includes custom scripts/styles
