@@ -15,7 +15,7 @@ add_action( 'give_after_donation_levels', 'sdrt_give_hidden_form_fields', 10, 1 
 function sdrt_give_hidden_form_fields( $form_id ) {
 
 	global $post;
-	$forms = array(400);
+	$forms = array(GIVE_RSVP_FORM_ID);
 	$eventdate = get_post_meta($post->ID, '_EventStartDate', true);
 	$createDate = new DateTime($eventdate);
 	$finaldate = $createDate->format('F d, Y');
@@ -124,8 +124,8 @@ function sdrt_give_events_redirects( $success_page ) {
 
 	$form_id = isset( $_POST['give-form-id'] ) ? $_POST['give-form-id'] : 0;
 
-	if ( $form_id == 400 ) {
-		$success_page = esc_url( get_permalink( 413 ) );
+	if ( $form_id == GIVE_RSVP_FORM_ID ) {
+		$success_page = esc_url( get_permalink( GIVE_RSVP_SUCCESS_ID ) );
 	}
 
 	return $success_page;

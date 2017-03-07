@@ -9,36 +9,13 @@
 add_action('tribe_events_single_event_after_the_meta', 'embed_give_events_single');
 
 function embed_give_events_single() {
-    $rsvp_enabled      = get_post_meta( get_the_ID(), 'enable_rsvps', true );
-    $rsvp_limit        = get_post_meta( get_the_ID(), 'rsvps_limit', true );
+    $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
+    $rsvp_enabled   = get_post_meta( get_the_ID(), 'enable_rsvps', true );
+    $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
 
     if ( $rsvp_enabled == 'enabled' ) :
 
-        $countargs = array(
-            'post_type'      => 'give_payment',
-            'post_status' => 'pending'
-        );
-
-        $countloop = new WP_Query( $countargs );
-        $counter = 0;
-        global $post;
-        $pageid = $post->ID;
-
-        if ( $countloop->have_posts() ) : while ( $countloop->have_posts() ) : $countloop->the_post();
-
-            $meta      = get_post_meta( get_the_ID() );
-            $getmeta   = maybe_unserialize( $meta['_give_payment_meta'][0] );
-            $rsvp_id   = $getmeta['event_id'];
-
-            if ( $pageid == $rsvp_id ) {
-                $counter++;
-            }
-
-            endwhile;
-            $rsvp_total = $counter;
-            wp_reset_postdata();
-            endif;
-        wp_reset_query();
+        $rsvp_total = get_rsvp_count();
 
         echo '<h2 class="give-title">RSVP HERE:</h2>';
 
@@ -50,16 +27,17 @@ function embed_give_events_single() {
             </div>
         <?php else :
 
-        echo do_shortcode('[give_form id="400" show_title="false"]');
+        echo do_shortcode('[give_form id="' . GIVE_RSVP_FORM_ID . '" show_title="false"]');
 
         /**
          *   CURRENT RSVPS
          */
         $args = array(
             'post_type'      => 'give_payment',
-            'post_status' => 'pending'
+            'post_status' => array('pending', 'abandoned'),
         );
 
+        global $post;
         $loop = new WP_Query( $args );
 
         if ( $loop->have_posts() && current_user_can('update_plugins') ) :
@@ -121,4 +99,34 @@ function embed_give_events_single() {
         wp_reset_query();
         endif;
     endif;
+}
+
+function get_rsvp_count() {
+    $countargs = array(
+        'post_type'      => 'give_payment',
+        'post_status' => 'pending'
+    );
+
+    $countloop = new WP_Query( $countargs );
+    $counter = 0;
+    global $post;
+    $pageid = $post->ID;
+
+    if ( $countloop->have_posts() ) : while ( $countloop->have_posts() ) : $countloop->the_post();
+
+        $meta      = get_post_meta( get_the_ID() );
+        $getmeta   = maybe_unserialize( $meta['_give_payment_meta'][0] );
+        $rsvp_id   = $getmeta['event_id'];
+
+        if ( $pageid == $rsvp_id ) {
+            $counter++;
+        }
+
+    endwhile;
+        $rsvp_total = ( !empty($counter) ? $counter : true);
+        wp_reset_postdata();
+    endif;
+    wp_reset_query();
+
+    return $counter;
 }
