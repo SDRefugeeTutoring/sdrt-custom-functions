@@ -18,18 +18,10 @@ if ( ! defined( 'SDRT_FUNCTIONS_URL' ) ) {
 	define( 'SDRT_FUNCTIONS_URL', plugin_dir_url( __FILE__ ) );
 }
 
-
 // We want to check some things upon activation so we'll use this action to run everything first.
 add_action( 'plugins_loaded', 'sdrt_includes' );
 
 function sdrt_includes() {
-
-	// Only load if the Give Plugin is active
-	if ( ! class_exists( 'Give' ) ) {
-		return false;
-	} else {
-		include( SDRT_FUNCTIONS_DIR . '/includes/give_custom_fields.php' );
-	}
 
 	// Only load if the Events Calendar plugin is active
 	if ( ! class_exists( 'Tribe__Events__Main' ) ) {

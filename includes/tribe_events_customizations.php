@@ -6,9 +6,9 @@
  *
  */
 
-add_action('tribe_events_single_event_after_the_meta', 'embed_give_events_single');
+add_action('tribe_events_single_event_after_the_meta', 'embed_rsvp_events_single');
 
-function embed_give_events_single() {
+function embed_rsvp_events_single() {
     $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
     $rsvp_enabled   = get_post_meta( get_the_ID(), 'enable_rsvps', true );
     $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
@@ -17,7 +17,7 @@ function embed_give_events_single() {
 
         $rsvp_total = get_rsvp_count();
 
-        echo '<h2 class="give-title">RSVP HERE:</h2>';
+        echo '<div class="tutoring-rsvp"><h2 class="give-title">RSVP HERE:</h2>';
 
         if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) : ?>
             <div class="rsvps-closed">
@@ -27,7 +27,8 @@ function embed_give_events_single() {
             </div>
         <?php else :
 
-        echo do_shortcode('[give_form id="' . GIVE_RSVP_FORM_ID . '" show_title="false"]');
+        echo do_shortcode('[caldera_form id="' . RSVP_FORM_ID . '"]');
+        echo '</div>'; //end RSVP section
 
         /**
          *   CURRENT RSVPS
