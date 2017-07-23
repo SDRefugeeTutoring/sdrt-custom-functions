@@ -8,6 +8,11 @@
  * Version: 0.1
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Plugin Folder Path
 if ( ! defined( 'SDRT_FUNCTIONS_DIR' ) ) {
 	define( 'SDRT_FUNCTIONS_DIR', plugin_dir_path( __FILE__ ) );
@@ -36,6 +41,12 @@ function sdrt_includes() {
 
 	// Includes custom user meta functions
 	include( SDRT_FUNCTIONS_DIR . '/includes/sdrt_user_meta.php');
+
+    if ( post_type_exists( 'rsvp' ) && class_exists('acf') ) {
+        include( SDRT_FUNCTIONS_DIR . '/rsvps/rsvp_functions.php');
+    }
+
+    include( SDRT_FUNCTIONS_DIR . '/rsvps/registration.php');
 
 }
 
