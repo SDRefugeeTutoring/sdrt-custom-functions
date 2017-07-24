@@ -1,8 +1,11 @@
 <?php
 /**
- *   Outputs the Give RSVP form
- *   and the RSVPs for that event
- *   to the end of the Event content
+ *   MAIN RSVP FORM FUNCTION
+ *
+ *   This hooks into the Events Calendar single template
+ *   It conditionally shows the login/registration
+ *   Then the RSVP form for logged-in users
+ *   It also outputs the RSVP table for Registration
  *
  */
 
@@ -14,18 +17,29 @@ function embed_rsvp_events_single() {
     $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
     $rsvp_enabled   = get_post_meta( get_the_ID(), 'enable_rsvps', true );
     $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
-    $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps = get_current_rsvps($rsvpdate = $eventdate);
-    $rsvpmeta = get_current_rsvps_volids($rsvpdate = $eventdate);
-    $userid = get_current_user_id();
+    $eventdate      = get_post_meta($post->ID, '_EventStartDate', true);
+    $rsvps          = get_current_rsvps($rsvpdate = $eventdate);
+    $rsvpmeta       = get_current_rsvps_volids($rsvpdate = $eventdate);
+    $userid         = get_current_user_id();
+    $rsvp_total     = count($rsvps);
 
-    if ( $rsvp_enabled == 'enabled' ) :
-
-        $rsvp_total = get_rsvp_count(); ?>
+    // Only output if RSVPs are enabled for this Event
+    if ( $rsvp_enabled == 'enabled' ) : ?>
 
         <div class="tutoring-rsvp">
             <h2 class="give-title">RSVP HERE:</h2>
             <?php
+                // Point logged-out users to the Registration form
+                if ( ! is_user_logged_in() ) { ?>
+                    <div class="please-register">
+                        <p><strong>Please Register to RSVP</strong></p>
+                        <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the Registration page for details.</p>
+                        <p><strong>Already Registered? Please Login</strong></p>
+                        <?php echo do_shortcode('[caldera_form id="CF597578b115ae1"]');?>
+
+                    </div>
+                <?php }
+
                 // Show message if RSVP limit is reached
                 if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
                     <div class="rsvps-closed">
@@ -41,7 +55,8 @@ function embed_rsvp_events_single() {
                         <p><strong>Thanks!</strong></p>
                         <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
                     </div><?php
-                // Or finally show form
+
+                // Or finally show the RSVP form
                 } else {
                     echo do_shortcode('[caldera_form id="' . RSVP_FORM_ID . '"]');
                 }
@@ -49,6 +64,11 @@ function embed_rsvp_events_single() {
         </div><!-- end RSVP section -->
 
         <?php
+
+        // Outputs the RSVP Registration Table
+        // Volunteers can register their attendance
+        // by clicking on the "X" next to their name
+        // This is only viewable by a logged-in Admin account
 
         if ( !empty($rsvps) && current_user_can('update_plugins') ) :
 
@@ -89,10 +109,10 @@ function embed_rsvp_events_single() {
                         <?php if ($attended == 'no') { ?>
                             <td data-th="attended"><a
                                         href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes#rsvps'; ?>"
-                                        class="button attended-<?php echo $attended; ?>"><?php echo ucfirst($attended); ?></a>
+                                        class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
                             </td>
                         <?php } else { ?>
-                            <td data-th="attended">Yes</td>
+                            <td data-th="attended"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;"></span></td>
                         <?php } ?>
                     </tr>
 
@@ -107,6 +127,13 @@ function embed_rsvp_events_single() {
         endif;
     endif;
 }
+
+/**
+ * GET RSVPS FOR CURRENT EVENT
+ *
+ * @param string $rsvpdate
+ * @return array
+ */
 
 function get_current_rsvps($rsvpdate = '') {
 
@@ -130,6 +157,13 @@ function get_current_rsvps($rsvpdate = '') {
     return $rsvps;
 }
 
+/**
+ * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
+ *
+ * @param string $rsvpdate
+ * @return array
+ */
+
 function get_current_rsvps_volids($rsvpdate = '') {
     global $post;
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
@@ -147,34 +181,4 @@ function get_current_rsvps_volids($rsvpdate = '') {
 
     return $volid;
 
-}
-
-function get_rsvp_count() {
-    $countargs = array(
-        'post_type'      => 'rsvp',
-        'post_status' => array('publish'),
-    );
-
-    $countloop = new WP_Query( $countargs );
-    $counter = 0;
-    global $post;
-    $pageid = $post->ID;
-
-    if ( $countloop->have_posts() ) : while ( $countloop->have_posts() ) : $countloop->the_post();
-
-        $meta      = get_post_meta( get_the_ID() );
-
-        $rsvp_id   = $meta['event_id'];
-
-        if ( $pageid == $rsvp_id ) {
-            $counter++;
-        }
-
-    endwhile;
-        $rsvp_total = ( !empty($counter) ? $counter : true);
-        wp_reset_postdata();
-    endif;
-    wp_reset_query();
-
-    return $counter;
 }
