@@ -1,0 +1,4 @@
+.wrap .alert,
+.wrap .error {
+    display: none;
+}

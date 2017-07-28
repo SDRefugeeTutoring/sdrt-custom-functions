@@ -18,6 +18,6 @@ function sdrt_enqueue_tableExport_scripts() {
         wp_enqueue_script('sdrt-jsPDF-base64', SDRT_FUNCTIONS_URL . 'vendor/tableExport/base64.js', false);
     }
 
-	wp_enqueue_style('rsvp-styles', SDRT_FUNCTIONS_URL . 'assets/rsvp-styles.css', array('give-styles'), 'all');
+	wp_enqueue_style('rsvp-styles', SDRT_FUNCTIONS_URL . 'assets/rsvp-styles.css', array(), SDRT_FUNCTIONS_VERSION, 'all');
 }
 

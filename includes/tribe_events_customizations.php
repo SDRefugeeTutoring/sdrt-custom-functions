@@ -86,7 +86,7 @@ function embed_rsvp_events_single() {
                         Tutoring on <?php echo $finaldate; ?>
                     </th>
                 </thead>
-                <tr>
+                <tr class="labels">
                     <td>Name</td>
                     <td>Email</td>
                     <td>Attended?</td>
@@ -110,6 +110,11 @@ function embed_rsvp_events_single() {
                             <td data-th="attended"><a
                                         href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes#rsvps'; ?>"
                                         class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
+                            </td>
+                        <?php } elseif ( $attended == 'unknown' ) { ?>
+                            <td data-th="attended"><a
+                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes#rsvps'; ?>"
+                                        class="button attended-unknown"><span class="dashicons dashicons-minus" style="border-radius: 50%; background: #777777; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
                             </td>
                         <?php } else { ?>
                             <td data-th="attended"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;"></span></td>

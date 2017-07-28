@@ -6,37 +6,82 @@
 .rwd-table tr {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
+    background: #ddd;
 }
+
 .rwd-table th {
     display: none;
 }
+
 .rwd-table td {
     display: block;
 }
+
 .rwd-table td:first-child {
     padding-top: .5em;
 }
+
 .rwd-table td:last-child {
     padding-bottom: .5em;
 }
+
 .rwd-table td:before {
     content: attr(data-th) ": ";
     font-weight: bold;
     width: 6.5em;
     display: inline-block;
 }
+
+.rwd-table th, .rwd-table td {
+    text-align: left;
+}
+
+.rwd-table {
+    color: #333;
+    border-radius: .4em;
+    overflow: hidden;
+}
+
+.rwd-table thead tr {
+    background: #333;
+}
+
+.rwd-table tr.labels {
+    border-color: #92c7d7;
+    background: #333;
+    color: white;
+    font-weight: 900;
+}
+
+.rwd-table tr:nth-child(even) {
+    background: rgba(157, 186, 195, 0.75);
+}
+
+.rwd-table th, .rwd-table td {
+    margin: .5em 1em;
+    font-size: 120%;
+}
+
+.rwd-table th, .rwd-table td:before {
+    color: #fff;
+    font-weight: 900;
+    font-size: 120%;
+}
+
+.button.attended-unknown:hover,
+.button.attended-no:hover {
+    opacity: 0.5;
+}
+
 @media (min-width: 480px) {
     .rwd-table {
         max-width: 100%;
     }
+
     .rwd-table td:before {
         display: none;
     }
-}
-.rwd-table th, .rwd-table td {
-    text-align: left;
-}
-@media (min-width: 480px) {
+
     .rwd-table th, .rwd-table td {
         display: table-cell;
         padding: .25em .5em;
@@ -47,35 +92,7 @@
     .rwd-table th:last-child, .rwd-table td:last-child {
         padding-right: 0;
     }
-}
-
-.rwd-table {
-
-    color: #fff;
-    border-radius: .4em;
-    overflow: hidden;
-}
-.rwd-table thead tr {
-    background: #333;
-}
-.rwd-table tr {
-    border-color: #92c7d7;
-    background: rgba(81, 128, 144, 1);;
-}
-.rwd-table tr:nth-child(even) {
-    background: rgba(81, 128, 144, 0.75);;
-}
-.rwd-table th, .rwd-table td {
-    margin: .5em 1em;
-    font-size: 120%;
-}
-@media (min-width: 480px) {
     .rwd-table th, .rwd-table td {
         padding: 1em !important;
     }
-}
-.rwd-table th, .rwd-table td:before {
-    color: #fff;
-    font-weight: 900;
-    font-size: 120%;
 }
