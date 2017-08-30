@@ -16,6 +16,8 @@ function embed_rsvp_events_single() {
 
     $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
     $rsvp_enabled   = get_post_meta( get_the_ID(), 'enable_rsvps', true );
+    $must_login     = get_post_meta( get_the_ID(), 'logged_in_status', true );
+    $rsvp_form      = get_post_meta( get_the_ID(), 'rsvp_form', true );
     $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
     $eventdate      = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps          = get_current_rsvps($rsvpdate = $eventdate);
@@ -29,8 +31,13 @@ function embed_rsvp_events_single() {
         <div class="tutoring-rsvp">
             <h2 class="give-title">RSVP HERE:</h2>
             <?php
-                // Point logged-out users to the Registration form
-                if ( ! is_user_logged_in() ) { ?>
+                // Show RSVP form if login is not required
+                if ( $must_login == 'no' ) {
+
+                    echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+
+                // Inform visitor to register if login is required
+                } elseif ( $must_login == 'yes' && ! is_user_logged_in() ) { ?>
                     <div class="please-register">
                         <p><strong>Please Register to RSVP</strong></p>
                         <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the Registration page for details.</p>
@@ -133,6 +140,26 @@ function embed_rsvp_events_single() {
     endif;
 }
 
+/**
+ * GET RSVP MAX CAPACITY
+ *
+ */
+function rsvp_is_max_capacity() {
+    global $post;
+    $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
+    $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
+    $eventdate      = get_post_meta($post->ID, '_EventStartDate', true);
+    $rsvps          = get_current_rsvps($rsvpdate = $eventdate);
+    $rsvp_total     = count($rsvps);
+
+    if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
+        <div class="rsvps-closed">
+            <p><strong>Sorry!</strong></p>
+            <p>We already have the max number of Volunteers we need for this session.</p>
+            <p>Please see our <a href="<?php echo site_url(); ?>/events">full Calendar</a> for future Tutoring Opportunities.</p>
+        </div>
+        <?php
+}
 /**
  * GET RSVPS FOR CURRENT EVENT
  *
