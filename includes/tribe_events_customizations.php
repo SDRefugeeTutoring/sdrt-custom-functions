@@ -34,7 +34,20 @@ function embed_rsvp_events_single() {
                 // Show RSVP form if login is not required
                 if ( $must_login == 'no' ) {
 
-                    echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+                    // Show message if RSVP limit is reached
+                    if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
+                        <div class="rsvps-closed">
+                            <p><strong>Sorry!</strong></p>
+                            <p>We already have the max number of Volunteers we need for this session.</p>
+                            <p>Please see our <a href="<?php echo site_url(); ?>/events">full Calendar</a> for future Tutoring Opportunities.</p>
+                        </div>
+                        <?php
+
+                        // Else if already RSVP'd show message
+                    } else {
+
+                        echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+                    }
 
                 // Inform visitor to register if login is required
                 } elseif ( $must_login == 'yes' && ! is_user_logged_in() ) { ?>
@@ -45,10 +58,7 @@ function embed_rsvp_events_single() {
                         <?php echo do_shortcode('[caldera_form id="CF597578b115ae1"]');?>
 
                     </div>
-                <?php }
-
-                // Show message if RSVP limit is reached
-                if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
+                <?php } elseif ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
                     <div class="rsvps-closed">
                         <p><strong>Sorry!</strong></p>
                         <p>We already have the max number of Volunteers we need for this session.</p>
@@ -140,26 +150,7 @@ function embed_rsvp_events_single() {
     endif;
 }
 
-/**
- * GET RSVP MAX CAPACITY
- *
- */
-function rsvp_is_max_capacity() {
-    global $post;
-    $get_limit      = get_post_meta( get_the_ID(), 'rsvps_limit', true );
-    $rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
-    $eventdate      = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps          = get_current_rsvps($rsvpdate = $eventdate);
-    $rsvp_total     = count($rsvps);
 
-    if ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) { ?>
-        <div class="rsvps-closed">
-            <p><strong>Sorry!</strong></p>
-            <p>We already have the max number of Volunteers we need for this session.</p>
-            <p>Please see our <a href="<?php echo site_url(); ?>/events">full Calendar</a> for future Tutoring Opportunities.</p>
-        </div>
-        <?php
-}
 /**
  * GET RSVPS FOR CURRENT EVENT
  *
