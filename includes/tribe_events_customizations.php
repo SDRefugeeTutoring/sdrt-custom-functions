@@ -113,19 +113,18 @@ function embed_rsvp_events_single() {
                 foreach( $rsvps as $rsvp ) {
 
                     $rsvpid = $rsvp->ID;
-                    $getmeta = get_fields($rsvpid);
 
-                    $name = $getmeta['volunteer_name'];
-                    $email = $getmeta['volunteer_email'];
-                    $attended = $getmeta['attended'];
-
+                    $name = get_post_meta($rsvpid, 'volunteer_name', true);
+                    $email = get_post_meta($rsvpid, 'volunteer_email', true);
+                    $attended = get_post_meta($rsvpid, 'attended', true);
+	                $attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
                     ?>
                     <tr>
                         <td data-th="name"><?php echo $name; ?></td>
                         <td data-th="email"><?php echo $email; ?></td>
                         <?php if ($attended == 'no') { ?>
                             <td data-th="attended"><a
-                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes#rsvps'; ?>"
+                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '#rsvps'; ?>"
                                         class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
                             </td>
                         <?php } elseif ( $attended == 'unknown' ) { ?>
