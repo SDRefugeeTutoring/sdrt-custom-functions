@@ -62,22 +62,20 @@ function sdrt_includes() {
 	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
 		return false;
 	} else {
-		include( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_customizations.php' );
-        include( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_custom_fields.php' );
+		require_once( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_customizations.php' );
+		require_once( SDRT_FUNCTIONS_DIR . '/includes/tribe_events_custom_fields.php' );
 	}
 
     // Includes Simple Send Email Class
-    include( SDRT_FUNCTIONS_DIR . '/vendor/simple-send-email.php');
-    include( SDRT_FUNCTIONS_DIR . '/includes/sdrt_emails.php');
+	require_once( SDRT_FUNCTIONS_DIR . '/vendor/simple-send-email.php');
+	require_once( SDRT_FUNCTIONS_DIR . '/includes/sdrt_emails.php');
 
 	// Includes custom scripts/styles
-	include( SDRT_FUNCTIONS_DIR . '/includes/sdrt_scripts.php');
+	require_once( SDRT_FUNCTIONS_DIR . '/includes/sdrt_scripts.php');
 
 	// Includes custom user meta functions
-	include( SDRT_FUNCTIONS_DIR . '/includes/sdrt_user_meta.php');
+	require_once( SDRT_FUNCTIONS_DIR . '/includes/sdrt_user_meta.php');
 
-    if ( post_type_exists( 'rsvp' ) && class_exists('acf') ) {
-        include( SDRT_FUNCTIONS_DIR . '/rsvps/rsvp_functions.php');
-    }
+    require_once( SDRT_FUNCTIONS_DIR . '/rsvps/rsvp_functions.php');
 
 }
