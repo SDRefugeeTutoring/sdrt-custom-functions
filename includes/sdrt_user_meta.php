@@ -10,6 +10,7 @@ add_action( 'edit_user_profile', 'sdrt_user_meta_fields' );
 function sdrt_user_meta_fields( $user ) { ?>
 	<?php
 	    $background_check = get_user_meta( $user->ID, 'background_check', true );
+        $background_check_invite_url = get_user_meta( $user->ID, 'background_check_invite_url', true );
 	?>
 
 	<h2>Volunteer Profile Information</h2>
@@ -25,8 +26,7 @@ function sdrt_user_meta_fields( $user ) { ?>
 					</td>
 				<?php } elseif ($background_check == 'Yes') { ?>
 					<td colspan="2" style="background: #96dd99; border-radius: 6px; padding: 10px 20px;">
-						<p><strong>We have a background check on file for you. Great! You're set to volunteer whenever you
-                                like.</strong></p>
+						<p><strong>We have a background check on file for you. Great! You're set to volunteer whenever you like.</strong></p>
 					</td>
 				<?php } ?>
 			</tr>
@@ -43,14 +43,23 @@ function sdrt_user_meta_fields( $user ) { ?>
 				</th>
 
 				<td>
-					<p><input type="radio" name="background_check"
-					          value="Yes" <?php  checked( $background_check, 'Yes' ); ?>>
-						Yes
-						<input type="radio" name="background_check"
-						       value="No" <?php  checked( $background_check, 'No' ); ?>>
-						No</p>
-					<p class="description">Indicates whether we have a background check on file for this volunteer or
-						not.</p>
+					<p>
+                        <select name="background_check" id="background_check">
+                            <option value="No" <?php  selected( $background_check, 'No' ); ?> >This volunteer has not yet registered.</option>
+
+                            <option value="Invited" <?php  selected( $background_check, 'Invited' ); ?> >An Invite has been sent, but we do not have results yet.</option>
+
+                            <option value="Yes" <?php  selected( $background_check, 'Yes' ); ?> >Yes, there is a passed background check on file.</option>
+                        </select><br />
+                        <span class="description">Indicates whether we have a background check on file for this volunteer or not.</span>
+                        <br />
+                    </p>
+
+                    <?php if ($background_check == 'Invited') : ?>
+                        <p><strong>This volunteer's Invite link is:</strong><br />
+                        <input type="text" name="background_check_invite_url" value="<?php echo $background_check_invite_url; ?>" readonly size="75"></p>
+                    <?php endif; ?>
+
 				</td>
 			</tr>
 			</tbody>
@@ -66,6 +75,6 @@ function sdrt_save_user_meta_fields( $user_id ) {
 	if ( !current_user_can( 'update_plugins', $user_id ) )
 		return false;
 
-	/* Copy and paste this line for additional fields. Make sure to change 'twitter' to the field ID. */
+	/* Copy and paste this line for additional fields. */
 	update_user_meta( $user_id, 'background_check', $_POST['background_check'] );
 }
