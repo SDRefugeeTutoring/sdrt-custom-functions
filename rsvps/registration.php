@@ -72,3 +72,23 @@ function sdrt_checkr_create_invite( $data ) {
     Caldera_Forms::set_field_data( 'fld_468416', $invite_url, $data['__form_id'], $data['__entry_id'] );
 }
 
+function sdrt_listen_for_checkr() {
+
+    if ( isset( $_GET['sdrt-listener'] ) && $_GET['sdrt-listener'] == 'checkr' ) {
+        /**
+         * Fires while verifying PayPal IPN
+         *
+         * @since 1.0
+         */
+        echo 'It works!';
+
+        $post_data = file_get_contents( 'php://input' );
+
+        var_dump($post_data);
+
+        wp_die();
+    }
+}
+
+add_action( 'init', 'sdrt_listen_for_checkr' );
+
