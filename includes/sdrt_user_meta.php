@@ -11,6 +11,7 @@ function sdrt_user_meta_fields( $user ) { ?>
 	<?php
 	    $background_check = get_user_meta( $user->ID, 'background_check', true );
         $background_check_invite_url = get_user_meta( $user->ID, 'background_check_invite_url', true );
+        $background_check_candidate_id = get_user_meta( $user->ID, 'background_check_candidate_id', true );
 	?>
 
 	<h2>Volunteer Profile Information</h2>
@@ -58,6 +59,8 @@ function sdrt_user_meta_fields( $user ) { ?>
                     <?php if ($background_check == 'Invited') : ?>
                         <p><strong>This volunteer's Invite link is:</strong><br />
                         <input type="text" name="background_check_invite_url" value="<?php echo $background_check_invite_url; ?>" readonly size="75"></p>
+                        <p><strong>This volunteer's Candidate ID is:</strong><br />
+                            <input type="text" name="background_check_candidate_id" value="<?php echo $background_check_candidate_id; ?>" readonly size="75"></p>
                     <?php endif; ?>
 
 				</td>
@@ -77,4 +80,7 @@ function sdrt_save_user_meta_fields( $user_id ) {
 
 	/* Copy and paste this line for additional fields. */
 	update_user_meta( $user_id, 'background_check', $_POST['background_check'] );
+
+	/* Copy and paste this line for additional fields. */
+	update_user_meta( $user_id, 'background_check_candidate_id', $_POST['background_check_candidate_id'] );
 }
