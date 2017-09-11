@@ -3,10 +3,13 @@
     width: 100%;
     max-width: 80%;
 }
+.rwd-table thead tr{
+    border: 0px !important;
+}
 .rwd-table tr {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    background: #ddd;
+    border-style: solid;
+    border-width: 0 2px;
+    border-color: #b0c1cc;
 }
 
 .rwd-table th {
@@ -38,23 +41,27 @@
 
 .rwd-table {
     color: #333;
-    border-radius: .4em;
-    overflow: hidden;
+    border-width: 0 0 2px 0;
+    border-color: #b0c1cc;
+    border-style: solid;
+    margin: 40px 10px;
+    padding: 0;
 }
 
 .rwd-table thead tr {
-    background: #333;
+
 }
 
 .rwd-table tr.labels {
-    border-color: #92c7d7;
-    background: #333;
-    color: white;
     font-weight: 900;
+    border-style: solid;
+    border-bottom-style: dashed;
+    border-width: 2px;
+    border-color: #b0c1cc;
 }
 
 .rwd-table tr:nth-child(even) {
-    background: rgba(157, 186, 195, 0.75);
+    background: #f7f7f7;
 }
 
 .rwd-table th, .rwd-table td {
@@ -63,9 +70,18 @@
 }
 
 .rwd-table th, .rwd-table td:before {
-    color: #fff;
     font-weight: 900;
     font-size: 120%;
+}
+
+.rwd-table td[data-th="attended"] span.dashicons {
+    overflow: hidden;
+    text-indent: 50px;
+}
+
+.rwd-table td[data-th="attended"] span.dashicons:before {
+    position: relative;
+    right: 50px;
 }
 
 .button.attended-unknown:hover,
