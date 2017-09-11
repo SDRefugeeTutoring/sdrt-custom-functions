@@ -13,7 +13,7 @@
 function sdrt_email_checkr_clear($user_id) {
 	ob_start();
 	$usermeta = get_user_meta($user_id);
-	$first = $usermeta['first_name'];
+	$first = $usermeta['first_name'][0];
 	?>
 	<p>Dear <?php echo $first; ?>,</p>
 
@@ -36,6 +36,12 @@ function sdrt_email_checkr_clear($user_id) {
 
 /**
  *
+ * The THANK YOU FOR ATTENDING email
+ *
+ * @param $fname
+ * @param $event_title
+ *
+ * @return string
  */
 
 function sdrt_email_thankyou($fname, $event_title) {
@@ -49,6 +55,36 @@ function sdrt_email_thankyou($fname, $event_title) {
 
 	<p>With much appreciation,</p>
 	<p><em>The SD Refugee Tutoring Leadership</em></p>
+
+	<?php
+
+	$body = ob_get_clean();
+	return $body;
+}
+
+function sdrt_email_checkr_consider($user) {
+    ob_start();
+	$user_email = $user[0]->data->user_email;
+    ?>
+    <p>Dear SDRT Leadership,</p>
+
+    <p>This email is simply to inform you that a volunteer attempted to do a background check and Checkr returned the results as "consider", which means there are some items on their report that we need to take into account.</p>
+
+    <p>For security purposes, this email will not include those details. But you can login to dashboard.checkr.com and search for them by their email address (<?php echo $user_email;?>).</p>
+
+    <p>Here are a few things to keep in mind in this regard:
+        <ul style="margin-left: 25px; text-indent: -10px; margin-bottom: 25px;">
+            <li>&#8226; They cannot yet RSVP for any sessions.</li>
+            <li>&#8226; Sometimes these reports are overly cautious. It might be worth following up with the volunteer for clarification.</li>
+            <li>&#8226; You can manually enable the users account to RSVP if you choose to. Simply go to their profile in the SDRT website, and change their user role to "Volunteer". Then email them of the change.</li>
+        </ul>
+    </p>
+
+    <p>Thank you for all you do!</p>
+
+    <p>Sincerely,<br />
+    <em>Your SDRT website auto-bot</em> :-)
+    </p>
 
 	<?php
 

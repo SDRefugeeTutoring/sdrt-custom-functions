@@ -112,7 +112,7 @@ function sdrt_listen_for_checkr() {
 		$user_id = $user[0]->ID;
 		$user_role = $user[0]->roles;
 		$user_email = $user[0]->data->user_email;
-
+		var_dump($user);
 		// If the report is "clear" and the user associated with that report is a "Volunteer Pending", update the user and send them a confirmation email.
 		if ( $report_type == 'report.completed' && $report_status == 'clear' && $user_role[0] == 'volunteer_pending' ) {
 
@@ -123,6 +123,14 @@ function sdrt_listen_for_checkr() {
 			$headers[] = 'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>';
 
 			wp_mail( $user_email, 'You can now RSVP for Refugee Tutoring Sessions!', sdrt_email_checkr_clear($user_id), $headers );
+
+		} elseif ( $report_type == 'report.completed' && $report_status == 'consider') {
+
+			// Send an email to the admins to inform them that a volunteer's background check did not clear.
+			$headers[] = 'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>';
+
+			wp_mail( 'carolnarikim@gmail.com, matt@sdrefugeetutoring.com,melissa@sdrefugeetutoring.com', 'A Volunteers background check did not clear', sdrt_email_checkr_consider($user), $headers );
+
 		}
 		//var_dump($user);
 		wp_die();
