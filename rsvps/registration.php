@@ -1,6 +1,5 @@
 <?php
 /**
- * Interacting with the Checkr.io API
  * All functions necessary for volunteer registration are here
  *
  */
@@ -83,6 +82,7 @@ function sdrt_checkr_create_invite( $data ) {
  *  Then conditionally update the user if they passed the backgroun check
  *  And send that user an email informing them they can now RSVP.
  */
+
 add_action( 'init', 'sdrt_listen_for_checkr' );
 
 function sdrt_listen_for_checkr() {
@@ -114,7 +114,7 @@ function sdrt_listen_for_checkr() {
         $user_email = $user[0]->data->user_email;
 
         // If the report is "clear" and the user associated with that report is a "Volunteer Pending", update the user and send them a confirmation email.
-        if ( $report_status == 'clear' && $user_role[0] == 'volunteer_pending' ) {
+        if ( $report_type == 'report.completed' && $report_status == 'clear' && $user_role[0] == 'volunteer_pending' ) {
 
         	// The update user function. We're only updating their user role
 	        wp_update_user( array( 'ID' => $user_id, 'role' => 'volunteer' ) );
@@ -124,7 +124,7 @@ function sdrt_listen_for_checkr() {
 
 	        wp_mail( $user_email, 'You can now RSVP for Refugee Tutoring Sessions!', get_checkr_clear_email_body($user_id), $headers );
         }
-		var_dump($user);
+		//var_dump($user);
 	    wp_die();
     }
 }
