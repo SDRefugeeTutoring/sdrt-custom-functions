@@ -95,18 +95,18 @@ function embed_rsvp_events_single() {
 
             <h2 class="give-title current_rsvps" id="rsvps">Current RSVPS:</h2>
 
-            <button class="rsvp-download" onClick ="jQuery('#RSVPs').tableExport({type:'pdf',escape:'false', htmlContent:'true'});">Download RSVPs</button>
+            <button class="rsvp-download">Print RSVPs</button>
 
-            <table class="rwd-table" id="RSVPs">
+            <table class="rwd-table" id="rsvp-table"  width="100%">
                 <thead>
                     <th colspan="4">
                         Tutoring on <?php echo $finaldate; ?>
                     </th>
                 </thead>
                 <tr class="labels">
-                    <td>Name</td>
-                    <td>Email</td>
-                    <td>Attended?</td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Email</strong></td>
+                    <td><strong>Attended?</strong></td>
                 </tr>
                 <?php
 
@@ -116,24 +116,26 @@ function embed_rsvp_events_single() {
 
                     $name = get_post_meta($rsvpid, 'volunteer_name', true);
                     $email = get_post_meta($rsvpid, 'volunteer_email', true);
+	                list($firstname)=explode(',', $name);
+
                     $attended = get_post_meta($rsvpid, 'attended', true);
 	                $attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
                     ?>
                     <tr>
-                        <td data-th="name"><?php echo $name; ?></td>
-                        <td data-th="email"><?php echo $email; ?></td>
+                        <td data-th="name" width="40%"><?php echo $name; ?></td>
+                        <td data-th="email" width="40%"><?php echo $email; ?></td>
                         <?php if ($attended == 'no') { ?>
-                            <td data-th="attended"><a
-                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '#rsvps'; ?>"
-                                        class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
+                            <td data-th="attended" width="20%"><a
+                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>"
+                                        class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes">No</span></a>
                             </td>
                         <?php } elseif ( $attended == 'unknown' ) { ?>
-                            <td data-th="attended"><a
-                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes#rsvps'; ?>"
-                                        class="button attended-unknown"><span class="dashicons dashicons-minus" style="border-radius: 50%; background: #777777; color: white; padding: 6px;" title="Click to change to Yes"></span></a>
+                            <td data-th="attended" width="20%"><a
+                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>>"
+                                        class="button attended-unknown"><span class="dashicons dashicons-minus" style="border-radius: 50%; background: #777777; color: white; padding: 6px;" title="Click to change to Yes">Unknown</span></a>
                             </td>
                         <?php } else { ?>
-                            <td data-th="attended"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;"></span></td>
+                            <td data-th="attended" width="20%"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;">Yes</span></td>
                         <?php } ?>
                     </tr>
 
