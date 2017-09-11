@@ -43,6 +43,9 @@ function sdrt_includes() {
 	// Bootstrapper for all plugin customizations
 	require_once( SDRT_FUNCTIONS_DIR . '/plugin_customizations/_plugins.php');
 
+	// Bootstrapper for all registration functions
+	require_once( SDRT_FUNCTIONS_DIR . '/registration/_registration.php');
+
 	// Bootstrapper for the RSVP functionality
     require_once( SDRT_FUNCTIONS_DIR . '/rsvps/_rsvp.php');
 
