@@ -76,7 +76,7 @@ function embed_rsvp_events_single() {
 				// Or finally show the RSVP form
 			} else {
 				echo '<p>Current RSVPS = ' . $rsvp_total . ' out of ' . $rsvp_limit. ' available.</p>';
-				echo do_shortcode('[caldera_form id="' . RSVP_FORM_ID . '"]');
+				echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
 			}
 			?>
         </div><!-- end RSVP section -->
