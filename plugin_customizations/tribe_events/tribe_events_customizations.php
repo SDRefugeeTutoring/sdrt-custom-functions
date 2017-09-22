@@ -164,9 +164,12 @@ function get_current_rsvps($rsvpdate = '') {
     $rsvps = array();
 
     $args = array(
-        'post_type'   => 'rsvp',
-        'post_status' => array('publish'),
-        'meta_query' => array(
+        'post_type'     => 'rsvp',
+        'post_status'   => array('publish'),
+        'order'         => 'ASC',
+        'orderby'       => 'meta_value',
+        'meta_key'      => 'volunteer_name',
+        'meta_query'    => array(
             array(
                 'key'     => 'event_date',
                 'value'   => $rsvpdate,
