@@ -31,6 +31,7 @@ function embed_rsvp_events_single() {
         <div class="tutoring-rsvp">
             <h2 class="give-title">RSVP HERE:</h2>
             <?php
+
                 // Show RSVP form if login is not required
                 if ( $must_login == 'no' ) {
 
@@ -43,15 +44,16 @@ function embed_rsvp_events_single() {
                         </div>
                         <?php
 
-                        // Else if already RSVP'd show message
+                        // Else show public RSVP form
                     } else {
-
+						echo '<p>Current RSVPS = ' . $rsvp_total . ' out of ' . $rsvp_limit. ' available.</p>';
                         echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
                     }
 
                 // Inform visitor to register if login is required
                 } elseif ( $must_login == 'yes' && ! is_user_logged_in() ) { ?>
                     <div class="please-register">
+
                         <p><strong>Please Register to RSVP</strong></p>
                         <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the Registration page for details.</p>
                         <p><strong>Already Registered? Please Login</strong></p>
@@ -67,7 +69,7 @@ function embed_rsvp_events_single() {
                 <?php
 
                 // Else if already RSVP'd show message
-                } elseif ( in_array($userid, $rsvpmeta ) ) { ?>
+                } elseif ( in_array( $userid, $rsvpmeta ) ) { ?>
                     <div class="already-rsvpd">
                         <p><strong>Thanks!</strong></p>
                         <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
@@ -75,7 +77,8 @@ function embed_rsvp_events_single() {
 
                 // Or finally show the RSVP form
                 } else {
-                    echo do_shortcode('[caldera_form id="' . RSVP_FORM_ID . '"]');
+					echo '<p>RSVPS = ' . $rsvp_total . ' out of ' . $rsvp_limit . ' available.</p>';
+                    echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
                 }
                 ?>
         </div><!-- end RSVP section -->
@@ -87,7 +90,7 @@ function embed_rsvp_events_single() {
         // by clicking on the "X" next to their name
         // This is only viewable by a logged-in Admin account
 
-        if ( !empty($rsvps) && current_user_can('update_plugins') ) :
+        if ( !empty($rsvps) && current_user_can('can_view_rsvps') ) :
 
             $createDate = new DateTime($eventdate);
             $finaldate = $createDate->format('F d, Y');
@@ -164,9 +167,15 @@ function get_current_rsvps($rsvpdate = '') {
     $rsvps = array();
 
     $args = array(
-        'post_type'   => 'rsvp',
-        'post_status' => array('publish'),
-        'meta_query' => array(
+        'post_type'     => 'rsvp',
+        'post_status'   => array('publish'),
+        'order'         => 'ASC',
+        'orderby'       => 'meta_value',
+        'meta_key'      => 'volunteer_name',
+		'nopaging'		=> true,
+		'posts_per_page'=>-1,
+		'no_found_rows' => true,  // turn off pagination
+        'meta_query'    => array(
             array(
                 'key'     => 'event_date',
                 'value'   => $rsvpdate,
@@ -188,7 +197,7 @@ function get_current_rsvps($rsvpdate = '') {
  * @return array
  */
 
-function get_current_rsvps_volids($rsvpdate = '') {
+function get_current_rsvps_volids() {
     global $post;
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps = get_current_rsvps($rsvpdate = $eventdate);
@@ -198,8 +207,7 @@ function get_current_rsvps_volids($rsvpdate = '') {
     foreach( $rsvps as $rsvp ) {
 
         $ids = $rsvp->ID;
-        $getmeta = get_fields($ids);
-        $volid[] = $getmeta['volunteer_user_id'];
+	    $volid[] = get_post_meta($ids, 'volunteer_user_id', true);
 
     }
 
