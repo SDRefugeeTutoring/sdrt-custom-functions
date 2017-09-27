@@ -11,7 +11,7 @@ add_action( 'wp_enqueue_scripts', 'sdrt_enqueue_tableExport_scripts' );
 
 function sdrt_enqueue_tableExport_scripts() {
 
-	if ( is_singular('tribe_events') && current_user_can('update_plugins') ) {
+	if ( is_singular('tribe_events') && current_user_can('can_view_rsvps') ) {
 		wp_enqueue_script('sdrt-exportHTML', SDRT_FUNCTIONS_URL . 'assets/exportHTML.js', false);
 		wp_register_style('rsvp-styles', SDRT_FUNCTIONS_URL . 'assets/rsvp-styles.css', array(), SDRT_FUNCTIONS_VERSION, 'all');
 
