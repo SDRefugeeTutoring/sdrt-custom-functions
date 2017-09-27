@@ -118,7 +118,11 @@ function embed_rsvp_events_single() {
 
 					$name = get_post_meta($rsvpid, 'volunteer_name', true);
 					$email = get_post_meta($rsvpid, 'volunteer_email', true);
-					list($firstname)=explode(',', $name);
+
+					$getname = explode('=', $name);
+					$firstname = $getname[1];
+
+					//list($firstname)=explode(',', $name);
 
 					$attended = get_post_meta($rsvpid, 'attended', true);
 					$attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
