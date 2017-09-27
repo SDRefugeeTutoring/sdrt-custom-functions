@@ -30,6 +30,7 @@ function embed_rsvp_events_single() {
 
         <div class="tutoring-rsvp">
             <h2 class="give-title">RSVP HERE:</h2>
+
 			<?php
 			// Show RSVP form if login is not required
 			if ( $must_login == 'no' ) {
@@ -45,7 +46,7 @@ function embed_rsvp_events_single() {
 
 					// Else show public RSVP form
 				} else {
-					echo '<p>Current RSVPS = ' . $rsvp_total . ' out of ' . $rsvp_limit. ' available.</p>';
+					echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
 					echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
 				}
 
@@ -75,7 +76,7 @@ function embed_rsvp_events_single() {
 
 				// Or finally show the RSVP form
 			} else {
-				echo '<p>Current RSVPS = ' . $rsvp_total . ' out of ' . $rsvp_limit. ' available.</p>';
+				echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
 				echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
 			}
 			?>
