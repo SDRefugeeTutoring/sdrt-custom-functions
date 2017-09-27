@@ -119,8 +119,9 @@ function embed_rsvp_events_single() {
 					$name = get_post_meta($rsvpid, 'volunteer_name', true);
 					$email = get_post_meta($rsvpid, 'volunteer_email', true);
 
-					$getname = explode('=', $name);
-					$firstname = $getname[1];
+					$getname = explode(',', $name);
+					//var_dump($getname[1]);
+					$firstname = ( strpos($name, ',') ? $getname[1] : $name );
 
 					//list($firstname)=explode(',', $name);
 
