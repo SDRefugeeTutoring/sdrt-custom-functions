@@ -109,6 +109,7 @@ function embed_rsvp_events_single() {
                     <td><strong>Name</strong></td>
                     <td><strong>Email</strong></td>
                     <td><strong>Attended?</strong></td>
+                    <td><strong>Actions</strong></td>
                 </tr>
 				<?php
 
@@ -127,6 +128,7 @@ function embed_rsvp_events_single() {
 
 					$attended = get_post_meta($rsvpid, 'attended', true);
 					$attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
+
 					?>
                     <tr>
                         <td data-th="name" width="40%"><?php echo $name; ?></td>
@@ -144,6 +146,7 @@ function embed_rsvp_events_single() {
 						<?php } else { ?>
                             <td data-th="attended" width="20%"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;">Yes</span></td>
 						<?php } ?>
+                        <td><a href="<?php echo get_delete_post_link($rsvpid); ?>">Delete</a></td>
                     </tr>
 
 					<?php
