@@ -9,8 +9,8 @@
  * This is all done via a Caldera Form
  */
 
-if (class_exists('Caldera_Forms_Autoloader') )
-	add_action( 'sdrt_trigger_checkr_invite', 'sdrt_checkr_create_invite', 10, 2 );
+
+add_action( 'sdrt_trigger_checkr_invite', 'sdrt_checkr_create_invite', 10, 2 );
 
 function sdrt_checkr_create_invite( $data ) {
 
@@ -129,11 +129,11 @@ function sdrt_listen_for_checkr() {
 			// Send an email to the admins to inform them that a volunteer's background check did not clear.
 			$headers[] = 'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>';
 
-			wp_mail( 'carolnarikim@gmail.com, matt@sdrefugeetutoring.com,melissa@sdrefugeetutoring.com', 'A Volunteers background check did not clear', sdrt_email_checkr_consider($user), $headers );
+			wp_mail( 'carolnarikim@gmail.com, matt@sdrefugeetutoring.com, melissa@sdrefugeetutoring.com', 'A Volunteers background check did not clear', sdrt_email_checkr_consider($user), $headers );
 
 		}
 		//var_dump($user);
-		wp_die();
+		wp_die('','',array('response'=>200));
 	}
 }
 
