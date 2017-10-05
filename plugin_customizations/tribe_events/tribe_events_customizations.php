@@ -158,14 +158,10 @@ function embed_rsvp_events_single() {
  */
 
 function sdrt_rsvp_already_rsvpd_output() {
-	global $post;
 
-    $eventdate = get_post_meta( $post->ID, '_EventStartDate', true );
+    $eventdate = get_post_meta( get_the_ID(), '_EventStartDate', true );
 	$rsvp = get_my_rsvp( $rsvpdate = $eventdate );
 
-	$cancelnonce = wp_create_nonce( 'sdrt_cancellation_nonce' );
-
-	//var_dump($rsvp);
     ?>
     <div class="already-rsvpd">
         <p><strong>Thanks!</strong></p>
@@ -272,8 +268,8 @@ function get_current_rsvps_volids( $rsvpdate = '' ) {
  */
 
 function get_my_rsvp( $rsvpdate = '' ) {
-	global $post;
-	$eventdate = get_post_meta( $post->ID, '_EventStartDate', true );
+
+	$eventdate = get_post_meta( get_the_ID(), '_EventStartDate', true );
 	$rsvps = get_current_rsvps( $rsvpdate = $eventdate );
 
 	foreach( $rsvps as $rsvp ) {
@@ -284,8 +280,6 @@ function get_my_rsvp( $rsvpdate = '' ) {
 
 		if ( in_array( $userid, $volid ) ) {
 		    return $rsvp;
-        } else {
-		    return null;
         }
 
 	}
