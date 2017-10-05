@@ -17,6 +17,12 @@ add_action( 'setup_theme', function() {
         }
     }
 
+	if ( current_user_can('can_rsvp') ) {
+		if ( isset($rsvpid, $attended) && wp_verify_nonce( $nonce, 'sdrt_cancellation_nonce' ) ) {
+			update_post_meta( $rsvpid, 'attended', $attended );
+		}
+	}
+
     $event_title = get_the_title($rsvpid);
 
 	// The email we send the user to confirm they cleared and can now RSVP.
