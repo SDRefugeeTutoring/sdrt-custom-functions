@@ -3,38 +3,37 @@
 	Custom Columns
 -------------------------------------------------------------------------------*/
 
-function my_page_columns($columns)
-{
-    $columns = array(
-        'cb'	 	=> '<input type="checkbox" />',
-        'thumbnail'	=>	'Thumbnail',
-        'title' 	=> 'Title',
-        'featured' 	=> 'Featured',
-        'author'	=>	'Author',
-        'date'		=>	'Date',
-    );
-    return $columns;
+// Change the columns for the edit CPT screen
+function sdrt_rsvp_change_columns( $cols ) {
+	$cols = array(
+		'cb'       => '<input type="checkbox" />',
+		'event'      => __( 'Event', 'sdrt' ),
+		'event_date' => __( 'Event Date', 'sdrt' ),
+		'vol_name'     => __( 'Volunteer Name', 'sdrt' ),
+		'attended'     => __( 'Attended?', 'sdrt' ),
+	);
+	return $cols;
+}
+add_filter( 'manage_rsvp_posts_columns', 'sdrt_rsvp_change_columns' );
+
+function sdrt_rsvp_column_content( $column, $post_id ) {
+	switch ( $column ) {
+		case 'event':
+			$eventid = get_post_meta( $post_id, 'event_id', true);
+			echo '<a href="' . $eventid . '">' . get_the_title($eventid). '</a>';
+			break;
+		case 'event_date':
+			$eventdate = strtotime( get_post_meta( $post_id, 'event_date', true) );
+
+			echo date( 'F d, Y', $eventdate );
+			break;
+		case 'vol_name':
+			echo get_post_meta( $post_id, 'volunteer_name', true);
+			break;
+		case 'attended':
+			echo get_post_meta( $post_id, 'attended', true);
+			break;
+	}
 }
 
-function my_custom_columns($column)
-{
-    global $post;
-    if($column == 'thumbnail')
-    {
-        echo wp_get_attachment_image( get_field('page_image', $post->ID), array(200,200) );
-    }
-    elseif($column == 'featured')
-    {
-        if(get_field('featured'))
-        {
-            echo 'Yes';
-        }
-        else
-        {
-            echo 'No';
-        }
-    }
-}
-
-add_action("manage_pages_custom_column", "my_custom_columns");
-add_filter("manage_edit-page_columns", "my_page_columns");
+add_action( 'manage_rsvp_posts_custom_column', 'sdrt_rsvp_column_content', 10, 2 );
