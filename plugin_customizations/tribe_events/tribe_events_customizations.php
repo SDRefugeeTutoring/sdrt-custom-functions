@@ -41,13 +41,11 @@ function embed_rsvp_events_single() {
 
 				    sdrt_rsvp_limit_reached_output();
 
-				} elseif ( in_array( $userid, $rsvpmeta ) ) {
+				} else {
 
-					sdrt_rsvp_already_rsvpd_output();
-
-                } else {
-					echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
+				    echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
 					echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+
 				}
 
             // Inform visitor to register if login is required
@@ -55,21 +53,31 @@ function embed_rsvp_events_single() {
 
 				// Not logged in
 				if ( ! is_user_logged_in() ) {
-
 					sdrt_rsvp_please_register_output();
 
-				} elseif ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) {
-
-					sdrt_rsvp_limit_reached_output();
-
-				} elseif ( in_array( $userid, $rsvpmeta ) ) {
-
-					sdrt_rsvp_already_rsvpd_output();
-
-				} else {
-					echo '<p>We currently need <strong>' . abs( $rsvp_limit - $rsvp_total ) . '</strong> more tutors.</p>';
-					echo do_shortcode( '[caldera_form id="' . $rsvp_form . '"]' );
 				}
+
+				if ( is_user_logged_in() && current_user_can('can_rsvp') ) {
+
+				    // If already RSVP'd
+				    if ( in_array( $userid, $rsvpmeta ) ) {
+
+					    sdrt_rsvp_already_rsvpd_output();
+
+					// If RSVPs are full
+				    } elseif ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) {
+
+				        sdrt_rsvp_limit_reached_output();
+
+				    // RSVPs are open and volunteer can RSVP
+				    }  else {
+					    echo '<p>We currently need <strong>' . abs( $rsvp_limit - $rsvp_total ) . '</strong> more tutors.</p>';
+					    echo do_shortcode( '[caldera_form id="' . $rsvp_form . '"]' );
+				    }
+
+				} elseif ( is_user_logged_in() && ! current_user_can('can_rsvp')) {
+				    echo '<p>It looks like you\'ve completed your background check, but it has not yet cleared. Please come back later or contact our Webmaster via our <a href="' .  get_home_url() . '/contact/">contact form</a> for questions.</p>';
+                }
 			}
 			?>
         </div><!-- end RSVP section -->
@@ -192,8 +200,7 @@ function sdrt_rsvp_limit_reached_output() { ?>
 function sdrt_rsvp_please_register_output() { ?>
     <div class="please-register">
         <p><strong>Please Register to RSVP</strong></p>
-        <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the
-            Registration page for details.</p>
+        <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the <a href="<?php echo site_url(); ?>/volunteer">Registration page</a> for details.</p>
         <p><strong>Already Registered? Please Login</strong></p>
 		<?php echo do_shortcode( '[caldera_form id="CF597578b115ae1"]' ); ?>
     </div>
