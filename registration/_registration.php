@@ -112,9 +112,16 @@ function sdrt_listen_for_checkr() {
 		$user_id = $user[0]->ID;
 		$user_role = $user[0]->roles;
 		$user_email = $user[0]->data->user_email;
-		var_dump($user);
+		$usermeta = get_user_meta($user_id);
+
 		// If the report is "clear" and the user associated with that report is a "Volunteer Pending", update the user and send them a confirmation email.
 		if ( $report_type == 'report.completed' && $report_status == 'clear' && $user_role[0] == 'volunteer_pending' ) {
+
+			//Define arguments to send to the email copy
+			$args = array(
+				'fname' => $usermeta['first_name'][0],
+				'option'    => 'sdrt_checkr_clear_email_copy'
+			);
 
 			// The update user function. We're only updating their user role
 			wp_update_user( array( 'ID' => $user_id, 'role' => 'volunteer' ) );
@@ -122,7 +129,7 @@ function sdrt_listen_for_checkr() {
 			// The email we send the user to confirm they cleared and can now RSVP.
 			$headers[] = 'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>';
 
-			wp_mail( $user_email, 'You can now RSVP for Refugee Tutoring Sessions!', sdrt_email_checkr_clear($user_id), $headers );
+			wp_mail( $user_email, 'You can now RSVP for Refugee Tutoring Sessions!', sdrt_send_email($args), $headers );
 
 		} elseif ( $report_type == 'report.completed' && $report_status == 'consider') {
 
