@@ -121,35 +121,45 @@ function embed_rsvp_events_single() {
 					$email = get_post_meta($rsvpid, 'volunteer_email', true);
 
 					$getname = explode(',', $name);
-					//var_dump($getname[1]);
+
 					$firstname = ( strpos($name, ',') ? $getname[1] : $name );
 
 					//list($firstname)=explode(',', $name);
 
+                    $attending = get_post_meta($rsvpid, 'attending', true);
 					$attended = get_post_meta($rsvpid, 'attended', true);
 					$attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
+					if ($attending == 'no') {}
+					else {
+                        ?>
+                        <tr>
+                            <td data-th="name" width="40%"><?php echo $name; ?></td>
+                            <td data-th="email" width="40%"><?php echo $email; ?></td>
+                            <?php if ($attended == 'no') { ?>
+                                <td data-th="attended" width="20%"><a
+                                            href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>"
+                                            class="button attended-no"><span class="dashicons dashicons-no"
+                                                                             style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
+                                                                             title="Click to change to Yes">No</span></a>
+                                </td>
+                            <?php } elseif ($attended == 'unknown') { ?>
+                                <td data-th="attended" width="20%"><a
+                                            href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>>"
+                                            class="button attended-unknown"><span class="dashicons dashicons-minus"
+                                                                                  style="border-radius: 50%; background: #777777; color: white; padding: 6px;"
+                                                                                  title="Click to change to Yes">Unknown</span></a>
+                                </td>
+                            <?php } else { ?>
+                                <td data-th="attended" width="20%"><span class="dashicons dashicons-yes"
+                                                                         style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;">Yes</span>
+                                </td>
+                            <?php } ?>
+                            <td><a href="<?php echo get_delete_post_link($rsvpid); ?>">Delete</a></td>
+                        </tr>
 
-					?>
-                    <tr>
-                        <td data-th="name" width="40%"><?php echo $name; ?></td>
-                        <td data-th="email" width="40%"><?php echo $email; ?></td>
-						<?php if ($attended == 'no') { ?>
-                            <td data-th="attended" width="20%"><a
-                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>"
-                                        class="button attended-no"><span class="dashicons dashicons-no" style="border-radius: 50%; background: darkred; color: white; padding: 6px;" title="Click to change to Yes">No</span></a>
-                            </td>
-						<?php } elseif ( $attended == 'unknown' ) { ?>
-                            <td data-th="attended" width="20%"><a
-                                        href="<?php echo get_permalink(get_the_ID()) . '?rsvpid=' . $rsvpid . '&attended=yes&_nonce=' . $attendancenonce . '&email=' . $email . '&fname=' . $firstname . '#rsvps'; ?>>"
-                                        class="button attended-unknown"><span class="dashicons dashicons-minus" style="border-radius: 50%; background: #777777; color: white; padding: 6px;" title="Click to change to Yes">Unknown</span></a>
-                            </td>
-						<?php } else { ?>
-                            <td data-th="attended" width="20%"><span class="dashicons dashicons-yes" style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;">Yes</span></td>
-						<?php } ?>
-                        <td><a href="<?php echo get_delete_post_link($rsvpid); ?>">Delete</a></td>
-                    </tr>
+                        <?php
 
-					<?php
+                    }
 				}
 				wp_reset_postdata();
 
@@ -169,14 +179,23 @@ function sdrt_rsvp_already_rsvpd_output() {
 
     $eventdate = get_post_meta( get_the_ID(), '_EventStartDate', true );
 	$rsvp = get_my_rsvp( $rsvpdate = $eventdate );
+	$rsvpmeta = get_post_meta($rsvp->ID);
+	$attending = $rsvpmeta['attending'][0];
 
+	if (isset($attending) && $attending == 'no') {
     ?>
-    <div class="already-rsvpd">
-        <p><strong>Thanks!</strong></p>
-        <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
-        <p>Need to cancel? <a href="<?php echo get_delete_post_link($rsvp->ID); ?>">Click here</a>.</p>
-    </div>
-    <?php
+        <div class="already-rsvpd-no">
+            <p><strong>Thanks for the heads up</strong></p>
+            <p>It looks like you've already RSVP'd for this event. Sorry to hear you can't make it this time</p>
+            <p>Please take a look at <a href="<?php echo esc_url( Tribe__Events__Main::instance()->getLink() ); ?>">all our tutoring sessions</a> for more opportunities to volunteer.</p>
+        </div>
+    <?php } else { ?>
+        <div class="already-rsvpd-yes">
+            <p><strong>Thanks!</strong></p>
+            <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
+            <p>Need to cancel? <a href="<?php echo get_delete_post_link($rsvp->ID); ?>">Click here</a>.</p>
+        </div>
+    <?php }
 }
 
 /**
