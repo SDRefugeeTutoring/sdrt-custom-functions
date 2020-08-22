@@ -5,7 +5,7 @@
  * Description: Functionality plugin to test custom snippets for Give.
  * Author: Matt Cromwell
  * Author URI: https://www.mattcromwell.com
- * Version: 0.1
+ * Version: 1.1
  */
 
 // Exit if accessed directly.
@@ -26,7 +26,7 @@ if ( ! defined( 'SDRT_FUNCTIONS_URL' ) ) {
 if ( ! defined( 'SDRT_FUNCTIONS_VERSION' ) && ( WP_DEBUG == true ) ) {
     define( 'SDRT_FUNCTIONS_VERSION', mt_rand() );
 } elseif (! defined( 'SDRT_FUNCTIONS_VERSION' ) ) {
-    define( 'SDRT_FUNCTIONS_VERSION', '1.0' );
+    define( 'SDRT_FUNCTIONS_VERSION', '1.1' );
 }
 
 // We want to check some things upon activation so we'll use this action to run everything first.

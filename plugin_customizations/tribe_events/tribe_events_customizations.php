@@ -51,13 +51,18 @@ function embed_rsvp_events_single() {
             // Inform visitor to register if login is required
 			} elseif ( $must_login == 'yes') {
 
+				$can_rsvp = sdrt_vol_can_rsvp();
+
 				// Not logged in
 				if ( ! is_user_logged_in() ) {
 					sdrt_rsvp_please_register_output();
-
 				}
 
-				if ( is_user_logged_in() && current_user_can('can_rsvp') ) {
+				if ( $can_rsvp == false) {
+					sdrt_finish_reqs();
+				}
+
+				if ( is_user_logged_in() && ($can_rsvp == true) ) {
 
 				    // If already RSVP'd
 				    if ( in_array( $userid, $rsvpmeta ) ) {
@@ -169,6 +174,44 @@ function embed_rsvp_events_single() {
 			<?php
 		endif;
 	endif;
+}
+
+/**
+ *  Confirm Logged-in user Can RSVP
+ *  Returns: true
+ */
+
+ function sdrt_vol_can_rsvp() {
+	$allowed = true;
+	$userid = get_current_user_id();
+
+	$role = current_user_can('can_rsvp');
+	$orientation = get_user_meta( $userid, 'sdrt_orientation_attended', false );
+	$coc = get_user_meta( $userid, 'sdrt_coc_consented', false );
+	$waiver = get_user_meta( $userid, 'sdrt_waiver_consented', false );
+
+	if ($role = false) { $allowed = false; }
+	if ($orientation[0] == 'No') { $allowed = false; }
+	if ($coc[0] == 'No') { $allowed = false; }
+	if ($waiver[0] == 'No') { $allowed = false; }
+	
+	return $allowed;
+ }
+
+ /**
+  *  OUTPUT: Please Finish Volunteer Requirements
+  */
+
+function sdrt_finish_reqs() {
+
+	$userid = get_current_user_id();
+
+	$role = current_user_can('can_rsvp');
+	$orientation = get_user_meta( $userid, 'sdrt_orientation_attended', false );
+	$coc = get_user_meta( $userid, 'sdrt_coc_consented', false );
+	$waiver = get_user_meta( $userid, 'sdrt_waiver_consented', false );
+
+	echo '<p>Thank you for starting the process of volunteering with SD Refugee Tutoring. Currently you are not yet eligble to volunteer for tutoring events. Please go to your <a href="' . get_home_url() . '/my-profile">Profile Page</a> to review your status and finish your required items.</p>';
 }
 
 /**

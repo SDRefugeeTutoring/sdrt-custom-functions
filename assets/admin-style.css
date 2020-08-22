@@ -2,3 +2,34 @@
 .wrap .error {
     display: none;
 }
+
+.vol-reqs {
+    background: #fff;
+    padding: 20px;
+    max-width: 725px;
+    border-radius: 6px;
+}
+
+.vol-reqs .req {
+    background: #f7f7f7;
+    padding: 6px 12px;
+    margin: 6px 0;
+}
+
+.vol-reqs h2 span {
+    font-size: 200%;
+    line-height: 2;
+    font-weight: 900;
+}
+
+.vol-reqs .status-failed {
+    background: pink;
+}
+
+.vol-reqs .status-pending {
+    background: lightgoldenrodyellow;
+}
+
+.vol-reqs .status-cleared {
+    background: lightgreen;
+}

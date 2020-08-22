@@ -43,6 +43,11 @@ function load_custom_wp_admin_style() {
 add_action('admin_enqueue_scripts', 'sdrt_rsvp_admin_styles');
 
 function sdrt_rsvp_admin_styles( $hook ) {
+	
+	wp_register_style( 'custom_wp_admin_css', SDRT_FUNCTIONS_URL . '/assets/admin-style.css', false, '1.0.0' );
+	wp_enqueue_style( 'custom_wp_admin_css' );
+	wp_enqueue_style( 'font-awesome-5', 'https://use.fontawesome.com/releases/v5.9.0/css/all.css', array(), FL_THEME_VERSION );
+	
 	global $post_type;
 
 	// Only for the Events Calendar Edit pages
