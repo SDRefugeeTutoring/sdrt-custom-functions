@@ -74,7 +74,7 @@ function sdrt_add_code_of_coduct_agreement() {
 				<li>Attendance to a one-hour orientation session</li>
 				<li>Pass an online background check.</li>
 			</ul>
-		<p>Each of those items and your current status are listed below. For any questions about your status below, please feel free to reach out to our volunteer coordinator via our <a href="<?php echo get_home_url(); ?>/contact-us" target="_blank" rel="noopener noreferrer">Contact Form</a>.</p>
+		<p>Each of those items and your current status are listed below. For any questions about your status below, please feel free to reach out to our volunteer coordinator via our <a href="<?php echo get_home_url(); ?>/contact" target="_blank" rel="noopener noreferrer">Contact Form</a>.</p>
 		
 		<?php sdrt_user_meta_fields( $user_meta ); ?>
 	</div>
