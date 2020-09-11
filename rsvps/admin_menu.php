@@ -5,7 +5,7 @@ $example_options = array(
 	'menu_title'  => 'Email Settings',
 	'parent_slug' => 'edit.php?post_type=rsvp',
 	'menu_slug'   => 'sdrt_email_settings',
-	'capability'  => 'manage_options',
+	'capability'  => 'can_view_rsvps',
 	'icon'        => 'dashicons-admin-generic',
 );
 
