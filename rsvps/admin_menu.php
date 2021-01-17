@@ -34,7 +34,13 @@ $example_fields = array(
 		'desc'    => 'The following email tags are supported: <ul ><li><code>{first_name}</code></li><li><code>{event_title}</code></li></ul>',
 		'sanit'   => 'html',
 	),
-
+    'sdrt_rsvp_upcoming_reminder' => array(
+        'title'   => 'Message',
+        'type'    => 'textarea',
+        'default' => 'Hello World!',
+        'desc'    => 'The following email tags are supported: <ul ><li><code>{first_name}</code></li><li><code>{event_title}</code></li></ul>',
+        'sanit'   => 'html',
+    ),
 );
 
 $example_settings = new HD_WP_Settings_API( $example_options, $example_fields );
