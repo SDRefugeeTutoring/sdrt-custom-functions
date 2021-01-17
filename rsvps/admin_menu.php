@@ -34,6 +34,11 @@ $example_fields = array(
 		'desc'    => 'The following email tags are supported: <ul ><li><code>{first_name}</code></li><li><code>{event_title}</code></li></ul>',
 		'sanit'   => 'html',
 	),
+    'sdrt_email_section_3' => array(
+        'title'   => 'Reminder of upcoming event Message',
+        'type'    => 'section',
+        'desc'    => 'This is sent to the volunteers the day before an event if they RSVP\'d to that event.',
+    ),
     'sdrt_rsvp_upcoming_reminder' => array(
         'title'   => 'Message',
         'type'    => 'textarea',
