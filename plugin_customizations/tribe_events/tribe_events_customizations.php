@@ -20,8 +20,8 @@ function embed_rsvp_events_single() {
 	$rsvp_form      = get_post_meta( get_the_ID(), 'rsvp_form', true );
 	$rsvp_limit     = ( !empty($get_limit) ? $get_limit : '');
 	$eventdate      = get_post_meta($post->ID, '_EventStartDate', true);
-	$rsvps          = get_current_rsvps($rsvpdate = $eventdate);
-	$rsvpmeta       = get_current_rsvps_volids($rsvpdate = $eventdate);
+	$rsvps          = get_current_rsvps($post->ID);
+	$rsvpmeta       = get_current_rsvps_volids($post->ID);
 	$userid         = get_current_user_id();
 	$rsvp_total     = count($rsvps);
 
@@ -67,7 +67,7 @@ function embed_rsvp_events_single() {
 				    // If already RSVP'd
 				    if ( in_array( $userid, $rsvpmeta ) ) {
 
-					    sdrt_rsvp_already_rsvpd_output();
+					    sdrt_rsvp_already_rsvpd_output($post->ID);
 
 					// If RSVPs are full
 				    } elseif ( $rsvp_limit > 0 && $rsvp_total >= $rsvp_limit ) {
@@ -134,8 +134,7 @@ function embed_rsvp_events_single() {
                     $attending = get_post_meta($rsvpid, 'attending', true);
 					$attended = get_post_meta($rsvpid, 'attended', true);
 					$attendancenonce = wp_create_nonce( 'sdrt_attendance_nonce' );
-					if ($attending == 'no') {}
-					else {
+					if ($attending !== 'no') {
                         ?>
                         <tr>
                             <td data-th="name" width="40%"><?php echo $name; ?></td>
@@ -216,16 +215,15 @@ function sdrt_finish_reqs() {
 
 /**
  *   OUTPUT: ALREADY RSVP'D OUTPUT
+ *
+ * @param int $eventId
  */
 
-function sdrt_rsvp_already_rsvpd_output() {
+function sdrt_rsvp_already_rsvpd_output($eventId) {
+	$rsvp = get_my_rsvp($eventId);
+	$attending = get_post_meta($rsvp->ID, 'attending', true);
 
-    $eventdate = get_post_meta( get_the_ID(), '_EventStartDate', true );
-	$rsvp = get_my_rsvp( $rsvpdate = $eventdate );
-	$rsvpmeta = get_post_meta($rsvp->ID);
-	$attending = $rsvpmeta['attending'][0];
-
-	if (isset($attending) && $attending == 'no') {
+	if ($attending === 'no') {
     ?>
         <div class="already-rsvpd-no">
             <p><strong>Thanks for the heads up</strong></p>
@@ -272,14 +270,12 @@ function sdrt_rsvp_please_register_output() { ?>
 /**
  * GET RSVPS FOR CURRENT EVENT
  *
- * @param string $rsvpdate
- * @return array
+ * @param int $eventId
+ *
+ * @return WP_Post[]
  */
 
-function get_current_rsvps( $rsvpdate = '' ) {
-
-	$rsvps = array();
-
+function get_current_rsvps($eventId) {
 	$args = array(
 		'post_type'     => 'rsvp',
 		'post_status'   => array('publish'),
@@ -291,58 +287,52 @@ function get_current_rsvps( $rsvpdate = '' ) {
 		'no_found_rows' => true,  // turn off pagination
 		'meta_query'    => array(
 			array(
-				'key'     => 'event_date',
-				'value'   => $rsvpdate,
+				'key'     => 'event_id',
+				'value'   => $eventId,
 			),
 		),
 	);
 
-	global $post;
 	$loop = new WP_Query( $args );
-	$rsvps = $loop->get_posts();
 
-	return $rsvps;
+    return $loop->get_posts();
 }
 
 /**
  * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
  *
- * @param string $rsvpdate
+ * @param int $eventId
+ *
  * @return array
  */
 
-function get_current_rsvps_volids( $rsvpdate = '' ) {
-	global $post;
-	$eventdate = get_post_meta( $post->ID, '_EventStartDate', true );
-	$rsvps = get_current_rsvps( $rsvpdate = $eventdate );
+function get_current_rsvps_volids($eventId) {
+    global $wpdb;
+	$rsvps = get_current_rsvps($eventId);
 
-	$volid = array();
+	$rsvpIds = wp_list_pluck($rsvps, 'ID');
+	$placeholders = implode(',', array_fill(0, count($rsvpIds), '%d'));
 
-	foreach( $rsvps as $rsvp ) {
-
-		$ids = $rsvp->ID;
-		$volid[] = get_post_meta($ids, 'volunteer_user_id', true);
-
-	}
-
-	return $volid;
-
+	return $wpdb->get_col(
+	    $wpdb->prepare(
+            "SELECT meta_value from {$wpdb->postmeta} WHERE meta_key = 'volunteer_user_id' AND post_id IN ($placeholders)",
+            $rsvpIds
+        )
+    );
 }
 
 /**
  * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
  *
- * @param string $rsvpdate
- * @return array
+ * @param int $eventId
+ *
+ * @return WP_Post[]
  */
 
-function get_my_rsvp( $rsvpdate = '' ) {
-
-	$eventdate = get_post_meta( get_the_ID(), '_EventStartDate', true );
-	$rsvps = get_current_rsvps( $rsvpdate = $eventdate );
+function get_my_rsvp($eventId) {
+	$rsvps = get_current_rsvps($eventId);
 
 	foreach( $rsvps as $rsvp ) {
-
 		$ids = $rsvp->ID;
 		$volid[] = get_post_meta($ids, 'volunteer_user_id', true);
 		$userid  = get_current_user_id();
