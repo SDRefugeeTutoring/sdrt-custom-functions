@@ -86,12 +86,11 @@
     right: 50px;
 }
 
-.button.attended-no, .button.attended-unknown {
+.button.attended {
     background-color: transparent !important;
 }
 
-.button.attended-unknown:hover,
-.button.attended-no:hover {
+.button.attended:hover {
     opacity: 0.5;
 }
 

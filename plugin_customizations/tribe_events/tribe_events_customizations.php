@@ -21,7 +21,7 @@ function embed_rsvp_events_single()
     $rsvp_form    = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $rsvp_limit   = (! empty($get_limit) ? $get_limit : '');
     $eventdate    = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps        = get_current_rsvps($post->ID);
+    $rsvps        = get_event_rsvps($post->ID);
     $rsvpmeta     = get_current_rsvps_volids($post->ID);
     $userid       = get_current_user_id();
     $rsvp_total   = count($rsvps);
@@ -38,7 +38,7 @@ function embed_rsvp_events_single()
         <?php
 
         // Show RSVP form if login is not required
-        if ($must_login == 'no') {
+        if ($must_login === 'no') {
             // Show message if RSVP limit is reached
             if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
                 sdrt_rsvp_limit_reached_output();
@@ -47,7 +47,7 @@ function embed_rsvp_events_single()
                 echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
             }
             // Inform visitor to register if login is required
-        } elseif ($must_login == 'yes') {
+        } elseif ($must_login === 'yes') {
             $can_rsvp = sdrt_vol_can_rsvp();
 
             // Not logged in
@@ -55,11 +55,11 @@ function embed_rsvp_events_single()
                 sdrt_rsvp_please_register_output();
             }
 
-            if ($can_rsvp == false) {
+            if ( ! $can_rsvp) {
                 sdrt_finish_reqs();
             }
 
-            if (is_user_logged_in() && ($can_rsvp == true)) {
+            if ($can_rsvp && is_user_logged_in()) {
                 // If already RSVP'd
                 if (in_array($userid, $rsvpmeta)) {
                     sdrt_rsvp_already_rsvpd_output($post->ID);
@@ -89,9 +89,17 @@ function embed_rsvp_events_single()
         return;
     }
 
+    $rsvp_nonce = wp_create_nonce('sdrt_attendance_nonce');
     $createDate = new DateTime($eventdate);
     $finaldate  = $createDate->format('F d, Y');
     ?>
+
+    <script>
+        var rsvpExports = <?= json_encode([
+            'nonce'   => $rsvp_nonce,
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+        ]) ?>;
+    </script>
 
     <h2 class="give-title current_rsvps" id="rsvps">Current RSVPS:</h2>
 
@@ -111,42 +119,36 @@ function embed_rsvp_events_single()
         <?php
 
         foreach ($rsvps as $rsvp) {
-            $rsvpid = $rsvp->ID;
+            $rsvp_id = $rsvp->ID;
 
-            $name  = get_post_meta($rsvpid, 'volunteer_name', true);
-            $email = get_post_meta($rsvpid, 'volunteer_email', true);
+            $name  = get_post_meta($rsvp_id, 'volunteer_name', true);
+            $email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
             $getname = explode(',', $name);
 
             $firstname = (strpos($name, ',') ? $getname[1] : $name);
 
-            $attending       = get_post_meta($rsvpid, 'attending', true);
-            $attended        = get_post_meta($rsvpid, 'attended', true);
-            $attendancenonce = wp_create_nonce('sdrt_attendance_nonce');
-            $eventUrl        = get_permalink(get_the_ID());
-            $setAttendedUrl  = "$eventUrl?rsvpid=$rsvpid&attended=yes&_nonce=$attendancenonce&email=$email&fname=$firstname#rsvps";
+            $attending      = get_post_meta($rsvp_id, 'attending', true);
+            $attended       = get_post_meta($rsvp_id, 'attended', true);
+            $eventUrl       = get_permalink(get_the_ID());
+            $setAttendedUrl = "$eventUrl?rsvpid=$rsvp_id&attended=yes&_nonce=$rsvp_nonce&email=$email&fname=$firstname#rsvps";
 
-            if ($attending !== 'no') {
-                ?>
+            if ($attending !== 'no') { ?>
                 <tr>
-                    <td data-th="name" width="40%"><?php
-                        echo $name; ?></td>
-                    <td data-th="email" width="40%"><?php
-                        echo $email; ?></td>
+                    <td data-th="name" width="40%"><?= $name ?></td>
+                    <td data-th="email" width="40%"><?= $email ?></td>
                     <td data-th="attended" width="20%">
                         <?php
-                        if ($attended === 'no'): ?>
-                            <a href="<?= $setAttendedUrl ?>" class="button attended-no">
-                                <span class="dashicons dashicons-no"
+                        if ($attended === 'no' || $attended === 'unknown'): ?>
+                            <a href="<?= $setAttendedUrl ?>" class="button attended attended-<?= $attended ?>">
+                                <span class="dashicons dashicons-<?= $attended ?>"
                                       style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
-                                      title="Click to change to Yes">No</span>
+                                      title="Click to change to Yes"><?= ucfirst($attended) ?></span>
                             </a>
-                        <?php
-                        elseif ($attended === 'unknown'): ?>
-                            <a href="<?= $setAttendedUrl ?>" class="button attended-unknown">
-                                <span class="dashicons dashicons-minus"
-                                      style="border-radius: 50%; background: #777777; color: white; padding: 6px;"
-                                      title="Click to change to Yes">Unknown</span>
+                            <a href="#" data-rsvp-id="<?= $rsvp_id ?>" class="button attended attended-email">
+                                <span class="dashicons dashicons-email-alt"
+                                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
+                                      title="Click to email attendee">Email</span>
                             </a>
                         <?php
                         else: ?>
@@ -155,8 +157,7 @@ function embed_rsvp_events_single()
                         <?php
                         endif; ?>
                     </td>
-                    <td><a href="<?php
-                        echo get_delete_post_link($rsvpid); ?>">Delete</a></td>
+                    <td><a href="<?= get_delete_post_link($rsvp_id) ?>">Delete</a></td>
                 </tr>
 
                 <?php
@@ -196,13 +197,6 @@ function sdrt_vol_can_rsvp(): bool
 
 function sdrt_finish_reqs()
 {
-    $userid = get_current_user_id();
-
-    $role        = current_user_can('can_rsvp');
-    $orientation = get_user_meta($userid, 'sdrt_orientation_attended', false);
-    $coc         = get_user_meta($userid, 'sdrt_coc_consented', false);
-    $waiver      = get_user_meta($userid, 'sdrt_waiver_consented', false);
-
     echo '<p>Thank you for starting the process of volunteering with SD Refugee Tutoring. Currently you are not yet eligble to volunteer for tutoring events. Please go to your <a href="' . get_home_url() . '/my-profile">Profile Page</a> to review your status and finish your required items.</p>';
 }
 
@@ -241,7 +235,6 @@ function sdrt_rsvp_already_rsvpd_output($eventId)
 /**
  *  OUTPUT: RSVP LIMIT REACHED
  */
-
 function sdrt_rsvp_limit_reached_output()
 { ?>
     <div class="rsvps-closed">
@@ -253,11 +246,9 @@ function sdrt_rsvp_limit_reached_output()
     <?php
 }
 
-
 /**
  *  OUTPUT: PLEASE REGISTER OUTPUT
  */
-
 function sdrt_rsvp_please_register_output()
 { ?>
     <div class="please-register">
@@ -273,49 +264,16 @@ function sdrt_rsvp_please_register_output()
 }
 
 /**
- * GET RSVPS FOR CURRENT EVENT
- *
- * @param int $eventId
- *
- * @return WP_Post[]
- */
-
-function get_current_rsvps($eventId)
-{
-    $args = [
-        'post_type'      => 'rsvp',
-        'post_status'    => ['publish'],
-        'order'          => 'ASC',
-        'orderby'        => 'meta_value',
-        'meta_key'       => 'volunteer_name',
-        'nopaging'       => true,
-        'posts_per_page' => -1,
-        'no_found_rows'  => true,  // turn off pagination
-        'meta_query'     => [
-            [
-                'key'   => 'event_id',
-                'value' => $eventId,
-            ],
-        ],
-    ];
-
-    $loop = new WP_Query($args);
-
-    return $loop->get_posts();
-}
-
-/**
  * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
  *
  * @param int $eventId
  *
  * @return array
  */
-
 function get_current_rsvps_volids($eventId)
 {
     global $wpdb;
-    $rsvps = get_current_rsvps($eventId);
+    $rsvps = get_event_rsvps($eventId);
 
     $rsvpIds      = wp_list_pluck($rsvps, 'ID');
     $placeholders = implode(',', array_fill(0, count($rsvpIds), '%d'));
@@ -333,19 +291,18 @@ function get_current_rsvps_volids($eventId)
  *
  * @param int $eventId
  *
- * @return WP_Post[]
+ * @return WP_Post
  */
 
 function get_my_rsvp($eventId)
 {
-    $rsvps = get_current_rsvps($eventId);
+    $rsvps  = get_event_rsvps($eventId);
+    $userid = get_current_user_id();
 
     foreach ($rsvps as $rsvp) {
-        $ids     = $rsvp->ID;
-        $volid[] = get_post_meta($ids, 'volunteer_user_id', true);
-        $userid  = get_current_user_id();
+        $volunteer_id = get_post_meta($rsvp->ID, 'volunteer_user_id', true);
 
-        if (in_array($userid, $volid)) {
+        if ($volunteer_id === $userid) {
             return $rsvp;
         }
     }

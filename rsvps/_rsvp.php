@@ -3,6 +3,7 @@
 require_once(SDRT_FUNCTIONS_DIR . '/rsvps/attendance.php');
 require_once(SDRT_FUNCTIONS_DIR . '/rsvps/admin_menu.php');
 require_once(SDRT_FUNCTIONS_DIR . '/rsvps/crons.php');
+require_once(SDRT_FUNCTIONS_DIR . '/rsvps/ajax.php');
 
 /**
  * Helper functions for RSVPs
@@ -40,7 +41,7 @@ function get_rsvps(array $args = []): array
  */
 function get_event_rsvps(int $event_id, array $args = []): array
 {
-    $meta_query = $args['meta_query'] ?: [];
+    $meta_query = $args['meta_query'] ?? [];
 
     $meta_query[] = [
         'key'   => 'event_id',

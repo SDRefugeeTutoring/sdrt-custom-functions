@@ -46,6 +46,17 @@ $example_fields = array(
         'desc'    => 'The following email tags are supported: <ul ><li><code>{first_name}</code></li><li><code>{event_title}</code></li></ul>',
         'sanit'   => 'html',
     ),
+    'sdrt_email_section_4' => array(
+        'title'   => 'Attendee No-Show Message',
+        'type'    => 'section',
+        'desc'    => 'This is manually sent to attendees that RSVP\'d but did not attend the event',
+    ),
+    'sdrt_rsvp_no_show' => array(
+        'title'   => 'Message',
+        'type'    => 'textarea',
+        'desc'    => 'The following email tags are supported: <ul ><li><code>{first_name}</code></li><li><code>{event_title}</code></li></ul>',
+        'sanit'   => 'html',
+    ),
 );
 
 $example_settings = new HD_WP_Settings_API( $example_options, $example_fields );
