@@ -51,3 +51,22 @@ function get_event_rsvps(int $event_id, array $args = []): array
 
     return get_rsvps($args);
 }
+
+/**
+ * Retrieves the Event for a given RSVP id or post
+ *
+ * @param int|WP_Post $rsvp
+ *
+ * @return WP_Post|null
+ */
+function get_rsvp_event($rsvp): ?WP_Post
+{
+    $rsvp_id  = $rsvp instanceof WP_Post ? $rsvp->ID : (int)$rsvp;
+    $event_id = get_post_meta($rsvp_id, 'event_id', true);
+
+    if (empty($event_id)) {
+        return null;
+    }
+
+    return tribe_get_event($event_id);
+}
