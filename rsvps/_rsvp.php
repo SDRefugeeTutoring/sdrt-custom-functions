@@ -1,9 +1,10 @@
 <?php
 
-require_once SDRT_FUNCTIONS_DIR . '/rsvps/attendance.php';
-require_once SDRT_FUNCTIONS_DIR . '/rsvps/admin_menu.php';
+require_once(SDRT_FUNCTIONS_DIR . '/rsvps/attendance.php');
+require_once(SDRT_FUNCTIONS_DIR . '/rsvps/admin_menu.php');
+require_once(SDRT_FUNCTIONS_DIR . '/rsvps/crons.php');
+require_once(SDRT_FUNCTIONS_DIR . '/rsvps/ajax.php');
 require_once SDRT_FUNCTIONS_DIR . '/rsvps/exporter/exporter.php';
-require_once SDRT_FUNCTIONS_DIR . '/rsvps/crons.php';
 
 /**
  * Helper functions for RSVPs
@@ -52,4 +53,23 @@ function get_event_rsvps($event_id, array $args = []): array
     $args['meta_query'] = $meta_query;
 
     return get_rsvps($args);
+}
+
+/**
+ * Retrieves the Event for a given RSVP id or post
+ *
+ * @param int|WP_Post $rsvp
+ *
+ * @return WP_Post|null
+ */
+function get_rsvp_event($rsvp): ?WP_Post
+{
+    $rsvp_id  = $rsvp instanceof WP_Post ? $rsvp->ID : (int)$rsvp;
+    $event_id = get_post_meta($rsvp_id, 'event_id', true);
+
+    if (empty($event_id)) {
+        return null;
+    }
+
+    return tribe_get_event($event_id);
 }
