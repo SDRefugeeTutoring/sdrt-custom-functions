@@ -3,6 +3,10 @@ jQuery(document).ready(function ($) {
         const $this = $(this);
         event.preventDefault();
 
+        if (!window.confirm('Are you sure you want to send an email to ' + $this.data('email') + '?')) {
+            return;
+        }
+
         $.post({
             url: rsvpExports.ajaxUrl,
             data: {
@@ -16,7 +20,13 @@ jQuery(document).ready(function ($) {
                 console.error(data);
             }
 
-            $this.replaceWith('<span>Sent!</span>')
+            $this.replaceWith('<span>Sent!</span>');
         });
+    });
+
+    $('.js-delete-rsvp').on('click', function (event) {
+        if (!window.confirm('Are you sure you want to delete the RSVP for ' + $(this).data('name') + '?')) {
+            event.preventDefault();
+        }
     });
 });

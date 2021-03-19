@@ -140,15 +140,9 @@ function embed_rsvp_events_single()
                     <td data-th="attended" width="20%">
                         <?php
                         if ($attended === 'no' || $attended === 'unknown'): ?>
-                            <a href="<?= $setAttendedUrl ?>" class="button attended attended-<?= $attended ?>">
-                                <span class="dashicons dashicons-<?= $attended ?>"
-                                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
-                                      title="Click to change to Yes"><?= ucfirst($attended) ?></span>
-                            </a>
-                            <a href="#" data-rsvp-id="<?= $rsvp_id ?>" class="button attended attended-email">
-                                <span class="dashicons dashicons-email-alt"
-                                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
-                                      title="Click to email attendee">Email</span>
+                            <a href="<?= $setAttendedUrl ?>" class="button action attended attended-<?= $attended ?>">
+                                <span class="dashicons dashicons-editor-help" style="color: gray; font-size: 2.8rem; overflow: visible;"
+                                      title="Click to change to Yes"></span>
                             </a>
                         <?php
                         else: ?>
@@ -157,7 +151,18 @@ function embed_rsvp_events_single()
                         <?php
                         endif; ?>
                     </td>
-                    <td><a href="<?= get_delete_post_link($rsvp_id) ?>">Delete</a></td>
+                    <td data-th="actions" width="20%">
+                        <a href="<?= get_delete_post_link($rsvp_id) ?>" data-name="<?= $name ?>" class="button action delete-rsvp js-delete-rsvp">
+                                <span class="dashicons dashicons-no"
+                                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
+                                      title="Click to delete RSVP">Delete</span>
+                        </a>
+                        <a href="#" data-rsvp-id="<?= $rsvp_id ?>" data-email="<?= $email ?>" class="button action attended-email">
+                                <span class="dashicons dashicons-email-alt"
+                                      style="border-radius: 50%; background: deepskyblue; color: white; padding: 6px;"
+                                      title="Click to email attendee">Email</span>
+                        </a>
+                    </td>
                 </tr>
 
                 <?php

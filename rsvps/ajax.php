@@ -22,7 +22,7 @@ function sdrt_rsvp_email_no_show()
 
     wp_mail(
         $volunteer_email,
-        "We missed you at {$event->post_title}",
+        "We Missed You!",
         sdrt_send_email([
             'option'      => 'sdrt_rsvp_no_show',
             'fname'       => trim(explode(',', $volunteer_name)[1] ?: ''),

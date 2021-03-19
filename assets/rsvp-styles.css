@@ -74,24 +74,33 @@
     font-size: 120%;
 }
 
-.rwd-table td[data-th="attended"] span.dashicons {
+.rwd-table td span.dashicons {
     overflow: hidden;
     text-indent: 50px;
     width: 2rem;
     height: 2rem;
 }
 
-.rwd-table td[data-th="attended"] span.dashicons:before {
+.rwd-table td span.dashicons:before {
     position: relative;
     right: 50px;
 }
 
-.button.attended {
+.rwd-table td span.dashicons-editor-help:before {
+    position: relative;
+    right: 57px;
+}
+
+.button.action {
     background-color: transparent !important;
 }
 
-.button.attended:hover {
+.button.action:hover {
     opacity: 0.5;
+}
+
+.button.delete-rsvp {
+    margin-right: 0.5em;
 }
 
 @media (min-width: 480px) {
