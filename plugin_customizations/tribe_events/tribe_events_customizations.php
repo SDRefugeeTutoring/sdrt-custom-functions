@@ -124,43 +124,44 @@ function embed_rsvp_events_single()
             $name  = get_post_meta($rsvp_id, 'volunteer_name', true);
             $email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
-            $getname = explode(',', $name);
+            $attending = get_post_meta($rsvp_id, 'attending', true);
+            $attended  = get_post_meta($rsvp_id, 'attended', true);
 
-            $firstname = (strpos($name, ',') ? $getname[1] : $name);
-
-            $attending      = get_post_meta($rsvp_id, 'attending', true);
-            $attended       = get_post_meta($rsvp_id, 'attended', true);
-            $eventUrl       = get_permalink(get_the_ID());
-            $setAttendedUrl = "$eventUrl?rsvpid=$rsvp_id&attended=yes&_nonce=$rsvp_nonce&email=$email&fname=$firstname#rsvps";
+            $is_marked_attended = ! in_array($attended, ['no', 'unknown'], true);
 
             if ($attending !== 'no') { ?>
-                <tr>
+                <tr
+                    data-rsvp-id="<?= $rsvp_id ?>"
+                    data-email="<?= $email ?>"
+                    data-name="<?= $name ?>"
+                >
                     <td data-th="name" width="40%"><?= $name ?></td>
                     <td data-th="email" width="40%"><?= $email ?></td>
                     <td data-th="attended" width="20%">
-                        <?php
-                        if ($attended === 'no' || $attended === 'unknown'): ?>
-                            <a href="<?= $setAttendedUrl ?>" class="button action attended attended-<?= $attended ?>">
-                                <span class="dashicons dashicons-editor-help" style="color: gray; font-size: 2.8rem; overflow: visible;"
+                        <a href="#" data-attended="1"
+                           class="button action attended  attended-<?= $attended ?> js-set-attended"
+                           style="display: <?php echo $is_marked_attended ? 'none' : 'inherit' ?>">
+                                <span class="dashicons dashicons-editor-help"
                                       title="Click to change to Yes"></span>
-                            </a>
-                        <?php
-                        else: ?>
-                            <span class="dashicons dashicons-yes"
-                                  style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;">Yes</span>
-                        <?php
-                        endif; ?>
+                        </a>
+                        <a href="#" data-attended="0" class="button action attended-email js-set-attended"
+                           style="display: <?php echo $is_marked_attended ? 'inherit' : 'none' ?>">
+                                <span class="dashicons dashicons-yes"
+                                      style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;"
+                                      title="Click to change to No"></span>
+                        </a>
                     </td>
                     <td data-th="actions" width="20%">
-                        <a href="<?= get_delete_post_link($rsvp_id) ?>" data-name="<?= $name ?>" class="button action delete-rsvp js-delete-rsvp">
+                        <a href="<?= get_delete_post_link($rsvp_id) ?>"
+                           class="button action delete-rsvp js-delete-rsvp">
                                 <span class="dashicons dashicons-no"
                                       style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
                                       title="Click to delete RSVP">Delete</span>
                         </a>
-                        <a href="#" data-rsvp-id="<?= $rsvp_id ?>" data-email="<?= $email ?>" class="button action attended-email">
+                        <a href="#" class="button action attended-email js-email-no-show">
                                 <span class="dashicons dashicons-email-alt"
                                       style="border-radius: 50%; background: deepskyblue; color: white; padding: 6px;"
-                                      title="Click to email attendee">Email</span>
+                                      title="Click to email attendee for no-show">Email</span>
                         </a>
                     </td>
                 </tr>
