@@ -19,11 +19,11 @@ function embed_rsvp_events_single()
     $rsvp_enabled = get_post_meta(get_the_ID(), 'enable_rsvps', true);
     $must_login   = get_post_meta(get_the_ID(), 'logged_in_status', true);
     $rsvp_form    = get_post_meta(get_the_ID(), 'rsvp_form', true);
-    $rsvp_limit   = (! empty($get_limit) ? $get_limit : '');
     $eventdate    = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps        = get_event_rsvps($post->ID);
     $rsvpmeta     = get_current_rsvps_volids($post->ID);
     $userid       = get_current_user_id();
+    $rsvp_limit   = absint($get_limit);
     $rsvp_total   = count($rsvps);
 
     // Only output if RSVPs are enabled for this Event
