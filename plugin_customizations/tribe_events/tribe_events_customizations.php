@@ -140,12 +140,14 @@ function embed_rsvp_events_single()
                     <td data-th="attended" width="20%">
                         <a href="#" data-attended="1"
                            class="button action attended  attended-<?= $attended ?> js-set-attended"
-                           style="display: <?php echo $is_marked_attended ? 'none' : 'inherit' ?>">
+                           style="display: <?php
+                           echo $is_marked_attended ? 'none' : 'inherit' ?>">
                                 <span class="dashicons dashicons-editor-help"
                                       title="Click to change to Yes"></span>
                         </a>
                         <a href="#" data-attended="0" class="button action attended-email js-set-attended"
-                           style="display: <?php echo $is_marked_attended ? 'inherit' : 'none' ?>">
+                           style="display: <?php
+                           echo $is_marked_attended ? 'inherit' : 'none' ?>">
                                 <span class="dashicons dashicons-yes"
                                       style="border-radius: 50%; background: forestgreen; color: white; padding: 6px;"
                                       title="Click to change to No"></span>
@@ -214,8 +216,8 @@ function sdrt_finish_reqs()
 
 function sdrt_rsvp_already_rsvpd_output($eventId)
 {
-    $rsvp      = get_my_rsvp($eventId);
-    $attending = get_post_meta($rsvp->ID, 'attending', true);
+    $rsvp      = get_user_rsvp_for_event(get_current_user_id(), $eventId);
+    $attending = $rsvp ? get_post_meta($rsvp->ID, 'attending', true) : null;
 
     if ($attending === 'no') {
         ?>
@@ -231,8 +233,7 @@ function sdrt_rsvp_already_rsvpd_output($eventId)
         <div class="already-rsvpd-yes">
             <p><strong>Thanks!</strong></p>
             <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
-            <p>Need to cancel? <a href="<?php
-                echo get_delete_post_link($rsvp->ID); ?>">Click here</a>.</p>
+            <p>Need to cancel? Please email our Volunteer Coordinator at <a href="mailto:info@sdrefugeetutoring.com">info@sdrefugeetutoring.com</a></p>
         </div>
         <?php
     }
@@ -290,26 +291,4 @@ function get_current_rsvps_volids($eventId)
             $rsvpIds
         )
     );
-}
-
-/**
- * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
- *
- * @param int $eventId
- *
- * @return WP_Post
- */
-
-function get_my_rsvp($eventId)
-{
-    $rsvps  = get_event_rsvps($eventId);
-    $userid = get_current_user_id();
-
-    foreach ($rsvps as $rsvp) {
-        $volunteer_id = get_post_meta($rsvp->ID, 'volunteer_user_id', true);
-
-        if ($volunteer_id === $userid) {
-            return $rsvp;
-        }
-    }
 }

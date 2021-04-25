@@ -72,3 +72,25 @@ function get_rsvp_event($rsvp): ?WP_Post
 
     return tribe_get_event($event_id);
 }
+
+/**
+ * Returns the RSVP for a user for a given event
+ */
+function get_user_rsvp_for_event(int $user_id, int $event_id): ?WP_Post
+{
+    $rsvp = get_rsvps([
+        'posts_per_page' => 1,
+        'meta_query'     => [
+            [
+                'key'   => 'event_id',
+                'value' => $event_id,
+            ],
+            [
+                'key'   => 'volunteer_user_id',
+                'value' => $user_id,
+            ],
+        ],
+    ]);
+
+    return empty($rsvp) ? null : $rsvp[0];
+}
