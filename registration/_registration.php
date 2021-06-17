@@ -114,6 +114,8 @@ function sdrt_listen_for_checkr() {
 		$user_email = $user[0]->data->user_email;
 		$usermeta = get_user_meta($user_id);
 
+		$headers = ['Content-Type: text/html'];
+
 		// If the report is "clear" and the user associated with that report is a "Volunteer Pending", update the user and send them a confirmation email.
 		if ( $report_type == 'report.completed' && $report_status == 'clear' && $user_role[0] == 'volunteer_pending' ) {
 

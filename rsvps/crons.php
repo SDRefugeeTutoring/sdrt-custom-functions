@@ -52,6 +52,7 @@ function event_rsvp_send_reminder()
                 ]),
                 [
                     'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
+                    'Content-Type: text/html',
                 ]
             );
         }

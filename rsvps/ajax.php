@@ -33,6 +33,7 @@ function sdrt_rsvp_email_no_show()
         ]),
         [
             'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
+            'Content-Type: text/html',
         ]
     );
 
@@ -86,6 +87,7 @@ function sdrt_rsvp_set_event_attendance()
         ]),
         [
             'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
+            'Content-Type: text/html',
         ]
     );
 
