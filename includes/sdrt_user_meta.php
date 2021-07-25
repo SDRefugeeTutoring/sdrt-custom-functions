@@ -12,15 +12,15 @@ function sdrt_user_meta_fields( $user ) { ?>
 
 		$userid = (is_admin()) ? $user->ID : get_current_user_id();
 
-		$background_check_status = get_user_meta( $userid, 'background_check', false );
-		$orientation = get_user_meta( $userid, 'sdrt_orientation_attended', false );
-		$coc = get_user_meta( $userid, 'sdrt_coc_consented', false );
-		$waiver = get_user_meta( $userid, 'sdrt_waiver_consented', false );
+		$background_check_status = get_user_meta( $userid, 'background_check', true );
+		$orientation = get_user_meta( $userid, 'sdrt_orientation_attended', true );
+		$coc = get_user_meta( $userid, 'sdrt_coc_consented', true );
+		$waiver = get_user_meta( $userid, 'sdrt_waiver_consented', true );
 
-		$background_check_invite_url = get_user_meta( $userid, 'background_check_invite_url', false );
+		$background_check_invite_url = get_user_meta( $userid, 'background_check_invite_url', true );
 		$background_check_candidate_id = get_user_meta( $userid, 'background_check_candidate_id', true );
 
-		switch ( $background_check_status[0] ) {
+		switch ( $background_check_status ) {
 			case 'Yes':
 				$background_check['icon'] = '<i class="fa fa-check-circle"></i>';
 				$background_check['status'] = 'status-cleared';
@@ -36,73 +36,44 @@ function sdrt_user_meta_fields( $user ) { ?>
 			case 'Invited':
 				$background_check['icon'] = '<i class="fa fa-question-circle"></i>';
 				$background_check['status'] = 'status-pending';
-				$background_check['message'] = 'You have been invited to take a background check and your status is still pending. You can check on the status at <a href="' . $background_check_invite_url[0] . '" target="_blank" rel="noopener noreferrer">the Checkr website</a>.';
+				$background_check['message'] = 'You have been invited to take a background check and your status is still pending. You can check on the status at <a href="' . $background_check_invite_url . '" target="_blank" rel="noopener noreferrer">the Checkr website</a>.';
 				break;
 		}
 
-		switch ( $orientation[0] ) {
-			case 'Yes':
-				$orientation_status['icon'] = '<i class="fa fa-check-circle"></i>';
-				$orientation_status['status'] = 'status-cleared';
-				$orientation_status['message'] = 'You have <span>attended</span> an orientation session. Thank you!';
-				break;
-			
-			default :
-				$orientation_status['icon'] = '<i class="fa fa-times-circle"></i>';
-				$orientation_status['status'] = 'status-failed';
-				$orientation_status['message'] = 'You have <span>not yet attended</span> an orientation session. Please see <a href="' . get_home_url(). '/events" target="_blank" rel="noopener noreferrer">our calendar</a> to RSVP for an upcoming session.';
-				break;
-		}
+    if ($orientation === 'Yes') {
+        $orientation_status['icon'] = '<i class="fa fa-check-circle"></i>';
+        $orientation_status['status'] = 'status-cleared';
+        $orientation_status['message'] = 'You have <span>attended</span> an orientation session. Thank you!';
+    } else {
+        $orientation_status['icon'] = '<i class="fa fa-times-circle"></i>';
+        $orientation_status['status'] = 'status-failed';
+        $orientation_status['message'] = 'You have <span>not yet attended</span> an orientation session. Please see <a href="' . get_home_url() . '/events" target="_blank" rel="noopener noreferrer">our calendar</a> to RSVP for an upcoming session.';
+    }
 
-		switch ( $coc[0] ) {
-			case 'Yes':
-				$coc_status['icon'] = '<i class="fa fa-check-circle"></i>';
-				$coc_status['status'] = 'status-cleared';
-				$coc_status['message'] = 'You have <span>indicated your consent</span> to our Code of Conduct. Thank you!';
-				break;
-			
-			default:
-				$coc_status['icon'] = '<i class="fa fa-times-circle"></i>';
-				$coc_status['status'] = 'status-failed';
-				$coc_status['message'] = 'You have <span>not yet indicated your consent</span> to our Code of Conduct. <a href="' . get_home_url() . '/code-of-conduct">Please do that here</a>.';
-				break;
-		}
+    if ($coc === 'Yes') {
+        $coc_status['icon'] = '<i class="fa fa-check-circle"></i>';
+        $coc_status['status'] = 'status-cleared';
+        $coc_status['message'] = 'You have <span>indicated your consent</span> to our Code of Conduct. Thank you!';
+    } else {
+        $coc_status['icon'] = '<i class="fa fa-times-circle"></i>';
+        $coc_status['status'] = 'status-failed';
+        $coc_status['message'] = 'You have <span>not yet indicated your consent</span> to our Code of Conduct. <a href="' . get_home_url() . '/code-of-conduct">Please do that here</a>.';
+    }
 
-		switch ( $waiver[0] ) {
-			case 'Yes':
-				$waiver_status['icon'] = '<i class="fa fa-check-circle"></i>';
-				$waiver_status['status'] = 'status-cleared';
-				$waiver_status['message'] = 'You have <span>indicated your consent</span> to our Volunteer Release Policy. Thank you!';
-				break;
-			
-			default:
-				$waiver_status['icon'] = '<i class="fa fa-times-circle"></i>';
-				$waiver_status['status'] = 'status-failed';
-				$waiver_status['message'] = 'You have <span>not yet indicated your consent</span> to our Volunteer Release & Waiver of Liability Policy. <a href="' . get_home_url() . '/volunteer-release">Please do that here</a>.';
-				break;
-		}
+    if ($waiver === 'Yes') {
+        $waiver_status['icon'] = '<i class="fa fa-check-circle"></i>';
+        $waiver_status['status'] = 'status-cleared';
+        $waiver_status['message'] = 'You have <span>indicated your consent</span> to our Volunteer Release Policy. Thank you!';
+    } else {
+        $waiver_status['icon'] = '<i class="fa fa-times-circle"></i>';
+        $waiver_status['status'] = 'status-failed';
+        $waiver_status['message'] = 'You have <span>not yet indicated your consent</span> to our Volunteer Release & Waiver of Liability Policy. <a href="' . get_home_url() . '/volunteer-release">Please do that here</a>.';
+    }
 	?>
 
 	<?php
 	
 	if ( !current_user_can( 'can_view_rsvps' ) ) : 
-	/* TESTING PURPOSES
-	echo "user_id =" . $userid . "<br />";
-	echo "background_check_status = " .  $background_check_status[0] . "<br />";
-	var_dump($background_check);
-
-	echo "orientation = " .  $orientation[0];
-	var_dump($orientation_status);
-
-	echo "coc_status = " .  $coc[0];
-	var_dump($coc_status);
-
-	echo "media_status = " .  $media[0];
-	var_dump($media_status);
-
-	
-	*/
-	//var_dump(get_user_meta($userid));
 	?>
 	<div class="vol-reqs">
 		<!-- Volunteer View of the Admin Profile Editor -->
@@ -177,11 +148,14 @@ function sdrt_user_meta_fields( $user ) { ?>
 			</p>
 			<p class="checkr-info">
 				<strong>This volunteer's Invite link is:</strong><br />
-				<input type="text" name="background_check_invite_url" value="<?php echo $background_check_invite_url[0]; ?>" readonly size="75">
+				<input type="text" name="background_check_invite_url" value="<?php echo $background_check_invite_url; ?>" readonly size="75">
 			</p>
 			<p><strong>This volunteer's Candidate ID is:</strong><br />
 				<input type="text" name="background_check_candidate_id" value="<?php echo $background_check_candidate_id; ?>" readonly size="75">
 			</p>
+            <?php if ( empty($background_check_candidate_id) && empty($background_check_invite_url) ): ?>
+                <button class="button js-sdrt-new-background-check">Request New Background Check</button>
+            <?php endif; ?>
 		</div>
 
 		<!-- ORIENTATION STATUS -->
@@ -190,9 +164,9 @@ function sdrt_user_meta_fields( $user ) { ?>
 			<p class="description">This setting must be changed manually by anyone with an SDRT Leadership Role. It is not ever updated automatically.</p>
 			<p class="status">
 				<select name="sdrt_orientation_attended" id="sdrt_orientation_attended">
-					<option value="No" <?php  selected( $orientation[0], 'No' ); ?> >NO -- this volunteer has not yet attended an orientation.</option>
+					<option value="No" <?php  selected( $orientation, 'No' ); ?> >NO -- this volunteer has not yet attended an orientation.</option>
 
-					<option value="Yes" <?php  selected( $orientation[0], 'Yes' ); ?> >YES -- this volunteer attended an orientation.</option>
+					<option value="Yes" <?php  selected( $orientation, 'Yes' ); ?> >YES -- this volunteer attended an orientation.</option>
 				</select>
 			</p>
 		</div>
@@ -203,9 +177,9 @@ function sdrt_user_meta_fields( $user ) { ?>
 			<p class="description">This is set to "No" by default for all users. It will be updated automatically once the user has completed the Code of Conduct Form.</p>
 			<p class="status">
 			<select name="sdrt_coc_consented" id="sdrt_coc_consented">
-				<option value="No" <?php  selected( $coc[0], 'No' ); ?> >NO -- this volunteer has not consented to the SDRT Code of Conduct.</option>
+				<option value="No" <?php  selected( $coc, 'No' ); ?> >NO -- this volunteer has not consented to the SDRT Code of Conduct.</option>
 
-				<option value="Yes" <?php  selected( $coc[0], 'Yes' ); ?> >YES -- this volunteer has consented to the SDRT Code of Conduct.</option>
+				<option value="Yes" <?php  selected( $coc, 'Yes' ); ?> >YES -- this volunteer has consented to the SDRT Code of Conduct.</option>
 			</select>
 			</p>
 		</div>
@@ -216,9 +190,9 @@ function sdrt_user_meta_fields( $user ) { ?>
 			<p class="description">This is automatically set to "No" by default for all users. It will be updated automatically once the user has completed the Volunteer Release & Waiver Form.</p>
 			<p class="status">
 				<select name="sdrt_waiver_consented" id="sdrt_waiver_consented">
-					<option value="No" <?php  selected( $waiver[0], 'No' ); ?> >NO -- this volunteer has not consented to the SDRT Volunteer Release & Waiver of Liability.</option>
+					<option value="No" <?php  selected( $waiver, 'No' ); ?> >NO -- this volunteer has not consented to the SDRT Volunteer Release & Waiver of Liability.</option>
 
-					<option value="Yes" <?php  selected( $waiver[0], 'Yes' ); ?> >YES -- this volunteer has consented to the Volunteer Release & Waiver of Liability.</option>
+					<option value="Yes" <?php  selected( $waiver, 'Yes' ); ?> >YES -- this volunteer has consented to the Volunteer Release & Waiver of Liability.</option>
 				</select>
 			</p>
 		</div>
