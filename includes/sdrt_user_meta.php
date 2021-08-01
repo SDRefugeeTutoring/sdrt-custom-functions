@@ -26,14 +26,29 @@ function sdrt_user_meta_fields( $user ) { ?>
 				$background_check['status'] = 'status-cleared';
 				$background_check['message'] = 'You have <span>CLEARED</span> your background check. Thank you!';
 				break;
-			
-			case 'No':
-				$background_check['icon'] = '<i class="fa fa-times-circle"></i>';
-				$background_check['status'] = 'status-failed';
-				$background_check['message'] = 'Your background check did not clear. You are not allowed to tutor with us at this time. If you have questions about this at all, please contact boardmembers@sdrefugeetutoring.com';
-				break;
 
-			case 'Invited':
+			case 'No':
+                $background_check['icon'] = '<i class="fa fa-times-circle"></i>';
+                $background_check['status'] = 'status-failed';
+                $background_check['message'] = 'Your background check did not clear. You are not allowed to tutor with us at this time. If you have questions about this at all, please contact boardmembers@sdrefugeetutoring.com';
+                break;
+
+            case 'Cleared':
+                // User has Checkr candidate and just needs a  new invitation
+                $redirectUrl = add_query_arg('sdrt-request-new-invitation', '1', get_edit_profile_url());
+                $background_check['icon'] = '<i class="fa fa-question-circle"></i>';
+                $background_check['status'] = 'status-pending';
+
+                if ( empty($background_check_invite_url ) ) {
+                    $background_check['message'] = 'Your background check has cleared from the previous year and needs to be renewed.';
+                    $background_check['button_text'] = 'Request New Background Check';
+                    $background_check['button_url'] = $redirectUrl;
+                } else {
+                    $background_check['message'] = 'Your background check has been renewed. Please check your email for instructions to complete the process.';
+                }
+                break;
+
+            case 'Invited':
 				$background_check['icon'] = '<i class="fa fa-question-circle"></i>';
 				$background_check['status'] = 'status-pending';
 				$background_check['message'] = 'You have been invited to take a background check and your status is still pending. You can check on the status at <a href="' . $background_check_invite_url . '" target="_blank" rel="noopener noreferrer">the Checkr website</a>.';
@@ -72,12 +87,12 @@ function sdrt_user_meta_fields( $user ) { ?>
 	?>
 
 	<?php
-	
-	if ( !current_user_can( 'can_view_rsvps' ) ) : 
+
+	if ( !current_user_can( 'can_view_rsvps' ) ) :
 	?>
 	<div class="vol-reqs">
 		<!-- Volunteer View of the Admin Profile Editor -->
-		
+
 		<!-- BACKGROUND CHECK STATUS -->
 		<h2>YOUR SDRT VOLUNTEER REQUIREMENTS STATUS:</h2>
 		<div id="background-check" class="req <?php echo $background_check['status']; ?>">
@@ -87,6 +102,10 @@ function sdrt_user_meta_fields( $user ) { ?>
 			<p class="status-message"><strong>STATUS:</strong><br />
 				<?php echo $background_check['message']; ?>
 			</p>
+
+            <?php if(isset($background_check['button_text'])): ?>
+                <a class="button" href="<?= $background_check['button_url'] ?>"><?= $background_check['button_text'] ?></a>
+            <?php endif; ?>
 		</div>
 
 		<!-- ORIENTATION STATUS -->
@@ -120,30 +139,30 @@ function sdrt_user_meta_fields( $user ) { ?>
 		</div>
 	</div><!-- /.vol-reqs -->
 	<?php endif; ?>
-	
+
 	<?php if ( is_admin() && current_user_can( 'can_view_rsvps' )  ) : ?>
 
 	<div class="vol-reqs">
-	<?php 
-		//var_dump(get_user_meta($userid)); 
+	<?php
+		//var_dump(get_user_meta($userid));
 		//var_dump($orientation[0]);
 		?>
 		<!-- SDRT Leadership View of Profile Edit Screen -->
 		<!-- BACKGROUND CHECK STATUS -->
 		<h2>Volunteer Requirement Status for:<br />
 		<span><?php echo $user->first_name . '&nbsp;' . $user->last_name; ?></span></h2>
-		
+
 		<!-- BACKGROUND CHECK STATUS -->
 		<div id="background-check" class="req <?php echo $background_check['status']; ?>">
 			<h3>Background Check Status</h3>
 			<p class="description">This information is automatically updated when they volunteer registers on the site, and then after their background check is completed. You can change the status manually if you need to, but not the link or candidate ID.</p>
 			<p class="status">
 				<select name="background_check" id="background_check">
-					<option value="No" <?php  selected( $background_check_status[0], 'No' ); ?> >NO -- this volunteer has not yet registered.</option>
+					<option value="No" <?php  selected( $background_check_status, 'No' ); ?> >NO -- this volunteer has not yet registered.</option>
 
-					<option value="Invited" <?php  selected( $background_check_status[0], 'Invited' ); ?> >An Invite has been sent, but we do not have results yet.</option>
+					<option value="Invited" <?php  selected( $background_check_status, 'Invited' ); ?> >An Invite has been sent, but we do not have results yet.</option>
 
-					<option value="Yes" <?php  selected( $background_check_status[0], 'Yes' ); ?> >YES -- there is a passed background check on file.</option>
+					<option value="Yes" <?php  selected( $background_check_status, 'Yes' ); ?> >YES -- there is a passed background check on file.</option>
 				</select>
 			</p>
 			<p class="checkr-info">
@@ -153,7 +172,7 @@ function sdrt_user_meta_fields( $user ) { ?>
 			<p><strong>This volunteer's Candidate ID is:</strong><br />
 				<input type="text" name="background_check_candidate_id" value="<?php echo $background_check_candidate_id; ?>" readonly size="75">
 			</p>
-            <?php if ( empty($background_check_candidate_id) && empty($background_check_invite_url) ): ?>
+            <?php if ( empty($background_check_candidate_id) || empty($background_check_invite_url) ): ?>
                 <button class="button js-sdrt-new-background-check">Request New Background Check</button>
             <?php endif; ?>
 		</div>
@@ -210,9 +229,9 @@ function sdrt_save_user_meta_fields( $user_id ) {
 
 	/*
 	 * NOTE FOR FUTURE MATT:
-	 * One way we can bulk "reset" the requirements for all Volunteers is that we'll add a new user meta every year. So right now it's "sdrt_orientation_attended" but next year it can be "sdrt_orientation_attended_2021" 
+	 * One way we can bulk "reset" the requirements for all Volunteers is that we'll add a new user meta every year. So right now it's "sdrt_orientation_attended" but next year it can be "sdrt_orientation_attended_2021"
 	 */
-	
+
 	/* Copy and paste this line for additional fields. */
 	update_user_meta( $user_id, 'background_check', $_POST['background_check'] );
 
