@@ -82,7 +82,7 @@ function sdrt_user_meta_fields( $user ) { ?>
     } else {
         $waiver_status['icon'] = '<i class="fa fa-times-circle"></i>';
         $waiver_status['status'] = 'status-failed';
-        $waiver_status['message'] = 'You have <span>not yet indicated your consent</span> to our Volunteer Release & Waiver of Liability Policy. <a href="' . get_home_url() . '/volunteer-release">Please do that here</a>.';
+        $waiver_status['message'] = 'You have <span>not yet indicated your consent</span> to our Volunteer Release & Waiver of Liability Policy. <a href="' . get_home_url() . '/volunteer/waiver">Please do that here</a>.';
     }
 	?>
 
