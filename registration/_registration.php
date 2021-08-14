@@ -4,6 +4,8 @@
  *
  */
 
+require_once SDRT_FUNCTIONS_DIR . 'registration/ajax.php';
+
 /**
  * Create a candidate and trigger an invite on Checkr.io
  * This is all done via a Caldera Form
@@ -13,63 +15,26 @@
 add_action( 'sdrt_trigger_checkr_invite', 'sdrt_checkr_create_invite', 10, 2 );
 
 function sdrt_checkr_create_invite( $data ) {
+    $candidate = sdrtCreateCheckrCandidate(
+        $data['first_name'],
+        $data['last_name'],
+        $data['email_address'],
+        new DateTime($data['your_date_of_birth']),
+    );
 
-	// Arguments for POSTing the candidate info to Checkr
-	$candidate_args = array(
-		'method'            => 'POST',
-		'headers'           => array(
-			'Authorization' => 'Basic ' . base64_encode( SDRT_CHECKR_API  . ':' . '' )
-		),
-		'body'              => array(
-			'first_name'        => $data['first_name'],
-			'no_middle_name'    => true,
-			'last_name'         => $data['last_name'],
-			'email'             => $data['email_address'],
-			'dob'               => $data['your_date_of_birth'],
-		),
-	);
-
-	$candidate_response = wp_remote_request( 'https://api.checkr.com/v1/candidates',  $candidate_args );
-
-	if ( is_wp_error( $candidate_response) ) {
+	if ( is_wp_error( $candidate) ) {
 		return false; // Bail early
 	}
 
-	// Get the Candidate response body from the Checkr response
-	$candidate_body = wp_remote_retrieve_body( $candidate_response );
+	$invitation = sdrtCreateCheckrInvitation($candidate->id);
 
-	// Decode the candidate response for better data consumption
-	$candidate_data = json_decode( $candidate_body );
-
-	if ( ! empty( $candidate_data ) ? $candidate_id = $candidate_data->id : $candidate_id = '' );
-
-	// Arguments for POSTing the Invitation to Checkr based on the Candidate we just created.
-	$invite_args = array(
-		'method'            => 'POST',
-		'headers'           => array(
-			'Authorization' => 'Basic ' . base64_encode( SDRT_CHECKR_API  . ':' . '' )
-		),
-		'body'              => array(
-			'package'       => 'tasker_standard',
-			'candidate_id'  => $candidate_id,
-		),
-	);
-
-	$invite_response = wp_remote_request( 'https://api.checkr.com/v1/invitations',  $invite_args );
-
-	if ( is_wp_error( $invite_response) ) {
+	if ( is_wp_error( $invitation) ) {
 		return false; // Bail early
 	}
-
-	// Get the invitation response
-	$invite_body = wp_remote_retrieve_body( $invite_response );
-
-	// decode the invitation response
-	$invite_data = json_decode( $invite_body );
 
 	// get the invite url and candidate id to pass to the user we're creating with Caldera
-	$invite_url = esc_url($invite_data->invitation_url);
-	$candidate_id = strip_tags($invite_data->candidate_id);
+	$invite_url = esc_url($invitation->invitation_url);
+	$candidate_id = strip_tags($invitation->candidate_id);
 
 	// Populate the hidden fields with the data
 	Caldera_Forms::set_field_data( 'fld_468416', $invite_url, $data['__form_id'], $data['__entry_id'] );
@@ -79,7 +44,7 @@ function sdrt_checkr_create_invite( $data ) {
 
 /**
  *  Create the Checkr Webhook
- *  Then conditionally update the user if they passed the backgroun check
+ *  Then conditionally update the user if they passed the background check
  *  And send that user an email informing them they can now RSVP.
  */
 
@@ -88,7 +53,7 @@ add_action( 'init', 'sdrt_listen_for_checkr' );
 function sdrt_listen_for_checkr() {
 
 	// Listen for the webhook url: sdrefugeetutoring.com/?sdrt-listener=checkr
-	if ( isset( $_GET['sdrt-listener'] ) && $_GET['sdrt-listener'] == 'checkr' ) {
+	if ( isset( $_GET['sdrt-listener'] ) && $_GET['sdrt-listener'] === 'checkr' ) {
 		/**
 		 * Fires when Checkr webhook is sent
 		 *
