@@ -194,9 +194,9 @@ function sdrt_vol_can_rsvp(): bool
     $waiver      = get_user_meta($userid, 'sdrt_waiver_consented', true);
 
     return $role
-           && $orientation !== 'No'
-           && $coc !== 'No'
-           && $waiver !== 'No';
+           && $orientation === 'Yes'
+           && $coc === 'Yes'
+           && $waiver === 'Yes';
 }
 
 /**
