@@ -11,7 +11,7 @@ add_filter('bulk_actions-users', static function (array $actions): array {
     }
 
     return array_merge($actions, [
-        'sdrt_clear_background_check' => 'Clear Background Check',
+        'sdrt_reset_volunteer_requirements' => 'Reset Volunteer Requirements',
     ]);
 });
 
@@ -19,11 +19,14 @@ add_filter('bulk_actions-users', static function (array $actions): array {
  * Handle the "Clear Background Check" bulk action
  */
 add_filter('handle_bulk_actions-users', static function (string $redirectUrl, string $action, array $userIds): string {
-    if ($action !== 'sdrt_clear_background_check' || ! current_user_can('manage_volunteers')) {
+    if ($action !== 'sdrt_reset_volunteer_requirements' || ! current_user_can('manage_volunteers')) {
         return $redirectUrl;
     }
 
     foreach ($userIds as $userId) {
+        update_user_meta($userId, 'sdrt_orientation_attended', 'No');
+        update_user_meta($userId, 'sdrt_coc_consented', 'No');
+        update_user_meta($userId, 'sdrt_waiver_consented', 'No');
         update_user_meta($userId, 'background_check', 'Cleared');
         delete_user_meta($userId, 'background_check_invite_url');
     }
