@@ -22,7 +22,7 @@ function embed_rsvp_events_single()
     $eventdate    = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps        = get_event_rsvps($post->ID);
     $rsvpmeta     = get_current_rsvps_volids($post->ID);
-    $userid       = get_current_user_id();
+    $user_id      = get_current_user_id();
     $rsvp_limit   = absint($get_limit);
     $rsvp_total   = count($rsvps);
 
@@ -48,32 +48,33 @@ function embed_rsvp_events_single()
             }
             // Inform visitor to register if login is required
         } elseif ($must_login === 'yes') {
-            $can_rsvp = sdrt_vol_can_rsvp();
-
-            // Not logged in
             if ( ! is_user_logged_in()) {
+                // Not logged in
                 sdrt_rsvp_please_register_output();
+                return;
             }
 
-            if ( ! $can_rsvp) {
+            if ( ! user_can_rsvp($user_id)) {
+                // Volunteer does not pass requirements
                 sdrt_finish_reqs();
+                return;
             }
 
-            if ($can_rsvp && is_user_logged_in()) {
+            if (in_array($user_id, $rsvpmeta, true)) {
                 // If already RSVP'd
-                if (in_array($userid, $rsvpmeta)) {
-                    sdrt_rsvp_already_rsvpd_output($post->ID);
-                    // If RSVPs are full
-                } elseif ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
-                    sdrt_rsvp_limit_reached_output();
-                    // RSVPs are open and volunteer can RSVP
-                } else {
-                    echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-                    echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
-                }
-            } elseif (is_user_logged_in() && ! current_user_can('can_rsvp')) {
-                echo '<p>It looks like you\'ve completed your background check, but it has not yet cleared. Please come back later or contact our Webmaster via our <a href="' . get_home_url() . '/contact/">contact form</a> for questions.</p>';
+                sdrt_rsvp_already_rsvpd_output($post->ID);
+                return;
             }
+
+            if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
+                // If RSVPs are full
+                sdrt_rsvp_limit_reached_output();
+                return;
+            }
+
+            // RSVPs are open and volunteer can RSVP
+            echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
+            echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
         }
         ?>
     </div><!-- end RSVP section -->
@@ -177,26 +178,6 @@ function embed_rsvp_events_single()
     </table>
 
     <?php
-}
-
-/**
- *  Confirm Logged-in user Can RSVP
- *  Returns: true
- */
-
-function sdrt_vol_can_rsvp(): bool
-{
-    $userid = get_current_user_id();
-
-    $role        = current_user_can('can_rsvp');
-    $orientation = get_user_meta($userid, 'sdrt_orientation_attended', true);
-    $coc         = get_user_meta($userid, 'sdrt_coc_consented', true);
-    $waiver      = get_user_meta($userid, 'sdrt_waiver_consented', true);
-
-    return $role
-           && $orientation === 'Yes'
-           && $coc === 'Yes'
-           && $waiver === 'Yes';
 }
 
 /**

@@ -19,15 +19,15 @@ require_once SDRT_FUNCTIONS_DIR . 'rsvps/exporter/Exporter.php';
 function get_rsvps(array $args = []): array
 {
     return get_posts($args + [
-            'post_type'        => 'rsvp',
-            'post_status'      => ['publish'],
-            'order'            => 'ASC',
-            'orderby'          => 'meta_value',
-            'meta_key'         => 'volunteer_name',
+            'post_type' => 'rsvp',
+            'post_status' => ['publish'],
+            'order' => 'ASC',
+            'orderby' => 'meta_value',
+            'meta_key' => 'volunteer_name',
             'suppress_filters' => false,
-            'posts_per_page'   => -1,
-            'nopaging'         => true,
-            'no_found_rows'    => true,
+            'posts_per_page' => -1,
+            'nopaging' => true,
+            'no_found_rows' => true,
         ]);
 }
 
@@ -44,8 +44,8 @@ function get_event_rsvps($event_id, array $args = []): array
     $meta_query = $args['meta_query'] ?? [];
 
     $meta_query[] = [
-        'key'     => 'event_id',
-        'value'   => $event_id,
+        'key' => 'event_id',
+        'value' => $event_id,
         'compare' => is_array($event_id) ? 'IN' : '=',
     ];
 
@@ -63,7 +63,7 @@ function get_event_rsvps($event_id, array $args = []): array
  */
 function get_rsvp_event($rsvp): ?WP_Post
 {
-    $rsvp_id  = $rsvp instanceof WP_Post ? $rsvp->ID : (int)$rsvp;
+    $rsvp_id = $rsvp instanceof WP_Post ? $rsvp->ID : (int)$rsvp;
     $event_id = get_post_meta($rsvp_id, 'event_id', true);
 
     if (empty($event_id)) {
@@ -80,17 +80,35 @@ function get_user_rsvp_for_event(int $user_id, int $event_id): ?WP_Post
 {
     $rsvp = get_rsvps([
         'posts_per_page' => 1,
-        'meta_query'     => [
+        'meta_query' => [
             [
-                'key'   => 'event_id',
+                'key' => 'event_id',
                 'value' => $event_id,
             ],
             [
-                'key'   => 'volunteer_user_id',
+                'key' => 'volunteer_user_id',
                 'value' => $user_id,
             ],
         ],
     ]);
 
     return empty($rsvp) ? null : $rsvp[0];
+}
+
+/**
+ * Checks to see if the given user passes all requirements to be able to RSVP
+ */
+function user_can_rsvp(int $user_id): bool
+{
+    $role = user_can($user_id, 'can_rsvp');
+    $orientation = get_user_meta($user_id, 'sdrt_orientation_attended', true);
+    $coc = get_user_meta($user_id, 'sdrt_coc_consented', true);
+    $waiver = get_user_meta($user_id, 'sdrt_waiver_consented', true);
+    $background_check = get_user_meta($user_id, 'background_check', true);
+
+    return $role
+           && $background_check === 'Yes'
+           && $orientation === 'Yes'
+           && $coc === 'Yes'
+           && $waiver === 'Yes';
 }
