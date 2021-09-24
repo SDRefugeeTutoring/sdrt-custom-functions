@@ -15,16 +15,16 @@ function embed_rsvp_events_single()
 {
     global $post;
 
-    $get_limit    = get_post_meta(get_the_ID(), 'rsvps_limit', true);
+    $get_limit = get_post_meta(get_the_ID(), 'rsvps_limit', true);
     $rsvp_enabled = get_post_meta(get_the_ID(), 'enable_rsvps', true);
-    $must_login   = get_post_meta(get_the_ID(), 'logged_in_status', true);
-    $rsvp_form    = get_post_meta(get_the_ID(), 'rsvp_form', true);
-    $eventdate    = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps        = get_event_rsvps($post->ID);
-    $rsvpmeta     = get_current_rsvps_volids($post->ID);
-    $user_id      = get_current_user_id();
-    $rsvp_limit   = absint($get_limit);
-    $rsvp_total   = count($rsvps);
+    $must_login = get_post_meta(get_the_ID(), 'logged_in_status', true);
+    $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
+    $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
+    $rsvps = get_event_rsvps($post->ID);
+    $rsvpmeta = get_current_rsvps_volids($post->ID);
+    $user_id = get_current_user_id();
+    $rsvp_limit = absint($get_limit);
+    $rsvp_total = count($rsvps);
 
     // Only output if RSVPs are enabled for this Event
     if ($rsvp_enabled !== 'enabled') {
@@ -51,24 +51,28 @@ function embed_rsvp_events_single()
             if ( ! is_user_logged_in()) {
                 // Not logged in
                 sdrt_rsvp_please_register_output();
+
                 return;
             }
 
             if ( ! user_can_rsvp($user_id)) {
                 // Volunteer does not pass requirements
                 sdrt_finish_reqs();
+
                 return;
             }
 
             if (in_array($user_id, $rsvpmeta, true)) {
                 // If already RSVP'd
                 sdrt_rsvp_already_rsvpd_output($post->ID);
+
                 return;
             }
 
             if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
                 // If RSVPs are full
                 sdrt_rsvp_limit_reached_output();
+
                 return;
             }
 
@@ -92,12 +96,12 @@ function embed_rsvp_events_single()
 
     $rsvp_nonce = wp_create_nonce('sdrt_attendance_nonce');
     $createDate = new DateTime($eventdate);
-    $finaldate  = $createDate->format('F d, Y');
+    $finaldate = $createDate->format('F d, Y');
     ?>
 
     <script>
         var rsvpExports = <?= json_encode([
-            'nonce'   => $rsvp_nonce,
+            'nonce' => $rsvp_nonce,
             'ajaxUrl' => admin_url('admin-ajax.php'),
         ]) ?>;
     </script>
@@ -122,11 +126,11 @@ function embed_rsvp_events_single()
         foreach ($rsvps as $rsvp) {
             $rsvp_id = $rsvp->ID;
 
-            $name  = get_post_meta($rsvp_id, 'volunteer_name', true);
+            $name = get_post_meta($rsvp_id, 'volunteer_name', true);
             $email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
             $attending = get_post_meta($rsvp_id, 'attending', true);
-            $attended  = get_post_meta($rsvp_id, 'attended', true);
+            $attended = get_post_meta($rsvp_id, 'attended', true);
 
             $is_marked_attended = ! in_array($attended, ['no', 'unknown'], true);
 
@@ -197,7 +201,7 @@ function sdrt_finish_reqs()
 
 function sdrt_rsvp_already_rsvpd_output($eventId)
 {
-    $rsvp      = get_user_rsvp_for_event(get_current_user_id(), $eventId);
+    $rsvp = get_user_rsvp_for_event(get_current_user_id(), $eventId);
     $attending = $rsvp ? get_post_meta($rsvp->ID, 'attending', true) : null;
 
     if ($attending === 'no') {
@@ -214,7 +218,8 @@ function sdrt_rsvp_already_rsvpd_output($eventId)
         <div class="already-rsvpd-yes">
             <p><strong>Thanks!</strong></p>
             <p>It looks like you've already RSVP'd for this event. We look forward to seeing you there!</p>
-            <p>Need to cancel? Please email our Volunteer Coordinator at <a href="mailto:info@sdrefugeetutoring.com">info@sdrefugeetutoring.com</a></p>
+            <p>Need to cancel? Please email our Volunteer Coordinator at <a href="mailto:info@sdrefugeetutoring.com">info@sdrefugeetutoring.com</a>
+            </p>
         </div>
         <?php
     }
@@ -263,7 +268,11 @@ function get_current_rsvps_volids($eventId)
     global $wpdb;
     $rsvps = get_event_rsvps($eventId);
 
-    $rsvpIds      = wp_list_pluck($rsvps, 'ID');
+    if (empty($rsvps)) {
+        return [];
+    }
+
+    $rsvpIds = wp_list_pluck($rsvps, 'ID');
     $placeholders = implode(',', array_fill(0, count($rsvpIds), '%d'));
 
     return $wpdb->get_col(
