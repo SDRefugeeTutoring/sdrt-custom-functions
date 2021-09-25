@@ -37,48 +37,28 @@ function embed_rsvp_events_single()
 
         <?php
 
-        // Show RSVP form if login is not required
-        if ($must_login === 'no') {
-            // Show message if RSVP limit is reached
-            if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
-                sdrt_rsvp_limit_reached_output();
-            } else {
-                echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-                echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
-            }
-            // Inform visitor to register if login is required
+        if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
+            sdrt_rsvp_limit_reached_output();
+        } elseif ($must_login === 'no' || current_user_can('edit_rsvps')) {
+            // Show RSVP form if login is not required or user is leadership
+            echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
+            echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
         } elseif ($must_login === 'yes') {
+            // Inform visitor to register if login is required
             if ( ! is_user_logged_in()) {
                 // Not logged in
                 sdrt_rsvp_please_register_output();
-
-                return;
-            }
-
-            if ( ! user_can_rsvp($user_id)) {
+            } elseif ( ! user_can_rsvp($user_id)) {
                 // Volunteer does not pass requirements
                 sdrt_finish_reqs();
-
-                return;
-            }
-
-            if (in_array($user_id, $rsvpmeta, true)) {
+            } elseif (in_array($user_id, $rsvpmeta, true)) {
                 // If already RSVP'd
                 sdrt_rsvp_already_rsvpd_output($post->ID);
-
-                return;
+            } else {
+                // RSVPs are open and volunteer can RSVP
+                echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
+                echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
             }
-
-            if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
-                // If RSVPs are full
-                sdrt_rsvp_limit_reached_output();
-
-                return;
-            }
-
-            // RSVPs are open and volunteer can RSVP
-            echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-            echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
         }
         ?>
     </div><!-- end RSVP section -->
