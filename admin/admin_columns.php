@@ -20,7 +20,8 @@ function sdrt_rsvp_column_content( $column, $post_id ) {
 	switch ( $column ) {
 		case 'event':
 			$eventid = get_post_meta( $post_id, 'event_id', true);
-			echo '<a href="' . $eventid . '">' . get_the_title($eventid). '</a>';
+			$event_url = admin_url("post.php?post=$eventid&action=edit");
+			echo '<a href="' . $event_url . '">' . get_the_title($eventid). '</a>';
 			break;
 		case 'event_date':
 			$eventdate = strtotime( get_post_meta( $post_id, 'event_date', true) );
