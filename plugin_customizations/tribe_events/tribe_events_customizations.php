@@ -21,8 +21,9 @@ function embed_rsvp_events_single()
     $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps = get_event_rsvps($post->ID);
-    $rsvpmeta = get_current_rsvps_volids($post->ID);
+    $event_rsvp_ids = get_event_rsvp_ids($post->ID);
     $user_id = get_current_user_id();
+    $user_is_leader = current_user_can('edit_rsvps');
     $rsvp_limit = absint($get_limit);
     $rsvp_total = count($rsvps);
 
@@ -39,7 +40,7 @@ function embed_rsvp_events_single()
 
         if ($rsvp_limit > 0 && $rsvp_total >= $rsvp_limit) {
             sdrt_rsvp_limit_reached_output();
-        } elseif ($must_login === 'no' || current_user_can('edit_rsvps')) {
+        } elseif ($must_login === 'no') {
             // Show RSVP form if login is not required or user is leadership
             echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
             echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
@@ -48,12 +49,16 @@ function embed_rsvp_events_single()
             if ( ! is_user_logged_in()) {
                 // Not logged in
                 sdrt_rsvp_please_register_output();
-            } elseif ( ! user_can_rsvp($user_id)) {
+            } elseif ( ! $user_is_leader && ! user_can_rsvp($user_id)) {
                 // Volunteer does not pass requirements
                 sdrt_finish_reqs();
-            } elseif (in_array($user_id, $rsvpmeta, true)) {
+            } elseif (in_array($user_id, $event_rsvp_ids, true)) {
                 // If already RSVP'd
                 sdrt_rsvp_already_rsvpd_output($post->ID);
+            } elseif ($user_is_leader) {
+                // Show RSVP form if login is not required or user is leadership
+                echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
+                echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
             } else {
                 // RSVPs are open and volunteer can RSVP
                 echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
@@ -239,11 +244,9 @@ function sdrt_rsvp_please_register_output()
 /**
  * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
  *
- * @param int $eventId
- *
- * @return array
+ * @return int[]
  */
-function get_current_rsvps_volids($eventId)
+function get_event_rsvp_ids(int $eventId): array
 {
     global $wpdb;
     $rsvps = get_event_rsvps($eventId);
@@ -255,10 +258,14 @@ function get_current_rsvps_volids($eventId)
     $rsvpIds = wp_list_pluck($rsvps, 'ID');
     $placeholders = implode(',', array_fill(0, count($rsvpIds), '%d'));
 
-    return $wpdb->get_col(
+    $ids = $wpdb->get_col(
         $wpdb->prepare(
             "SELECT meta_value from {$wpdb->postmeta} WHERE meta_key = 'volunteer_user_id' AND post_id IN ($placeholders)",
             $rsvpIds
         )
     );
+
+    return array_map(static function ($id) {
+        return (int)$id;
+    }, $ids);
 }
