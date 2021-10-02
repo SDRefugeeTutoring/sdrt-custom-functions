@@ -52,3 +52,5 @@ function sdrt_includes() {
     // Bootstrapper for the Checkr functionality
     require_once( SDRT_FUNCTIONS_DIR . '/checkr/functions.php');
 }
+
+require_once 'vendor/autoload.php';

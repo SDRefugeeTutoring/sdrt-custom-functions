@@ -1,0 +1,17 @@
+{
+    "name": "sdrt/sdrt",
+    "description": "SDRT Custom Functions",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Jason Adams",
+            "email": "jason.the.adams@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "SDRT\\CustomFunctions\\": "src/"
+        }
+    }
+}
