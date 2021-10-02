@@ -20,22 +20,14 @@ function sdrt_rsvp_email_no_show()
         wp_send_json_error('Invalid RSVP', 400);
     }
 
-    $volunteer_name  = get_post_meta($rsvp_id, 'volunteer_name', true);
+    $volunteer_name = get_post_meta($rsvp_id, 'volunteer_name', true);
     $volunteer_email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
-    wp_mail(
-        $volunteer_email,
-        'We Missed You!',
-        sdrt_send_email([
-            'option'      => 'sdrt_rsvp_no_show',
-            'fname'       => trim(explode(',', $volunteer_name)[1] ?: ''),
-            'event_title' => $event->post_title,
-        ]),
-        [
-            'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
-            'Content-Type: text/html',
-        ]
-    );
+    sdrt_mail($volunteer_email, 'We Missed You!', [
+        'option' => 'sdrt_rsvp_no_show',
+        'fname' => trim(explode(',', $volunteer_name)[1] ?: ''),
+        'event_title' => $event->post_title,
+    ]);
 
     wp_send_json_success();
 }
@@ -59,7 +51,7 @@ function sdrt_rsvp_set_event_attendance()
         wp_send_json_error('Invalid RSVP', 400);
     }
 
-    $rsvp_id  = (int)$_POST['rsvp_id'];
+    $rsvp_id = (int)$_POST['rsvp_id'];
     $attended = ! empty($_POST['attended']);
 
     update_post_meta($rsvp_id, 'attended', $attended ? 'yes' : 'no');
@@ -74,22 +66,14 @@ function sdrt_rsvp_set_event_attendance()
         wp_send_json_error('Invalid RSVP', 400);
     }
 
-    $volunteer_name  = get_post_meta($rsvp_id, 'volunteer_name', true);
+    $volunteer_name = get_post_meta($rsvp_id, 'volunteer_name', true);
     $volunteer_email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
-    wp_mail(
-        $volunteer_email,
-        "Thank you for attending {$event->post_title}",
-        sdrt_send_email([
-            'option'      => 'sdrt_thanks_for_attending',
-            'fname'       => trim(explode(',', $volunteer_name)[1] ?: ''),
-            'event_title' => $event->post_title,
-        ]),
-        [
-            'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
-            'Content-Type: text/html',
-        ]
-    );
+    sdrt_mail($volunteer_email, "Thank you for attending $event->post_title", [
+        'option' => 'sdrt_thanks_for_attending',
+        'fname' => trim(explode(',', $volunteer_name)[1] ?: ''),
+        'event_title' => $event->post_title,
+    ]);
 
     add_post_meta($rsvp_id, 'attended_email_sent', 1, true);
 
