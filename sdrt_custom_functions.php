@@ -52,9 +52,6 @@ function sdrt_includes() {
 
 	// Bootstrapper for the RSVP functionality
     require_once( SDRT_FUNCTIONS_DIR . '/rsvps/_rsvp.php');
-
-    // Bootstrapper for the Checkr functionality
-    require_once( SDRT_FUNCTIONS_DIR . '/checkr/functions.php');
 }
 
 /**

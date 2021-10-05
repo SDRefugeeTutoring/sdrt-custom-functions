@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use SDRT\CustomFunctions\Checkr\Actions\CreateCandidate;
+use SDRT\CustomFunctions\Checkr\Actions\CreateInvitation;
+
 /**
  * Add the "Clear Background Check" to the Users bulk actions
  */
@@ -89,7 +92,7 @@ add_action('admin_init', static function () {
             return;
         }
 
-        $candidate = sdrtCreateCheckrCandidate(
+        $candidate = sdrt(CreateCandidate::class)(
             $user->first_name,
             $user->last_name,
             $user->user_email,
@@ -111,7 +114,7 @@ add_action('admin_init', static function () {
         return;
     }
 
-    $invitation = sdrtCreateCheckrInvitation($candidateId);
+    $invitation = sdrt(CreateInvitation::class)($candidateId);
 
     if (is_wp_error($invitation)) {
         $_GET['sdrt-request-new-invitation'] = 'invalid-invitation';

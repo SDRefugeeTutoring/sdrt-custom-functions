@@ -1,5 +1,8 @@
 <?php
 
+use SDRT\CustomFunctions\Checkr\Actions\CreateCandidate;
+use SDRT\CustomFunctions\Checkr\Actions\CreateInvitation;
+
 add_action('wp_ajax_sdrt_new_background_check', function () {
     if (empty($_GET['user_id'])) {
         wp_send_json_error('Invalid use of action');
@@ -19,7 +22,7 @@ add_action('wp_ajax_sdrt_new_background_check', function () {
             wp_send_json_error('User must have date of birth set');
         }
 
-        $candidate = sdrtCreateCheckrCandidate(
+        $candidate = sdrt(CreateCandidate::class)(
             $user->first_name,
             $user->last_name,
             $user->user_email,
@@ -34,7 +37,7 @@ add_action('wp_ajax_sdrt_new_background_check', function () {
         update_user_meta($user->ID, 'background_check_candidate_id', $candidate->id);
     }
 
-    $invitation = sdrtCreateCheckrInvitation($candidateId);
+    $invitation = sdrt(CreateInvitation::class)($candidateId);
 
     if (is_wp_error($invitation)) {
         wp_send_json_error("Failed to create Checkr Candidate: {$invitation->get_error_message()}");

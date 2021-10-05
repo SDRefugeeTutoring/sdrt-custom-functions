@@ -12,36 +12,6 @@ require_once SDRT_FUNCTIONS_DIR . 'registration/ajax.php';
  */
 
 
-add_action( 'sdrt_trigger_checkr_invite', 'sdrt_checkr_create_invite', 10, 2 );
-
-function sdrt_checkr_create_invite( $data ) {
-    $candidate = sdrtCreateCheckrCandidate(
-        $data['first_name'],
-        $data['last_name'],
-        $data['email_address'],
-        new DateTime($data['your_date_of_birth']),
-    );
-
-	if ( is_wp_error( $candidate) ) {
-		return false; // Bail early
-	}
-
-	$invitation = sdrtCreateCheckrInvitation($candidate->id);
-
-	if ( is_wp_error( $invitation) ) {
-		return false; // Bail early
-	}
-
-	// get the invite url and candidate id to pass to the user we're creating with Caldera
-	$invite_url = esc_url($invitation->invitation_url);
-	$candidate_id = strip_tags($invitation->candidate_id);
-
-	// Populate the hidden fields with the data
-	Caldera_Forms::set_field_data( 'fld_468416', $invite_url, $data['__form_id'], $data['__entry_id'] );
-
-	Caldera_Forms::set_field_data( 'fld_1569509', $candidate_id, $data['__form_id'], $data['__entry_id'] );
-}
-
 /**
  *  Create the Checkr Webhook
  *  Then conditionally update the user if they passed the background check
