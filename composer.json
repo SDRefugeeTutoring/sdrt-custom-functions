@@ -8,10 +8,15 @@
             "email": "jason.the.adams@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "php-di/php-di": "^6.3"
+    },
     "autoload": {
         "psr-4": {
             "SDRT\\CustomFunctions\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers/email.php"
+        ]
     }
 }

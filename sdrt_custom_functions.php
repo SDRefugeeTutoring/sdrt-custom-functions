@@ -9,6 +9,11 @@
  */
 
 // Exit if accessed directly.
+use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SDRT\CustomFunctions\Boot;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -33,7 +38,6 @@ if ( ! defined( 'SDRT_FUNCTIONS_VERSION' ) && ( WP_DEBUG == true ) ) {
 add_action( 'plugins_loaded', 'sdrt_includes' );
 
 function sdrt_includes() {
-
 	// Bootstrapper for all admin functions
 	require_once( SDRT_FUNCTIONS_DIR . '/admin/_admin.php');
 
@@ -53,4 +57,25 @@ function sdrt_includes() {
     require_once( SDRT_FUNCTIONS_DIR . '/checkr/functions.php');
 }
 
+/**
+ * The app's service container helper function.
+ *
+ * @param string|null $concrete Class to retrieve from service container.
+ *
+ * @return Container|object The service container or class instance.
+ * @throws DependencyException
+ * @throws NotFoundException
+ */
+function sdrt(?string $concrete = null): object {
+    static $container = null;
+
+    if ($container === null) {
+        $container = new Container();
+    }
+
+    return $concrete === null ? $container : $container->get($concrete);
+}
+
 require_once 'vendor/autoload.php';
+
+sdrt(Boot::class)->begin();

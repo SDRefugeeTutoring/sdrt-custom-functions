@@ -1,7 +1,5 @@
 <?php
 
-require_once SDRT_FUNCTIONS_DIR . '/includes/helpers.php';
-
 // Includes custom scripts/styles
 require_once( SDRT_FUNCTIONS_DIR . '/includes/sdrt_scripts.php');
 

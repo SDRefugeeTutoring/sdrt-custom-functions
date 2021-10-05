@@ -2,3 +2,4 @@
 .scripts
 
 .distignore
+.phpstorm.meta.php
