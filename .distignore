@@ -1,5 +1,9 @@
 .git
 .scripts
 
+.gitignore
 .distignore
 .phpstorm.meta.php
+
+composer.json
+composer.lock
