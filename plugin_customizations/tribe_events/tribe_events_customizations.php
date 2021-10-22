@@ -43,7 +43,7 @@ function embed_rsvp_events_single()
         } elseif ($must_login === 'no') {
             // Show RSVP form if login is not required or user is leadership
             echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-            echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+            gravity_form($rsvp_form, false, false, false, null, true);
         } elseif ($must_login === 'yes') {
             // Inform visitor to register if login is required
             if ( ! is_user_logged_in()) {
@@ -55,14 +55,10 @@ function embed_rsvp_events_single()
             } elseif (in_array($user_id, $event_rsvp_ids, true)) {
                 // If already RSVP'd
                 sdrt_rsvp_already_rsvpd_output($post->ID);
-            } elseif ($user_is_leader) {
-                // Show RSVP form if login is not required or user is leadership
-                echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-                echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
             } else {
                 // RSVPs are open and volunteer can RSVP
                 echo '<p>We currently need <strong>' . abs($rsvp_limit - $rsvp_total) . '</strong> more tutors.</p>';
-                echo do_shortcode('[caldera_form id="' . $rsvp_form . '"]');
+                gravity_form($rsvp_form, false, false, false, null, true);
             }
         }
         ?>
