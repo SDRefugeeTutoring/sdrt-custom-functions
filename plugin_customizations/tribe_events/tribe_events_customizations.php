@@ -232,11 +232,9 @@ function sdrt_rsvp_please_register_output()
     <div class="please-register">
         <p><strong>Please Register to RSVP</strong></p>
         <p>All volunteers must first be registered and have passed a background check in order to RSVP. Please visit the
-            <a href="<?php
-            echo site_url(); ?>/volunteer">Registration page</a> for details.</p>
-        <p><strong>Already Registered? Please Login</strong></p>
-        <?php
-        echo do_shortcode('[caldera_form id="CF597578b115ae1"]'); ?>
+            <a href="<?= site_url('/volunteer') ?>">Registration page</a> for details.</p>
+        <p><strong>Already Registered? <a href="<?= wp_login_url(get_permalink(get_the_ID())) ?>">Please
+                    Login</a></strong></p>
     </div>
     <?php
 }
