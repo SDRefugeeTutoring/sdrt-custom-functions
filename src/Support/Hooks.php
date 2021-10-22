@@ -30,7 +30,7 @@ class Hooks
             static function () use ($class, $method) {
                 $instance = sdrt($class);
 
-                $instance->$method(...func_get_args());
+                return $instance->$method(...func_get_args());
             },
             $priority,
             $acceptedArgs
