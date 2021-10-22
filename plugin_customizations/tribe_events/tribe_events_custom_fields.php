@@ -11,11 +11,11 @@ function rsvp_metabox_markup()
 {
     global $post;
     wp_nonce_field(basename(__FILE__), "sdrt_rsvp_enabler_nonce");
-    $rsvp_enable      = get_post_meta($post->ID, "enable_rsvps", true);
-    $rsvp_form_id     = get_post_meta($post->ID, "rsvp_form", true);
-    $rsvps_limit      = get_post_meta($post->ID, "rsvps_limit", true);
+    $rsvp_enable = get_post_meta($post->ID, "enable_rsvps", true);
+    $rsvp_form_id = get_post_meta($post->ID, "rsvp_form", true);
+    $rsvps_limit = get_post_meta($post->ID, "rsvps_limit", true);
     $logged_in_status = get_post_meta($post->ID, "logged_in_status", true);
-    $send_reminder    = get_post_meta($post->ID, 'rsvp_send_reminder', true);
+    $send_reminder = get_post_meta($post->ID, 'rsvp_send_reminder', true);
 
     if (empty($rsvp_enable)) {
         $rsvp_enable = 'enabled';
@@ -76,7 +76,7 @@ function rsvp_metabox_markup()
 
     <div id="rsvps_limit_option_wrap" class="rsvp_options options sdrt-hide">
         <?php
-        $forms = Caldera_Forms_Forms::get_forms($with_details = true);
+        $forms = GFAPI::get_forms(true, false, 'title');
         ?>
 
         <p>
@@ -89,8 +89,8 @@ function rsvp_metabox_markup()
                 <?php
 
                 foreach ($forms as $form) {
-                    echo '<option value="' . $form['ID'] . '" ' . selected($rsvp_form_id,
-                            $form['ID']) . '>' . $form['name'] . '</option>';
+                    $selected = selected($rsvp_form_id, $form['id'], false);
+                    echo "<option value={$form['id']} $selected>{$form['title']}</option>";
                 }
 
                 ?>
