@@ -35,13 +35,28 @@ function get_rsvps(array $args = []): array
  * Retrieves the rsvps for a given event
  *
  * @param int|int[] $event_id
+ * @param array{attended: bool, attending: boolean}
  * @param array     $args additional WP_Query args to add or overload
  *
  * @return WP_Post[]|int[]
  */
-function get_event_rsvps($event_id, array $args = []): array
+function get_event_rsvps($event_id, array $options = [], array $args = []): array
 {
     $meta_query = $args['meta_query'] ?? [];
+
+    if (isset($options['attending'])) {
+        $meta_query[] = [
+            'key' => 'attending',
+            'value' => $options['attending'] ? 'yes' : 'no',
+        ];
+    }
+
+    if (isset($options['attended'])) {
+        $meta_query[] = [
+            'key' => 'attended',
+            'value' => $options['attended'] ? 'yes' : 'no',
+        ];
+    }
 
     $meta_query[] = [
         'key' => 'event_id',

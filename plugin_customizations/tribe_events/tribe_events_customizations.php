@@ -20,8 +20,8 @@ function embed_rsvp_events_single()
     $must_login = get_post_meta(get_the_ID(), 'logged_in_status', true);
     $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps = get_event_rsvps($post->ID);
-    $event_rsvp_ids = get_event_rsvp_ids($post->ID);
+    $rsvps = get_event_rsvps($post->ID, ['attending' => true]);
+    $event_rsvp_ids = get_event_rsvp_ids($post->ID, ['attending' => true]);
     $user_id = get_current_user_id();
     $user_is_leader = current_user_can('edit_rsvps');
     $rsvp_limit = absint($get_limit);
@@ -240,10 +240,10 @@ function sdrt_rsvp_please_register_output()
  *
  * @return int[]
  */
-function get_event_rsvp_ids(int $eventId): array
+function get_event_rsvp_ids(int $eventId, array $options = []): array
 {
     global $wpdb;
-    $rsvps = get_event_rsvps($eventId);
+    $rsvps = get_event_rsvps($eventId, $options);
 
     if (empty($rsvps)) {
         return [];
