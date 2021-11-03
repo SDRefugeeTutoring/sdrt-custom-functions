@@ -21,8 +21,8 @@ function embed_rsvp_events_single()
     $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
     $rsvps = get_event_rsvps($post->ID, ['attending' => true]);
-    $event_rsvp_ids = get_event_rsvp_ids($post->ID, ['attending' => true]);
     $user_id = get_current_user_id();
+    $user_has_rsvpd = get_user_rsvp_for_event($user_id, $post->ID) !== null;
     $user_is_leader = current_user_can('edit_rsvps');
     $rsvp_limit = absint($get_limit);
     $rsvp_total = count($rsvps);
@@ -52,7 +52,7 @@ function embed_rsvp_events_single()
             } elseif ( ! $user_is_leader && ! user_can_rsvp($user_id)) {
                 // Volunteer does not pass requirements
                 sdrt_finish_reqs();
-            } elseif (in_array($user_id, $event_rsvp_ids, true)) {
+            } elseif ($user_has_rsvpd) {
                 // If already RSVP'd
                 sdrt_rsvp_already_rsvpd_output($post->ID);
             } else {
@@ -233,33 +233,4 @@ function sdrt_rsvp_please_register_output()
                     Login</a></strong></p>
     </div>
     <?php
-}
-
-/**
- * GET VOLUNTEER IDS OF CURRENT EVENT RSVPS
- *
- * @return int[]
- */
-function get_event_rsvp_ids(int $eventId, array $options = []): array
-{
-    global $wpdb;
-    $rsvps = get_event_rsvps($eventId, $options);
-
-    if (empty($rsvps)) {
-        return [];
-    }
-
-    $rsvpIds = wp_list_pluck($rsvps, 'ID');
-    $placeholders = implode(',', array_fill(0, count($rsvpIds), '%d'));
-
-    $ids = $wpdb->get_col(
-        $wpdb->prepare(
-            "SELECT meta_value from {$wpdb->postmeta} WHERE meta_key = 'volunteer_user_id' AND post_id IN ($placeholders)",
-            $rsvpIds
-        )
-    );
-
-    return array_map(static function ($id) {
-        return (int)$id;
-    }, $ids);
 }
