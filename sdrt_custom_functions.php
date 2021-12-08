@@ -34,6 +34,8 @@ if ( ! defined( 'SDRT_FUNCTIONS_VERSION' ) && ( WP_DEBUG == true ) ) {
     define( 'SDRT_FUNCTIONS_VERSION', '1.1' );
 }
 
+define('SDRT_ORIENTATION_FORM', 166);
+
 // We want to check some things upon activation so we'll use this action to run everything first.
 add_action( 'plugins_loaded', 'sdrt_includes' );
 

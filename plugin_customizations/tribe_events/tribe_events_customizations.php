@@ -20,7 +20,8 @@ function embed_rsvp_events_single()
     $must_login = get_post_meta(get_the_ID(), 'logged_in_status', true);
     $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
-    $rsvps = get_event_rsvps($post->ID, ['attending' => true]);
+    $is_orientation = (int) $rsvp_form === SDRT_ORIENTATION_FORM;
+    $rsvps = get_event_rsvps($post->ID, $is_orientation ? [] : ['attending' => true]);
     $user_id = get_current_user_id();
     $user_has_rsvpd = get_user_rsvp_for_event($user_id, $post->ID) !== null;
     $user_is_leader = current_user_can('edit_rsvps');
