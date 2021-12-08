@@ -4,6 +4,9 @@
  * Checks for any events happening tomorrow. If there are any, then it sends a reminder email to all volunteers that
  * have provided an RSVP and are planning to attend.
  */
+
+add_action('event_rsvp_send_reminder', 'event_rsvp_send_reminder');
+
 function event_rsvp_send_reminder()
 {
     $tomorrow = new DateTime('+1 day', wp_timezone());
