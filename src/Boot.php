@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace SDRT\CustomFunctions;
 
+use DateTime;
 use InvalidArgumentException;
 use SDRT\CustomFunctions\GravityForms\GravityFormsServiceProvider;
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider;
+
+use SDRT\CustomFunctions\Support\Log;
+
+use function Sentry\init as initSentry;
 
 class Boot
 {
@@ -22,6 +27,7 @@ class Boot
      */
     public function begin(): void
     {
+        $this->setupSentry();
         $this->runServiceProviders();
     }
 
@@ -47,5 +53,17 @@ class Boot
         foreach ($providers as $provider) {
             $provider->boot();
         }
+    }
+
+    private function setupSentry(): void
+    {
+        if ( ! defined('SENTRY_DSN')) {
+            return;
+        }
+
+        initSentry([
+            'dsn' => SENTRY_DSN,
+            'environment' => wp_get_environment_type(),
+        ]);
     }
 }

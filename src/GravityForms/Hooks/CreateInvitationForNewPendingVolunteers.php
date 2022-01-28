@@ -7,10 +7,10 @@ namespace SDRT\CustomFunctions\GravityForms\Hooks;
 use DateTime;
 use SDRT\CustomFunctions\Checkr\Actions\CreateCandidate;
 use SDRT\CustomFunctions\Checkr\Actions\CreateInvitation;
+use SDRT\CustomFunctions\Support\Log;
 
 use function get_user_by;
 use function is_wp_error;
-use function sdrt_mail;
 use function update_user_meta;
 
 class CreateInvitationForNewPendingVolunteers
@@ -27,8 +27,14 @@ class CreateInvitationForNewPendingVolunteers
         $candidate = sdrt(CreateCandidate::class)($user->first_name, $user->last_name, $user->user_email, $dateOfBirth);
 
         if (is_wp_error($candidate)) {
-            sdrt_mail('info@sdrefugeetutoring.com', 'Failed to create Checkr candidate',
-                "Checkr failed to create a Candidate for the registered user with the email $user->user_email. Reason: $candidate->get_error_message()");
+            Log::error(
+                "Checkr failed to create a Candidate for the registered user",
+                [
+                    'Date of Birth' => $dateOfBirth,
+                    'User ID' => $userId,
+                    'Candidate Error' => $candidate,
+                ]
+            );
 
             return;
         }
@@ -36,8 +42,15 @@ class CreateInvitationForNewPendingVolunteers
         $invitation = sdrt(CreateInvitation::class)($candidate->id);
 
         if (is_wp_error($candidate)) {
-            sdrt_mail('info@sdrefugeetutoring.com', 'Failed to create Checkr candidate',
-                "Checkr failed to create an Invitation for the registered user with the email $user->user_email, candidate id $candidate->id. Reason: $invitation->get_error_message()");
+            Log::error(
+                "Checkr failed to create an Invitation for the registered user",
+                [
+                    'Date of Birth' => $dateOfBirth,
+                    'User ID' => $userId,
+                    'Candidate' => $candidate,
+                    'Invitation Error' => $invitation,
+                ]
+            );
 
             return;
         }
