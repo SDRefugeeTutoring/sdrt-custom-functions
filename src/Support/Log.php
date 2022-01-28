@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace SDRT\CustomFunctions\Support;
 
-use Sentry\EventHint;
-use Sentry\Severity;
-
 use Sentry\State\Scope;
 
 use function Sentry\captureMessage;
