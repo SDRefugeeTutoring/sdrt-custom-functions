@@ -20,7 +20,7 @@ function embed_rsvp_events_single()
     $must_login = get_post_meta(get_the_ID(), 'logged_in_status', true);
     $rsvp_form = get_post_meta(get_the_ID(), 'rsvp_form', true);
     $eventdate = get_post_meta($post->ID, '_EventStartDate', true);
-    $is_orientation = (int) $rsvp_form === SDRT_ORIENTATION_FORM;
+    $is_orientation = (int)$rsvp_form === SDRT_ORIENTATION_FORM;
     $rsvps = get_event_rsvps($post->ID, $is_orientation ? [] : ['attending' => true]);
     $user_id = get_current_user_id();
     $user_has_rsvpd = get_user_rsvp_for_event($user_id, $post->ID) !== null;
@@ -172,7 +172,8 @@ function embed_rsvp_events_single()
 
 function sdrt_finish_reqs()
 {
-    echo '<p>Thank you for starting the process of volunteering with SD Refugee Tutoring. Currently you are not yet eligble to volunteer for tutoring events. Please go to your <a href="' . get_home_url() . '/my-profile">Profile Page</a> to review your status and finish your required items.</p>';
+    echo '<p>Thank you for starting the process of volunteering with SD Refugee Tutoring. Currently you are not yet eligble to volunteer for tutoring events. Please go to your <a href="' . get_home_url(
+        ) . '/my-profile">Profile Page</a> to review your status and finish your required items.</p>';
 }
 
 /**
@@ -215,8 +216,8 @@ function sdrt_rsvp_limit_reached_output()
     <div class="rsvps-closed">
         <p><strong>Sorry!</strong></p>
         <p>We already have the max number of Volunteers we need for this session.</p>
-        <p>Please see our <a href="<?php
-            echo site_url(); ?>/events">full Calendar</a> for future Tutoring Opportunities.</p>
+        <p>We'd love to add you to our Waitlist, though, so we can contact you if someone cancels! Please email us at <a
+                href="mailto:info@sdrefugeetutoring.com" target="_blank" rel="noopener noreferrer">info@sdrefugeetutoring.com</a></p>
     </div>
     <?php
 }
