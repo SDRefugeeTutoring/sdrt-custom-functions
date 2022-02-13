@@ -10,14 +10,16 @@
     ],
     "require": {
         "php-di/php-di": "^6.3",
-        "sentry/sdk": "^3.1"
+        "sentry/sdk": "^3.1",
+        "twig/twig": "^3.3"
     },
     "autoload": {
         "psr-4": {
             "SDRT\\CustomFunctions\\": "src/"
         },
         "files": [
-            "src/helpers/email.php"
+            "src/helpers/email.php",
+            "src/helpers/views.php"
         ]
     }
 }
