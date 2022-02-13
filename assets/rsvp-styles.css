@@ -3,9 +3,7 @@
     width: 100%;
     max-width: 80%;
 }
-.rwd-table thead tr{
-    border: 0px !important;
-}
+
 .rwd-table tr {
     border-style: solid;
     border-width: 0 2px;
@@ -98,6 +96,13 @@
     right: 57px;
 }
 
+.rwd-table td span.dashicons-yes {
+    border-radius: 50%;
+    background: forestgreen;
+    color: white;
+    padding: 6px;
+}
+
 .button.action {
     background-color: transparent !important;
 }
@@ -123,12 +128,15 @@
         display: table-cell;
         padding: .25em .5em;
     }
+
     .rwd-table th:first-child, .rwd-table td:first-child {
         padding-left: 0;
     }
+
     .rwd-table th:last-child, .rwd-table td:last-child {
         padding-right: 0;
     }
+
     .rwd-table th, .rwd-table td {
         padding: 1em !important;
     }

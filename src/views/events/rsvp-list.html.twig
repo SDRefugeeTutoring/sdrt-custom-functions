@@ -1,0 +1,57 @@
+<script>
+    var rsvpExports = {{ exportData|json_encode() }};
+</script>
+
+<h2 class="give-title current_rsvps" id="rsvps">Current RSVPS:</h2>
+<button class="rsvp-download">Print RSVPs</button>
+
+<table class="rwd-table" id="rsvp-table">
+    <thead>
+    <tr>
+        <th colspan="4">Tutoring on {{ event.dates.start.format('F d, Y') }}</th>
+    </tr>
+    <tr class="labels">
+        <th><strong>Name</strong></th>
+        <th><strong>Email</strong></th>
+        <th><strong>Attended?</strong></th>
+        <th><strong>Actions</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for rsvp in rsvps %}
+        <tr data-rsvp-id="{{ rsvp.ID }}" data-email="{{ rsvp.volunteer_email }}" data-name="{{ rsvp.volunteer_name }}">
+            <td>{{ rsvp.volunteer_name }}</td>
+            <td>{{ rsvp.volunteer_email }}</td>
+            <td>
+                {% set isAttending = rsvp.attended in ['no', 'unknown'] %}
+                <a href="#"
+                   data-attended="1"
+                   class="button action attended attended-{{ rsvp.attended }} js-set-attended"
+                   style="display: {{ isAttending ? 'inherit' : 'none' }}"
+                >
+                    <span class="dashicons dashicons-editor-help" title="Click to change to Yes"></span>
+                </a>
+                <a href="#"
+                   data-attended="0"
+                   class="button action attended-email js-set-attended"
+                   style="display: {{ isAttending ? 'none' : 'inherit' }}"
+                >
+                    <span class="dashicons dashicons-yes" title="Click to change to No"></span>
+                </a>
+            </td>
+            <td data-th="actions">
+                <a href="{{ getDeletePostLink(rsvp.ID)|raw }}" class="button action delete-rsvp js-delete-rsvp">
+                <span class="dashicons dashicons-no"
+                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
+                      title="Click to delete RSVP">Delete</span>
+                </a>
+                <a href="#" class="button action attended-email js-email-no-show">
+                    <span class="dashicons dashicons-email-alt"
+                          style="border-radius: 50%; background: deepskyblue; color: white; padding: 6px;"
+                          title="Click to email attendee for no-show">Email</span>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,24 @@
+<div class="tutoring-rsvp">
+    <h2 class="give-title">RSVP HERE:</h2>
+
+    {% if rsvpLimit > 0 and rsvpTotal >= rsvpLimit %}
+        {% include('events/partials/rsvp-closed.html.twig') %}
+    {% elseif not mustLogin %}
+        {% include('events/partials/rsvp-form.html.twig') %}
+    {% elseif mustLogin %}
+        {% if not isUserLoggedIn() %}
+            {% include('events/partials/rsvp-require-login.html.twig') %}
+        {% elseif not userIsLeader and not userCanRsvp(userId) %}
+            {% include('events/partials/rsvp-user-not-eligible.html.twig') %}
+        {% elseif userHasRsvpd %}
+            {% set rsvp = getUserRsvpForEvent(getCurrentUserId(), event.ID) %}
+            {% if rsvp.attending == 'no' %}
+                {% include('events/partials/rsvp-not-attending.html.twig') %}
+            {% else %}
+                {% include('events/partials/rsvp-attending.html.twig') %}
+            {% endif %}
+        {% else %}
+            {% include('events/partials/rsvp-form.html.twig') %}
+        {% endif %}
+    {% endif %}
+</div>
