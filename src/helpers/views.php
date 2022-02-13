@@ -14,7 +14,8 @@ function view(string $view, array $data = []): string
         $loader = new FilesystemLoader(SDRT_FUNCTIONS_DIR . '/src/views');
 
         $twig = new Environment($loader, [
-            'cache' => wp_get_environment_type() === 'local' ? false : SDRT_FUNCTIONS_DIR . '/src/views/cache',
+//            'cache' => wp_get_environment_type() === 'local' ? false : SDRT_FUNCTIONS_DIR . 'src/views/cache',
+            'cache' => false,
         ]);
 
         // WordPress functions
