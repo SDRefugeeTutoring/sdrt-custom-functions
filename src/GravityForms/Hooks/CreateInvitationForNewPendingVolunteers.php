@@ -41,7 +41,7 @@ class CreateInvitationForNewPendingVolunteers
 
         $invitation = sdrt(CreateInvitation::class)($candidate->id);
 
-        if (is_wp_error($candidate)) {
+        if (is_wp_error($invitation)) {
             Log::error(
                 "Checkr failed to create an Invitation for the registered user",
                 [

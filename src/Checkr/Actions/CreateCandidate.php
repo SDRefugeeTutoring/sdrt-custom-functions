@@ -34,6 +34,10 @@ class CreateCandidate
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
 
+        if ( !empty($data['error']) ) {
+            return new WP_Error('checkr_candidate_error', $data['error']);
+        }
+
         return Candidate::fromResponse($data);
     }
 }

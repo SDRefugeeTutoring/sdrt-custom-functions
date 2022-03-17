@@ -30,6 +30,10 @@ class CreateInvitation
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
 
+        if ( !empty($data['error']) ) {
+            return new WP_Error('checkr_invitation_error', $data['error']);
+        }
+
         return Invitation::fromResponse($data);
     }
 }
