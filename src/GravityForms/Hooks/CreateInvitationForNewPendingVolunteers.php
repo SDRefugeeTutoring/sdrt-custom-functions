@@ -24,6 +24,13 @@ class CreateInvitationForNewPendingVolunteers
         }
 
         $dateOfBirth = new DateTime($user->your_date_of_birth);
+        $age = $dateOfBirth->diff(new DateTime())->y;
+
+        // volunteer must be at least 16 to register as a candidate on Checkr
+        if ($age < 16) {
+            return;
+        }
+
         $candidate = sdrt(CreateCandidate::class)($user->first_name, $user->last_name, $user->user_email, $dateOfBirth);
 
         if (is_wp_error($candidate)) {
@@ -36,6 +43,11 @@ class CreateInvitationForNewPendingVolunteers
                 ]
             );
 
+            return;
+        }
+
+        // volunteer must be at least 18 to get an invitation on Checkr
+        if ($age < 18) {
             return;
         }
 
