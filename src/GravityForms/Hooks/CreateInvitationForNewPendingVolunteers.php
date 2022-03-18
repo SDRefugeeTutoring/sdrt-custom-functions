@@ -46,6 +46,8 @@ class CreateInvitationForNewPendingVolunteers
             return;
         }
 
+        update_user_meta($user->ID, 'background_check_candidate_id', $candidate->id);
+
         // volunteer must be at least 18 to get an invitation on Checkr
         if ($age < 18) {
             return;
@@ -67,7 +69,6 @@ class CreateInvitationForNewPendingVolunteers
             return;
         }
 
-        update_user_meta($user->ID, 'background_check_candidate_id', $candidate->id);
         update_user_meta($user->ID, 'background_check_invite_url', $invitation->invitationUrl);
         update_user_meta($user->ID, 'background_check', 'Invited');
     }
