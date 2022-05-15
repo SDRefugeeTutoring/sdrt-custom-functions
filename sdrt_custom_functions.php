@@ -34,6 +34,9 @@ if ( ! defined( 'SDRT_FUNCTIONS_VERSION' ) && ( WP_DEBUG == true ) ) {
     define( 'SDRT_FUNCTIONS_VERSION', '1.1' );
 }
 
+define('SDRT_ASSETS_DIR', SDRT_FUNCTIONS_DIR . 'assets/');
+define('SDRT_ASSETS_URL', SDRT_FUNCTIONS_URL . 'assets/');
+
 define('SDRT_ORIENTATION_FORM', 166);
 
 // We want to check some things upon activation so we'll use this action to run everything first.

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace SDRT\CustomFunctions;
 
-use DateTime;
 use InvalidArgumentException;
 use SDRT\CustomFunctions\GravityForms\GravityFormsServiceProvider;
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider;
-
-use SDRT\CustomFunctions\Support\Log;
+use SDRT\CustomFunctions\VolunteerPortal\ServiceProvider as VolunteerPortalServiceProvider;
+use SDRT\CustomFunctions\Events\ServiceProvider as EventsServiceProvider;
 
 use function Sentry\init as initSentry;
 
@@ -20,6 +19,8 @@ class Boot
      */
     private array $serviceProviders = [
         GravityFormsServiceProvider::class,
+        VolunteerPortalServiceProvider::class,
+        EventsServiceProvider::class,
     ];
 
     /**
