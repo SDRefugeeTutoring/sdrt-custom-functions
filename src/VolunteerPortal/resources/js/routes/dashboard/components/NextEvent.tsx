@@ -20,22 +20,22 @@ export default function NextEvent({category, organizer, location}: NextEventProp
                 <Heading as="h2" size="md" mb={4}>
                     Next Scheduled Event
                 </Heading>
-                <Flex justify="space-between" fontSize="sm">
-                    <VStack align="flex-start">
+                <Flex justify="space-between" fontSize="sm" flexBasis={0} flexGrow={0}>
+                    <VStack align="flex-start" justify="space-between">
                         <Text as="strong" fontSize="lg" color="cyan.600">
                             June 10
                         </Text>
                         <Text>Tues • 4:50-6:25</Text>
                     </VStack>
-                    <VStack>
+                    <VStack justify="space-between">
                         <Text color="gray.500">Tutoring</Text>
                         <Text>{category}</Text>
                     </VStack>
-                    <VStack>
+                    <VStack justify="space-between">
                         <Text color="gray.500">Organizer</Text>
                         <Text>{organizer}</Text>
                     </VStack>
-                    <VStack>
+                    <VStack justify="space-between">
                         <Text color="gray.500">{location.name}</Text>
                         <Text>{location.address}</Text>
                     </VStack>
