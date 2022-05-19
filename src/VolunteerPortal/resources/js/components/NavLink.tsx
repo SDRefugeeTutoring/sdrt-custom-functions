@@ -12,7 +12,7 @@ export default function NavLink({to, text}: NavLinkProps) {
             {
                 // @ts-ignore
                 ({isActive}) => (
-                    <Text as={isActive ? 'strong' : null} fontSize="0.8rem">
+                    <Text fontWeight={isActive ? 'semibold' : 'normal'} fontSize="0.8rem">
                         {text}
                     </Text>
                 )

@@ -24,7 +24,11 @@ function App() {
         <ChakraProvider theme={theme}>
             <BrowserRouter basename="volunteer-portal">
                 <Container as="nav" py={8} centerContent>
-                    <SimpleGrid gap={4} columns={{md: 4, sm: 1}}>
+                    <SimpleGrid
+                        gap={6}
+                        templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
+                        justifyItems="center"
+                    >
                         <NavLink to="/" text="Dashboard" />
                         <NavLink to="/profile" text="Profile Information" />
                         <NavLink to="/requirements" text="Requirements Status" />

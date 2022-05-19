@@ -14,7 +14,7 @@ class Mix
         $file = self::getManifestFile($file);
         wp_enqueue_script(
             sanitize_title("sdrt-$file"),
-            SDRT_ASSETS_URL . $file,
+            untrailingslashit(SDRT_ASSETS_URL) . $file,
             [],
             '',
             $inFooter

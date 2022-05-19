@@ -1,9 +1,10 @@
 import {Container, SimpleGrid, VStack, Text, Link, Heading, Center} from '@chakra-ui/react';
 import {Link as RouterLink} from 'react-router-dom';
+import {format, formatDistanceToNow} from 'date-fns';
+
 import Card from '../../components/Card';
 import Message, {getMessageProps, MessageUrgency} from './components/Message';
 import NextEvent, {NextEventProps} from './components/NextEvent';
-import {EmailIcon} from '@chakra-ui/icons';
 
 export interface DashboardProps {
     message: {
@@ -35,13 +36,13 @@ export function dashboardPropsFromWindow(): DashboardProps {
     };
 }
 
-export default function Dashboard({message, nextEvent}: DashboardProps) {
+export default function Dashboard({message, nextEvent, volunteerStats}: DashboardProps) {
     return (
         <Container bg="white" centerContent={false} px={10} py={8} m={0} maxWidth="100%">
             <VStack spacing={10}>
                 {message && <Message {...getMessageProps(message.text, message.urgency)} />}
                 <NextEvent {...nextEvent} />
-                <SimpleGrid minChildWidth="20rem" spacing={5} width="100%" autoRows="1fr">
+                <SimpleGrid minChildWidth="16rem" spacing={5} width="100%" autoRows="1fr">
                     <Card>
                         <VStack alignItems="flex-start" spacing={7}>
                             <LabelAndText label="Name" text="Person Name" />
@@ -58,18 +59,26 @@ export default function Dashboard({message, nextEvent}: DashboardProps) {
                                     Volunteer Start Date
                                 </Text>
                                 <Text fontSize="3xl" fontWeight="bolder" color="cyan.600">
-                                    11/15/2021
+                                    {format(volunteerStats.startDate, 'MM/dd/yyyy')}
                                 </Text>
                                 <Text color="gray.500" fontWeight={400}>
-                                    (1 Year, 4 Months)
+                                    {`(${formatDistanceToNow(volunteerStats.startDate)})`}
                                 </Text>
                             </VStack>
                         </Center>
                     </Card>
-                    <StatCard label="Total Events Attended" text="42" />
-                    <StatCard label="Total Hours Tutored" text="126" />
-                    <StatCard label="Attendance Rate" text="100%" subText="(CURRENT TRIMESTER)" />
-                    <StatCard label="Attendance Rate" text="75%" subText="(PREVIOUS TRIMESTER)" />
+                    <StatCard label="Total Events Attended" text={volunteerStats.eventsAttended} />
+                    <StatCard label="Total Hours Tutored" text={volunteerStats.totalHours} />
+                    <StatCard
+                        label="Attendance Rate"
+                        text={`${volunteerStats.currentTrimesterAttendanceRate * 100}%`}
+                        subText="(CURRENT TRIMESTER)"
+                    />
+                    <StatCard
+                        label="Attendance Rate"
+                        text={`${volunteerStats.previousTrimesterAttendanceRate * 100}%`}
+                        subText="(PREVIOUS TRIMESTER)"
+                    />
                 </SimpleGrid>
             </VStack>
         </Container>
@@ -87,22 +96,22 @@ function LabelAndText({label, text}: {label: string; text: string}) {
     );
 }
 
-function StatCard({label, text, subText = ' '}: {label: string; text: string; subText?: string}) {
+function StatCard({label, text, subText = ' '}: {label: string; text: string | number; subText?: string}) {
     return (
-        <Card>
-            <Center h="100%">
-                <VStack>
-                    <Text as="strong" fontSize="2xl" color="gray.500">
-                        {label}
-                    </Text>
-                    <Text fontSize="5xl" fontWeight="bolder" color="cyan.600">
-                        {text}
-                    </Text>
+        <Card py={10}>
+            <VStack>
+                <Text as="strong" fontSize="2xl" color="gray.500">
+                    {label}
+                </Text>
+                <Text fontSize="5xl" fontWeight="bolder" color="cyan.800">
+                    {text}
+                </Text>
+                {subText && (
                     <Text color="gray.500" fontWeight={400}>
                         {subText}
                     </Text>
-                </VStack>
-            </Center>
+                )}
+            </VStack>
         </Card>
     );
 }
