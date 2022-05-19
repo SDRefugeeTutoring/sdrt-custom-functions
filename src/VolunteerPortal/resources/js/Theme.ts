@@ -42,6 +42,19 @@ const Button: ComponentStyleConfig = {
     },
 };
 
+const Container: ComponentStyleConfig = {
+    baseStyle: {
+        maxWidth: '100%',
+        bg: 'white',
+        px: 10,
+        py: 8,
+        m: 0,
+    },
+    defaultProps: {
+        centerContent: false,
+    },
+};
+
 export default extendTheme({
     fontSizes: {
         xs: '0.75rem',
@@ -56,5 +69,6 @@ export default extendTheme({
     },
     components: {
         Button,
+        Container,
     },
 });

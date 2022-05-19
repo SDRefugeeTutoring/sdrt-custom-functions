@@ -38,7 +38,7 @@ export function dashboardPropsFromWindow(): DashboardProps {
 
 export default function Dashboard({message, nextEvent, volunteerStats}: DashboardProps) {
     return (
-        <Container bg="white" centerContent={false} px={10} py={8} m={0} maxWidth="100%">
+        <Container>
             <VStack spacing={10}>
                 {message && <Message {...getMessageProps(message.text, message.urgency)} />}
                 <NextEvent {...nextEvent} />
