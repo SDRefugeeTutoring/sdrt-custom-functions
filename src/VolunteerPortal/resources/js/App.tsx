@@ -8,11 +8,14 @@ import Profile from './routes/profile';
 import Requirements from './routes/Requirements';
 import UpcomingEvents from './routes/UpcomingEvents';
 import theme from './Theme';
+import {StoreProvider} from './store';
+import User from './types/User';
 
 declare global {
     interface Window {
         sdrtVolunteerPortal: {
             dashboard: DashboardProps;
+            user: User;
         };
     }
 }
@@ -23,24 +26,26 @@ function App() {
     return (
         <ChakraProvider theme={theme}>
             <BrowserRouter basename="volunteer-portal">
-                <Container as="nav" centerContent bgColor="gray.100">
-                    <SimpleGrid
-                        gap={6}
-                        templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
-                        justifyItems="center"
-                    >
-                        <NavLink to="/" text="Dashboard" />
-                        <NavLink to="/profile" text="Profile Information" />
-                        <NavLink to="/requirements" text="Requirements Status" />
-                        <NavLink to="/events" text="Upcoming Events" />
-                    </SimpleGrid>
-                </Container>
-                <Routes>
-                    <Route path="/" element={<Index {...dashboardProps} />} />
-                    <Route path="profile" element={<Profile />} />
-                    <Route path="requirements" element={<Requirements />} />
-                    <Route path="upcoming-events" element={<UpcomingEvents />} />
-                </Routes>
+                <StoreProvider>
+                    <Container as="nav" centerContent bgColor="neutral.100">
+                        <SimpleGrid
+                            gap={6}
+                            templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
+                            justifyItems="center"
+                        >
+                            <NavLink to="/" text="Dashboard" />
+                            <NavLink to="/profile" text="Profile Information" />
+                            <NavLink to="/requirements" text="Requirements Status" />
+                            <NavLink to="/events" text="Upcoming Events" />
+                        </SimpleGrid>
+                    </Container>
+                    <Routes>
+                        <Route path="/" element={<Index {...dashboardProps} />} />
+                        <Route path="profile" element={<Profile />} />
+                        <Route path="requirements" element={<Requirements />} />
+                        <Route path="upcoming-events" element={<UpcomingEvents />} />
+                    </Routes>
+                </StoreProvider>
             </BrowserRouter>
         </ChakraProvider>
     );
