@@ -13,8 +13,8 @@ class ManageRewriteRules
     {
         return [
                    '^volunteer-portal/?$' => 'index.php?sdrt-page=volunteer-portal',
-                   '^volunteer-portal/([^/]+)/?$' => 'index.php?sdrt-page=volunteer-portal&sdrt-portal-page=$matches[1]'
-        ] + $rules;
+                   '^volunteer-portal/([^/]+)/?$' => 'index.php?sdrt-page=volunteer-portal&sdrt-portal-page=$matches[1]',
+               ] + $rules;
     }
 
     /**
@@ -33,6 +33,10 @@ class ManageRewriteRules
      */
     public function renderVolunteerPortal(string $template): string
     {
+        if ( ! is_user_logged_in()) {
+            wp_redirect(wp_login_url(home_url('volunteer-portal')));
+        }
+
         if (get_query_var('sdrt-page') === 'volunteer-portal') {
             return SDRT_FUNCTIONS_DIR . 'src/views/volunteer-portal/page.php';
         }
