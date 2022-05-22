@@ -55,7 +55,33 @@ const Container: ComponentStyleConfig = {
     },
 };
 
+const Input: ComponentStyleConfig = {
+    baseStyle: {
+        field: {
+            border: 0,
+            borderRadius: 0,
+        },
+    },
+    defaultProps: {
+        variant: 'filled',
+    },
+};
+
 export default extendTheme({
+    colors: {
+        neutral: {
+            50: '#fafafa',
+            100: '#f5f5f5',
+            200: '#e5e5e5',
+            300: '#d4d4d4',
+            400: '#a3a3a3',
+            500: '#737373',
+            600: '#525252',
+            700: '#404040',
+            800: '#262626',
+            900: '#171717',
+        },
+    },
     fontSizes: {
         xs: '0.75rem',
         sm: '0.875rem',
@@ -70,5 +96,6 @@ export default extendTheme({
     components: {
         Button,
         Container,
+        // Input,
     },
 });
