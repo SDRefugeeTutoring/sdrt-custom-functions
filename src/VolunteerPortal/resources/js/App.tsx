@@ -16,6 +16,10 @@ declare global {
         sdrtVolunteerPortal: {
             dashboard: DashboardProps;
             user: User;
+            restApi: {
+                url: string;
+                nonce: string;
+            };
         };
     }
 }

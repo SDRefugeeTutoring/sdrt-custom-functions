@@ -3,6 +3,7 @@ import {useRef, forwardRef, FormEvent, Ref} from 'react';
 
 import Section from '../../components/Section';
 import {useStore} from '../../store';
+import fetchRestAPI from '../../support/rest-fetch';
 
 export default function Profile() {
     const {user} = useStore();
@@ -13,14 +14,22 @@ export default function Profile() {
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const firstName = firstNameRef.current?.value;
-        const lastName = lastNameRef.current?.value;
-        const email = emailRef.current?.value;
-        const password = passwordRef.current?.value;
-        const confirmPassword = confirmPasswordRef.current?.value;
-        console.log({firstName, lastName, email, password, confirmPassword});
+
+        const updateProfile = await fetchRestAPI(
+            'profile',
+            'POST',
+            JSON.stringify({
+                firstName: firstNameRef.current.value,
+                lastName: lastNameRef.current.value,
+                email: emailRef.current.value,
+                password: passwordRef.current?.value,
+                confirmPassword: confirmPasswordRef.current?.value,
+            })
+        );
+
+        console.log(updateProfile);
     };
 
     return (

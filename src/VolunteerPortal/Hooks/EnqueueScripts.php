@@ -12,7 +12,7 @@ class EnqueueScripts
 {
     public function __invoke()
     {
-        if (!is_user_logged_in() || get_query_var('sdrt-page') !== 'volunteer-portal') {
+        if ( ! is_user_logged_in() || get_query_var('sdrt-page') !== 'volunteer-portal') {
             return;
         }
 
@@ -27,7 +27,11 @@ class EnqueueScripts
                 'firstName' => $user->first_name,
                 'lastName' => $user->last_name,
                 'email' => $user->user_email,
-            ]
+            ],
+            'restApi' => [
+                'url' => rest_url('sdrt/v1/portal'),
+                'nonce' => wp_create_nonce('wp_rest'),
+            ],
         ]);
     }
 }
