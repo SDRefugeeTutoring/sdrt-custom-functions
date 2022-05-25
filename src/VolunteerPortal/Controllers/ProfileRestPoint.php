@@ -6,6 +6,7 @@ namespace SDRT\CustomFunctions\VolunteerPortal\Controllers;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WP_User;
 
 class ProfileRestPoint
 {
@@ -36,7 +37,11 @@ class ProfileRestPoint
             return new WP_REST_Response($update, 500);
         }
 
-        return new WP_REST_Response($user->to_array(), 200);
+        return new WP_REST_Response([
+            'firstName' => $user->first_name,
+            'lastName' => $user->last_name,
+            'email' => $user->user_email,
+        ], 200);
     }
 
     public function validateProfile(WP_REST_Request $request): bool

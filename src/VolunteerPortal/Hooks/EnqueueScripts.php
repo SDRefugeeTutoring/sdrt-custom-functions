@@ -29,7 +29,7 @@ class EnqueueScripts
                 'email' => $user->user_email,
             ],
             'restApi' => [
-                'url' => rest_url('sdrt/v1/portal'),
+                'url' => rest_url(),
                 'nonce' => wp_create_nonce('wp_rest'),
             ],
         ]);

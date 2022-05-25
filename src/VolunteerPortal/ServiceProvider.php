@@ -24,7 +24,7 @@ class ServiceProvider implements ServiceProviderContract
      */
     public function boot(): void
     {
-        Hooks::addAction('rest_api_init', ProfileRestPoint::class, 'register');
+//        Hooks::addAction('rest_api_init', ProfileRestPoint::class, 'register');
 
         Hooks::addFilter('rewrite_rules_array', ManageRewriteRules::class, 'appendRewriteRules');
         Hooks::addFilter('query_vars', ManageRewriteRules::class, 'appendQueryVars');
