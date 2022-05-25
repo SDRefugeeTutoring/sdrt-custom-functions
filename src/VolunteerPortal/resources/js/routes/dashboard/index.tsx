@@ -5,6 +5,7 @@ import {format, formatDistanceToNow} from 'date-fns';
 import Card from '../../components/Card';
 import Message, {getMessageProps, MessageUrgency} from './components/Message';
 import NextEvent, {NextEventProps} from './components/NextEvent';
+import {useUserContext} from '../../store';
 
 export interface DashboardProps {
     message: {
@@ -37,6 +38,8 @@ export function dashboardPropsFromWindow(): DashboardProps {
 }
 
 export default function Dashboard({message, nextEvent, volunteerStats}: DashboardProps) {
+    const {user} = useUserContext();
+
     return (
         <Container>
             <VStack spacing={10}>
@@ -45,8 +48,8 @@ export default function Dashboard({message, nextEvent, volunteerStats}: Dashboar
                 <SimpleGrid minChildWidth="16rem" spacing={5} width="100%" autoRows="1fr">
                     <Card>
                         <VStack alignItems="flex-start" spacing={7}>
-                            <LabelAndText label="Name" text="Person Name" />
-                            <LabelAndText label="Email" text="name@example.com" />
+                            <LabelAndText label="Name" text={`${user.firstName} ${user.lastName}`} />
+                            <LabelAndText label="Email" text={user.email} />
                             <Link as={RouterLink} to="/profile" color="cyan.600" fontSize="sm">
                                 Update profile information
                             </Link>

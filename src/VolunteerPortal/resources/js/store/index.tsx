@@ -1,19 +1,19 @@
-import {createContext, ReactNode, useContext} from 'react';
+import {createContext, ReactNode, useContext, useState} from 'react';
 import type User from '../types/User';
 
 interface Store {
     user: User;
+    setUser: (user: User | ((prevUser: User) => User)) => void;
 }
 
-const Store = createContext<Store>({
-    user: window.sdrtVolunteerPortal.user,
-});
+const Store = createContext<Store>(null);
 
-export function StoreProvider({children}: {children: ReactNode}) {
-    return <Store.Provider value={{user: window.sdrtVolunteerPortal.user}}>{children}</Store.Provider>;
+export function UserContextProvider({children}: {children: ReactNode}) {
+    const [user, setUser] = useState<User>(window.sdrtVolunteerPortal.user);
+    return <Store.Provider value={{user, setUser}}>{children}</Store.Provider>;
 }
 
-export function useStore(): Store {
+export function useUserContext(): Store {
     return useContext<Store>(Store);
 }
 

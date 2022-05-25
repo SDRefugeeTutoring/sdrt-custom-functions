@@ -8,7 +8,7 @@ import Profile from './routes/profile';
 import Requirements from './routes/Requirements';
 import UpcomingEvents from './routes/UpcomingEvents';
 import theme from './Theme';
-import {StoreProvider} from './store';
+import {UserContextProvider} from './store';
 import User from './types/User';
 
 declare global {
@@ -30,7 +30,7 @@ function App() {
     return (
         <ChakraProvider theme={theme}>
             <BrowserRouter basename="volunteer-portal">
-                <StoreProvider>
+                <UserContextProvider>
                     <Container as="nav" centerContent bgColor="neutral.100">
                         <SimpleGrid
                             gap={6}
@@ -49,7 +49,7 @@ function App() {
                         <Route path="requirements" element={<Requirements />} />
                         <Route path="upcoming-events" element={<UpcomingEvents />} />
                     </Routes>
-                </StoreProvider>
+                </UserContextProvider>
             </BrowserRouter>
         </ChakraProvider>
     );

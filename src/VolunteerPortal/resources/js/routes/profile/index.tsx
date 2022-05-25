@@ -2,8 +2,9 @@ import {FormControl, FormLabel, Heading, Stack, VStack, Input, Text, Button, use
 import {useRef, forwardRef, FormEvent, Ref, ChangeEventHandler} from 'react';
 
 import Section from '../../components/Section';
-import {useStore} from '../../store';
+import {useUserContext} from '../../store';
 import {fetchRestApi} from '../../support/fetchRestApi';
+import User from '../../types/User';
 
 interface ValidationError {
     code: string;
@@ -30,7 +31,7 @@ export default function Profile() {
         isClosable: true,
         position: 'bottom',
     });
-    const {user} = useStore();
+    const {user, setUser} = useUserContext();
 
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
@@ -61,11 +62,24 @@ export default function Profile() {
             const response = await fetchRestApi('wp/v2/users/me', 'POST', JSON.stringify(data));
 
             if (response.ok) {
+                const userData = (await response.json()) as {
+                    first_name: string;
+                    last_name: string;
+                    email: string;
+                };
+
                 toast({
                     title: 'Profile Updated',
                     description: 'Your profile information has been updated.',
                     status: 'success',
                 });
+
+                setUser((prevUser: User) => ({
+                    ...prevUser,
+                    firstName: userData.first_name,
+                    lastName: userData.last_name,
+                    email: userData.email,
+                }));
             } else if (response.status === 400) {
                 const error = (await response.json()) as ValidationError;
                 toast({
