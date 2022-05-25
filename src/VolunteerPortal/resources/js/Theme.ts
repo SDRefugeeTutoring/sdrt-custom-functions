@@ -20,7 +20,7 @@ const Button: ComponentStyleConfig = {
             },
         },
         red: {
-            bg: 'red.400',
+            bg: 'red.500',
             '&:hover': {
                 bg: 'red.600',
             },

@@ -5,7 +5,7 @@ import {ChakraProvider, Container, SimpleGrid} from '@chakra-ui/react';
 import NavLink from './components/NavLink';
 import Index, {DashboardProps, dashboardPropsFromWindow} from './routes/dashboard';
 import Profile from './routes/profile';
-import Requirements from './routes/Requirements';
+import Requirements from './routes/requirements';
 import UpcomingEvents from './routes/UpcomingEvents';
 import theme from './Theme';
 import {UserContextProvider} from './store';
