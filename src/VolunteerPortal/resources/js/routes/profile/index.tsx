@@ -2,7 +2,7 @@ import {FormControl, FormLabel, Heading, Stack, VStack, Input, Text, Button, use
 import {useRef, forwardRef, FormEvent, Ref, ChangeEventHandler} from 'react';
 
 import Section from '../../components/Section';
-import {useUserContext} from '../../store';
+import {useUserContext} from '../../stores/UserStore';
 import {fetchRestApi} from '../../support/fetchRestApi';
 import User from '../../types/User';
 
@@ -22,6 +22,9 @@ interface UpdateData {
     first_name: string;
     last_name: string;
     email: string;
+    meta: {
+        your_date_of_birth: string;
+    };
     password?: string;
 }
 
@@ -36,6 +39,7 @@ export default function Profile() {
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
+    const dateOfBirthRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -53,6 +57,9 @@ export default function Profile() {
                 first_name: firstNameRef.current.value,
                 last_name: lastNameRef.current.value,
                 email: emailRef.current.value,
+                meta: {
+                    your_date_of_birth: dateOfBirthRef.current.value,
+                },
             } as UpdateData;
 
             if (passwordRef.current.value) {
@@ -138,6 +145,13 @@ export default function Profile() {
                         />
                     </Stack>
                     <InputAndLabel label="Email" id="email" type="email" ref={emailRef} initialValue={user.email} />
+                    <InputAndLabel
+                        label="Date of Birth"
+                        id="dob"
+                        type="date"
+                        ref={dateOfBirthRef}
+                        initialValue={user.dateOfBirth}
+                    />
                     <VStack bg="neutral.50" px={8} py={6} w="100%" gap={4} alignItems="flex-start">
                         <Heading as="h2" fontSize={['lg', 'xl']}>
                             Change Your Password

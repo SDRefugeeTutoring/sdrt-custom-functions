@@ -5,7 +5,7 @@ import {format, formatDistanceToNow} from 'date-fns';
 import Card from '../../components/Card';
 import Message, {getMessageProps, MessageUrgency} from './components/Message';
 import NextEvent, {NextEventProps} from './components/NextEvent';
-import {useUserContext} from '../../store';
+import {useUserContext} from '../../stores/UserStore';
 
 export interface DashboardProps {
     message: {

@@ -10,6 +10,7 @@ const Button: ComponentStyleConfig = {
         color: 'white',
         '&:hover': {
             border: 0,
+            color: 'white',
         },
     },
     variants: {
@@ -23,6 +24,12 @@ const Button: ComponentStyleConfig = {
             bg: 'red.500',
             '&:hover': {
                 bg: 'red.600',
+            },
+        },
+        green: {
+            bg: 'green.500',
+            '&:hover': {
+                bg: 'green.600',
             },
         },
         outline: {

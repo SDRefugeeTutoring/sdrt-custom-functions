@@ -143,10 +143,6 @@ function sdrt_user_meta_fields( $user ) { ?>
 	<?php if ( is_admin() && current_user_can( 'can_view_rsvps' )  ) : ?>
 
 	<div class="vol-reqs">
-	<?php
-		//var_dump(get_user_meta($userid));
-		//var_dump($orientation[0]);
-		?>
 		<!-- SDRT Leadership View of Profile Edit Screen -->
 		<!-- BACKGROUND CHECK STATUS -->
 		<h2>Volunteer Requirement Status for:<br />

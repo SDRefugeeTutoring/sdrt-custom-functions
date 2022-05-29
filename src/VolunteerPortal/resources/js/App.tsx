@@ -8,14 +8,17 @@ import Profile from './routes/profile';
 import Requirements from './routes/requirements';
 import UpcomingEvents from './routes/UpcomingEvents';
 import theme from './Theme';
-import {UserContextProvider} from './store';
+import {UserContextProvider} from './stores/UserStore';
 import User from './types/User';
+import {Requirements as RequirementsData} from './types/Requirements';
+import {RequirementsContextProvider} from './stores/RequirementsStore';
 
 declare global {
     interface Window {
         sdrtVolunteerPortal: {
             dashboard: DashboardProps;
             user: User;
+            requirements: RequirementsData;
             restApi: {
                 url: string;
                 nonce: string;
@@ -31,24 +34,29 @@ function App() {
         <ChakraProvider theme={theme}>
             <BrowserRouter basename="volunteer-portal">
                 <UserContextProvider>
-                    <Container as="nav" centerContent bgColor="neutral.100">
-                        <SimpleGrid
-                            gap={6}
-                            templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
-                            justifyItems="center"
-                        >
-                            <NavLink to="/" text="Dashboard" />
-                            <NavLink to="/profile" text="Profile Information" />
-                            <NavLink to="/requirements" text="Requirements Status" />
-                            <NavLink to="/events" text="Upcoming Events" />
-                        </SimpleGrid>
-                    </Container>
-                    <Routes>
-                        <Route path="/" element={<Index {...dashboardProps} />} />
-                        <Route path="profile" element={<Profile />} />
-                        <Route path="requirements" element={<Requirements />} />
-                        <Route path="upcoming-events" element={<UpcomingEvents />} />
-                    </Routes>
+                    <RequirementsContextProvider>
+                        <Container as="nav" centerContent bgColor="neutral.100">
+                            <SimpleGrid
+                                gap={6}
+                                templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
+                                justifyItems="center"
+                            >
+                                <NavLink to="/" text="Dashboard" />
+                                <NavLink to="/profile" text="Profile Information" />
+                                <NavLink to="/requirements" text="Requirements Status" />
+                                <NavLink to="/events" text="Upcoming Events" />
+                            </SimpleGrid>
+                        </Container>
+                        <Routes>
+                            <Route path="/" element={<Index {...dashboardProps} />} />
+                            <Route path="profile" element={<Profile />} />
+                            <Route
+                                path="requirements"
+                                element={<Requirements requirements={window.sdrtVolunteerPortal.requirements} />}
+                            />
+                            <Route path="upcoming-events" element={<UpcomingEvents />} />
+                        </Routes>
+                    </RequirementsContextProvider>
                 </UserContextProvider>
             </BrowserRouter>
         </ChakraProvider>
