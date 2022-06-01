@@ -1,5 +1,5 @@
 import {FormControl, FormLabel, Heading, Stack, VStack, Input, Text, Button, useToast} from '@chakra-ui/react';
-import {useRef, forwardRef, FormEvent, Ref, ChangeEventHandler} from 'react';
+import {useRef, forwardRef, FormEvent, Ref, ChangeEventHandler, useState} from 'react';
 
 import Section from '../../components/Section';
 import {useUserContext} from '../../stores/UserStore';
@@ -35,6 +35,7 @@ export default function Profile() {
         position: 'bottom',
     });
     const {user, setUser} = useUserContext();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
@@ -66,6 +67,7 @@ export default function Profile() {
                 data.password = passwordRef.current.value;
             }
 
+            setIsLoading(true);
             const response = await fetchRestApi('wp/v2/users/me', 'POST', JSON.stringify(data));
 
             if (response.ok) {
@@ -105,6 +107,7 @@ export default function Profile() {
 
             passwordRef.current.value = '';
             confirmPasswordRef.current.value = '';
+            setIsLoading(false);
         } catch (error) {
             toast({
                 title: 'Error',
@@ -175,7 +178,9 @@ export default function Profile() {
                             />
                         </Stack>
                     </VStack>
-                    <Button type="submit">Update Profile</Button>
+                    <Button type="submit" isLoading={isLoading}>
+                        Update Profile
+                    </Button>
                 </VStack>
             </form>
         </Section>
