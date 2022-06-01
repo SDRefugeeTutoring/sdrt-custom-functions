@@ -9,6 +9,7 @@ use SDRT\CustomFunctions\Support\Hooks;
 use SDRT\CustomFunctions\VolunteerPortal\Controllers\ProfileRestPoint;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\EnqueueScripts;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\ManageRewriteRules;
+use SDRT\CustomFunctions\VolunteerPortal\Hooks\RegisterVolunteerMeta;
 
 class ServiceProvider implements ServiceProviderContract
 {
@@ -26,6 +27,7 @@ class ServiceProvider implements ServiceProviderContract
     {
 //        Hooks::addAction('rest_api_init', ProfileRestPoint::class, 'register');
 
+        Hooks::addAction('init', RegisterVolunteerMeta::class);
         Hooks::addFilter('rewrite_rules_array', ManageRewriteRules::class, 'appendRewriteRules');
         Hooks::addFilter('query_vars', ManageRewriteRules::class, 'appendQueryVars');
         Hooks::addFilter('template_include', ManageRewriteRules::class, 'renderVolunteerPortal');

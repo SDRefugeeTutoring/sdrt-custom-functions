@@ -144,14 +144,16 @@ export default function Profile() {
                             required
                         />
                     </Stack>
-                    <InputAndLabel label="Email" id="email" type="email" ref={emailRef} initialValue={user.email} />
-                    <InputAndLabel
-                        label="Date of Birth"
-                        id="dob"
-                        type="date"
-                        ref={dateOfBirthRef}
-                        initialValue={user.dateOfBirth}
-                    />
+                    <Stack w="100%" gap={4} direction={['column', 'row']}>
+                        <InputAndLabel label="Email" id="email" type="email" ref={emailRef} initialValue={user.email} />
+                        <InputAndLabel
+                            label="Date of Birth"
+                            id="dob"
+                            type="date"
+                            ref={dateOfBirthRef}
+                            initialValue={user.dateOfBirth}
+                        />
+                    </Stack>
                     <VStack bg="neutral.50" px={8} py={6} w="100%" gap={4} alignItems="flex-start">
                         <Heading as="h2" fontSize={['lg', 'xl']}>
                             Change Your Password
