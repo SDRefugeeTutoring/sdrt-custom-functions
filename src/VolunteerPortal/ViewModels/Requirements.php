@@ -33,6 +33,7 @@ class Requirements
         return [
             'backgroundCheck' => [
                 'status' => $backgroundCheck,
+                'inviteUrl' => $user->background_check_invite_url,
             ],
             'orientation' => [
                 'completed' => $user->sdrt_orientation_attended === 'Yes',

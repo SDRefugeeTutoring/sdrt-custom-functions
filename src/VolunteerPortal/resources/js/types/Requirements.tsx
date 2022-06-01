@@ -31,6 +31,23 @@ export enum BackgroundCheckStatus {
     DOB_ERROR = 'dob_error',
 }
 
+export function getBackgroundCheckColor(status: BackgroundCheckStatus): string {
+    switch (status) {
+        case BackgroundCheckStatus.INVITED:
+        case BackgroundCheckStatus.PASSED:
+            return 'green';
+        case BackgroundCheckStatus.CLEARED:
+        case BackgroundCheckStatus.PENDING:
+            return 'orange';
+        case BackgroundCheckStatus.FAILED:
+        case BackgroundCheckStatus.INVITE_ERROR:
+        case BackgroundCheckStatus.CANDIDATE_ERROR:
+        case BackgroundCheckStatus.DOB_ERROR:
+        default:
+            return 'red';
+    }
+}
+
 export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundCheck): ReactNode {
     switch (status) {
         case BackgroundCheckStatus.PASSED:
@@ -42,11 +59,12 @@ export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundChe
         case BackgroundCheckStatus.INVITED:
             return (
                 <>
-                    You have been invited to take a background check and your status is still pending. You can{' '}
-                    <Link href={invitationUrl} target="_blank" rel="noopener noreferrer">
-                        check on the status
-                    </Link>{' '}
-                    on the Checkr website.
+                    You have been invited to take a background check and your status is still pending. You can check on
+                    the status on the Checkr website: <br />
+                    <br />
+                    <Link href={invitationUrl} target="_blank" rel="noopener noreferrer" fontWeight="semibold">
+                        {invitationUrl}
+                    </Link>
                 </>
             );
         case BackgroundCheckStatus.PENDING:

@@ -32,6 +32,12 @@ const Button: ComponentStyleConfig = {
                 bg: 'green.600',
             },
         },
+        orange: {
+            bg: 'orange.500',
+            '&:hover': {
+                bg: 'orange.600',
+            },
+        },
         outline: {
             bg: 'transparent',
             border: '1px solid',

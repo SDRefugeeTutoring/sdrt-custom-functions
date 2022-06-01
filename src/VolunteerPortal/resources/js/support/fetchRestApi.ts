@@ -10,6 +10,6 @@ export async function fetchRestApi(endpoint, method, body): Promise<Response> {
     });
 }
 
-export function fetchSdrtApi(endpoint, method = 'POST', body = {}): Promise<Response> {
+export function fetchSdrtApi(endpoint, method = 'POST', body = null): Promise<Response> {
     return fetchRestApi(`sdrt/v1/${endpoint}`, method, body);
 }
