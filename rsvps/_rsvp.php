@@ -18,7 +18,8 @@ require_once SDRT_FUNCTIONS_DIR . 'rsvps/exporter/Exporter.php';
  */
 function get_rsvps(array $args = []): array
 {
-    return get_posts($args + [
+    return get_posts(
+        $args + [
             'post_type' => 'rsvp',
             'post_status' => ['publish'],
             'order' => 'ASC',
@@ -28,7 +29,8 @@ function get_rsvps(array $args = []): array
             'posts_per_page' => -1,
             'nopaging' => true,
             'no_found_rows' => true,
-        ]);
+        ]
+    );
 }
 
 /**
@@ -126,4 +128,42 @@ function user_can_rsvp(int $user_id): bool
            && $orientation === 'Yes'
            && $coc === 'Yes'
            && $waiver === 'Yes';
+}
+
+function user_has_event_rsvp(int $userId, int $eventId): bool
+{
+    return (bool)get_user_rsvp_for_event($userId, $eventId);
+}
+
+function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true, $content = null): WP_Post
+{
+    $rsvpId = wp_insert_post([
+        'post_type' => 'rsvp',
+        'post_author' => $user->ID,
+        'post_title' => $event->post_title,
+        'post_status' => 'publish',
+        'post_content' => $content ?? "RSVP to $event->post_title for $user->display_name",
+        'meta_input' => [
+            'volunteer_user_id' => $user->ID,
+            'volunteer_name' => "$user->last_name, $user->first_name",
+            'volunteer_email' => $user->user_email,
+            'event_id' => $event->ID,
+            'event_name' => $event->post_title,
+            'event_date' => $event->start_date,
+            'rsvp_date' => (new DateTime())->format('Ymd'),
+            'attended' => 'no',
+            'attending' => $attending ? 'yes' : 'no',
+        ],
+    ]);
+
+    if (is_wp_error($rsvpId)) {
+        throw new Exception("Failed to create RSVP: {$rsvpId->get_error_message()}");
+    }
+
+    return get_post($rsvpId);
+}
+
+function create_orientation_rsvp(WP_User $user, WP_Post $event): WP_Post
+{
+    return create_event_rsvp($user, $event, "$user->first_name $user->last_name Orientation");
 }
