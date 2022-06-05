@@ -10,7 +10,22 @@ export interface Requirements {
         status: BackgroundCheckStatus;
         inviteUrl: string;
     };
-    orientation: Requirement;
+    orientation: {
+        completed: boolean;
+        upcomingEvents: Array<{
+            id: string | number;
+            address: {
+                street: string;
+                city: string;
+                state: string;
+                zipCode: string;
+                mapLink: string;
+            };
+            organizer: string;
+            date: string;
+            link: string;
+        }>;
+    };
     codeOfConduct: Requirement;
     volunteerRelease: Requirement;
 }
@@ -33,9 +48,9 @@ export enum BackgroundCheckStatus {
 
 export function getBackgroundCheckColor(status: BackgroundCheckStatus): string {
     switch (status) {
-        case BackgroundCheckStatus.INVITED:
         case BackgroundCheckStatus.PASSED:
             return 'green';
+        case BackgroundCheckStatus.INVITED:
         case BackgroundCheckStatus.CLEARED:
         case BackgroundCheckStatus.PENDING:
             return 'orange';
@@ -59,8 +74,8 @@ export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundChe
         case BackgroundCheckStatus.INVITED:
             return (
                 <>
-                    You have been invited to take a background check and your status is still pending. You can check on
-                    the status on the Checkr website: <br />
+                    You have been invited to take a background check, and your status is still pending. You can check
+                    your status on the Checkr website: <br />
                     <br />
                     <Link href={invitationUrl} target="_blank" rel="noopener noreferrer" fontWeight="semibold">
                         {invitationUrl}
@@ -70,9 +85,9 @@ export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundChe
         case BackgroundCheckStatus.PENDING:
             return 'Please request a background check to begin the process.';
         case BackgroundCheckStatus.INVITE_ERROR:
-            return 'There was an issue creating a Checkr Candidate, please try again and contact the volunteer coordinator if the problem persists.';
+            return 'There was an issue creating a Checkr Candidate. Please try again and contact the volunteer coordinator if the problem persists.';
         case BackgroundCheckStatus.CANDIDATE_ERROR:
-            return 'There was an issue creating a Checkr Candidate, please try again and contact the volunteer coordinator if the problem persists.';
+            return 'There was an issue creating a Checkr Candidate. Please try again and contact the volunteer coordinator if the problem persists.';
         case BackgroundCheckStatus.DOB_ERROR:
             return 'Please update your profile to include your date of birth.';
         default:

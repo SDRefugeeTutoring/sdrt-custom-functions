@@ -1,4 +1,4 @@
-import {Container, SimpleGrid, VStack, Text, Link, Heading, Center} from '@chakra-ui/react';
+import {Container, SimpleGrid, VStack, Text, Link, Center} from '@chakra-ui/react';
 import {Link as RouterLink} from 'react-router-dom';
 import {format, formatDistanceToNow} from 'date-fns';
 

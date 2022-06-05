@@ -68,7 +68,7 @@ export default function Profile() {
             }
 
             setIsLoading(true);
-            const response = await fetchRestApi('wp/v2/users/me', 'POST', JSON.stringify(data));
+            const response = await fetchRestApi('wp/v2/users/me', {method: 'POST', body: data});
 
             if (response.ok) {
                 const userData = (await response.json()) as {

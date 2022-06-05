@@ -6,7 +6,7 @@ namespace SDRT\CustomFunctions\VolunteerPortal;
 
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider as ServiceProviderContract;
 use SDRT\CustomFunctions\Support\Hooks;
-use SDRT\CustomFunctions\VolunteerPortal\Controllers\BackgroundCheckEndpoint;
+use SDRT\CustomFunctions\VolunteerPortal\Controllers\RequirementsEndpoint;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\EnqueueScripts;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\ManageRewriteRules;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\RegisterVolunteerMeta;
@@ -25,7 +25,7 @@ class ServiceProvider implements ServiceProviderContract
      */
     public function boot(): void
     {
-        Hooks::addAction('rest_api_init', BackgroundCheckEndpoint::class, 'register');
+        Hooks::addAction('rest_api_init', RequirementsEndpoint::class, 'register');
 
         Hooks::addAction('init', RegisterVolunteerMeta::class);
         Hooks::addFilter('rewrite_rules_array', ManageRewriteRules::class, 'appendRewriteRules');

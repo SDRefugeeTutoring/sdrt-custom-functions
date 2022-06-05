@@ -12,15 +12,21 @@ use WP_REST_Response;
 use WP_REST_Server;
 use WP_User;
 
-class BackgroundCheckEndpoint
+class RequirementsEndpoint
 {
-    private const NAMESPACE = 'sdrt/v1';
+    private const NAMESPACE = 'sdrt/v1/requirements';
 
     public function register(): void
     {
         register_rest_route(self::NAMESPACE, '/background-check', [
             'methods' => WP_REST_Server::EDITABLE,
             'callback' => [$this, 'requestBackgroundCheck'],
+            'permission_callback' => [$this, 'permissionCheck'],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/orientation-rsvp', [
+            'methods' => WP_REST_Server::EDITABLE,
+            'callback' => [$this, 'rsvpToOrientation'],
             'permission_callback' => [$this, 'permissionCheck'],
         ]);
     }
@@ -73,6 +79,25 @@ class BackgroundCheckEndpoint
         update_user_meta($user->ID, 'background_check', 'Invited');
 
         return $this->respondWithSuccess($invitation->invitationUrl);
+    }
+
+    public function rsvpToOrientation(WP_REST_Request $request): WP_REST_Response {
+        $eventId = $request->get_param('eventId');
+
+        /** @var WP_User $user */
+        $user = wp_get_current_user();
+
+        if ( !tribe_event_in_category('orientation-dates', $eventId) || user_can_rsvp($user->ID)) {
+            return new WP_REST_Response(['reason' => 'event_not_orientation'], 400);
+        }
+
+        if ( user_has_event_rsvp($user->ID, $eventId) ) {
+            return new WP_REST_Response(['reason' => 'rsvp_already_exists'], 400);
+        }
+
+        $rsvp = create_orientation_rsvp($user, tribe_get_event($eventId));
+
+        return new WP_REST_Response($rsvp);
     }
 
     private function respondWithSuccess(string $inviteUrl): WP_REST_Response

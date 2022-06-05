@@ -8,7 +8,7 @@ const Button: ComponentStyleConfig = {
         boxShadow: '0px 0.1rem 0.3rem rgba(0, 0, 0, 0.4)',
         textTransform: 'uppercase',
         color: 'white',
-        '&:hover': {
+        '&:hover, &:focus, &:active': {
             border: 0,
             color: 'white',
         },
@@ -24,6 +24,9 @@ const Button: ComponentStyleConfig = {
             bg: 'red.500',
             '&:hover': {
                 bg: 'red.600',
+            },
+            '&:active,&:focus': {
+                bg: 'red.500',
             },
         },
         green: {
