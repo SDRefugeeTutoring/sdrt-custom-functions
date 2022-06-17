@@ -7,6 +7,7 @@ namespace SDRT\CustomFunctions\VolunteerPortal\Hooks;
 use SDRT\CustomFunctions\Support\Mix;
 use SDRT\CustomFunctions\VolunteerPortal\ViewModels\Dashboard;
 use SDRT\CustomFunctions\VolunteerPortal\ViewModels\Requirements;
+use SDRT\CustomFunctions\VolunteerPortal\ViewModels\UpcomingEvents;
 use WP_User;
 
 class EnqueueScripts
@@ -24,6 +25,7 @@ class EnqueueScripts
         Mix::addInlineScript('volunteer-portal.js', 'sdrtVolunteerPortal', [
             'dashboard' => (new Dashboard())->toArray(),
             'requirements' => (new Requirements())->toArray(),
+            'upcomingEvents' => (new UpcomingEvents())->toArray(),
             'user' => [
                 'id' => $user->ID,
                 'firstName' => $user->first_name,

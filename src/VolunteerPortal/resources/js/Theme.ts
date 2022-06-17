@@ -11,6 +11,7 @@ const Button: ComponentStyleConfig = {
         '&:hover, &:focus, &:active': {
             border: 0,
             color: 'white',
+            textDecoration: 'none',
         },
     },
     variants: {
@@ -41,6 +42,23 @@ const Button: ComponentStyleConfig = {
                 bg: 'orange.600',
             },
         },
+        group: {
+            bg: 'transparent',
+            border: '1px solid',
+            borderRadius: '0.4rem',
+            borderColor: 'cyan.600',
+            boxShadow: 'none',
+            color: 'cyan.600',
+            '&[data-active]': {
+                bg: 'cyan.600',
+                color: 'white',
+            },
+            '&:hover': {
+                bg: 'cyan.700',
+                border: '1px solid',
+                borderColor: 'cyan.800',
+            },
+        },
         outline: {
             bg: 'transparent',
             border: '1px solid',
@@ -50,6 +68,18 @@ const Button: ComponentStyleConfig = {
                 bg: 'cyan.400',
                 border: '1px solid',
                 borderColor: 'cyan.600',
+            },
+        },
+        'dark-outline': {
+            bg: 'transparent',
+            border: '1px solid',
+            borderColor: 'cyan.600',
+            color: 'cyan.600',
+            '&:hover': {
+                bg: 'cyan.700',
+                border: '1px solid',
+                borderColor: 'cyan.800',
+                textDecoration: 'none',
             },
         },
     },

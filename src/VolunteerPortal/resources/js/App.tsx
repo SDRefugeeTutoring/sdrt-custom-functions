@@ -44,7 +44,7 @@ function App() {
                                 <NavLink to="/" text="Dashboard" />
                                 <NavLink to="/profile" text="Profile Information" />
                                 <NavLink to="/requirements" text="Requirements Status" />
-                                <NavLink to="/events" text="Upcoming Events" />
+                                <NavLink to="/upcoming-events" text="Upcoming Events" />
                             </SimpleGrid>
                         </Container>
                         <Routes>
