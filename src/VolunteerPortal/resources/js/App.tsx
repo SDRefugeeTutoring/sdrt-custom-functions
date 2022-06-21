@@ -11,6 +11,7 @@ import theme from './Theme';
 import {UserContextProvider} from './stores/UserStore';
 import User from './types/User';
 import {Requirements as RequirementsData} from './types/Requirements';
+import {UpcomingEvents as UpcomingEventsData} from './types/UpcomingEvents';
 import {RequirementsContextProvider} from './stores/RequirementsStore';
 
 declare global {
@@ -19,6 +20,7 @@ declare global {
             dashboard: DashboardProps;
             user: User;
             requirements: RequirementsData;
+            upcomingEvents: UpcomingEventsData;
             restApi: {
                 url: string;
                 nonce: string;

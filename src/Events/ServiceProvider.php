@@ -26,7 +26,7 @@ class ServiceProvider implements ServiceProviderContract
     {
         Hooks::addAction('init', RegisterTrimesters::class, 'register');
 
-        Hooks::addFilter('tribe_rest_single_event_data', AddEventData::class);
+        Hooks::addFilter('tribe_rest_events_archive_data', AddEventData::class);
         Hooks::addFilter('tribe_events_archive_get_args', AddTrimesterQuerySupport::class, '__invoke', 10, 3);
     }
 }

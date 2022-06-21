@@ -14,9 +14,11 @@ class AddEventData
             return $eventData;
         }
 
-        $rsvp = get_user_rsvp_for_event($user->ID, $eventData['id']);
+        foreach($eventData['events'] as &$event) {
+            $rsvp = get_user_rsvp_for_event($user->ID, $event['id']);
 
-        $eventData['rsvpStatus'] = $rsvp ? $rsvp->attending === 'yes' : null;
+            $event['rsvpStatus'] = $rsvp ? $rsvp->attending === 'yes' : null;
+        }
 
         return $eventData;
     }

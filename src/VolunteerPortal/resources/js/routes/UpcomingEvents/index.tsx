@@ -14,52 +14,133 @@ import {
     Select,
     HStack,
     Checkbox,
+    useToast,
+    Spinner,
 } from '@chakra-ui/react';
 import {format} from 'date-fns';
 import {useEffect, useState} from 'react';
 import {fetchRestApi} from '../../support/fetchRestApi';
 
 interface EventResponse {
-    id: number;
-    date: string;
-    url: string;
-    categories: Array<{
-        name: string;
+    events: Array<{
+        id: number;
+        date: string;
+        url: string;
+        categories: Array<{
+            name: string;
+            slug: string;
+        }>;
+        organizer: Array<{
+            organizer: string;
+        }>;
+        rsvpStatus: boolean | null;
     }>;
-    organizer: Array<{
-        organizer: string;
-    }>;
-    rsvpStatus: boolean | null;
+    total: number;
+    total_pages: number;
 }
 
 interface Event {
     id: number;
     date: Date;
     url: string;
-    category: string;
-    organizer: string;
+    category: string | null;
+    categorySlug: string | null;
+    organizer: string | null;
     rsvpStatus: boolean | null;
 }
 
+const TrimesterOptions = window.sdrtVolunteerPortal.upcomingEvents.trimesters.map(({id, name, slug}) => (
+    <option key={id} value={slug}>
+        {name}
+    </option>
+));
+
+const categoryFilters = window.sdrtVolunteerPortal.upcomingEvents.categories;
+
+const categoryColorScheme = {
+    'k-5th-grade': 'white',
+    'middle-high-school': 'orange',
+    'non-tutoring-event': 'cyan',
+};
+
 export default function UpcomingEvents() {
-    const [trimester, setTrimester] = useState<string>(null);
-    const [activeCategory, setActiveCategory] = useState<string>(null);
+    const [trimester, setTrimester] = useState<string>(window.sdrtVolunteerPortal.upcomingEvents.trimesters[0].slug);
+    const [activeCategories, setActiveCategories] = useState<Array<string>>([]);
     const [events, setEvents] = useState<Array<Event>>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const toast = useToast({
+        duration: 7500,
+        position: 'bottom',
+    });
+
+    function handleCategoryChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const include = event.target.checked;
+        const slug = event.target.value;
+
+        setActiveCategories((prevState) => {
+            if (include) {
+                return [...prevState, slug];
+            } else {
+                return prevState.filter((category) => category !== slug);
+            }
+        });
+    }
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetchRestApi('events/v1/events', {method: 'GET'});
+                setLoading(true);
+
+                const categories =
+                    activeCategories.length > 0
+                        ? activeCategories.join(',')
+                        : [categoryFilters.k5.slug, categoryFilters.middle.slug, categoryFilters.other.slug].join(',');
+
+                const response = await fetchRestApi(
+                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}`,
+                    {method: 'GET'}
+                );
 
                 if (response.ok) {
+                    const events: EventResponse = await response.json();
+
+                    setEvents(
+                        events.events.map((event) => {
+                            return {
+                                id: event.id,
+                                date: new Date(event.date),
+                                url: event.url,
+                                category: event.categories[0] ? event.categories[0].name : null,
+                                categorySlug: event.categories[0] ? event.categories[0].slug : null,
+                                organizer: event.organizer[0] ? event.organizer[0].organizer : null,
+                                rsvpStatus: event.rsvpStatus,
+                            };
+                        })
+                    );
+                } else {
+                    toast({
+                        title: 'Error',
+                        duration: 10000,
+                        status: 'error',
+                        description:
+                            'There was a problem loading the events. Please try refreshing the page. If the problem persists, please contact the Volunteer Coordinator.',
+                    });
                 }
             } catch (error) {
-                console.error(error);
+                toast({
+                    title: 'Error',
+                    duration: 10000,
+                    status: 'error',
+                    description:
+                        'There was a problem loading the events. Please try refreshing the page. If the problem persists, please contact the Volunteer Coordinator.',
+                });
             }
+            setLoading(false);
         };
 
         fetchEvents();
-    }, [trimester, activeCategory]);
+    }, [trimester, activeCategories]);
 
     return (
         <Section heading="Upcoming Events">
@@ -67,65 +148,53 @@ export default function UpcomingEvents() {
                 These are the upcoming events which you may be filter by trimester and event type. Please review the
                 events and RSVP as to whether you are able to attend.
             </Text>
-            <Flex gap={8} justify="space-between" mb={6}>
-                <Select w="auto">
-                    <option>Q2 Trimester 2022</option>
-                    <option>Q3 Trimester 2022</option>
-                    <option>Q4 Trimester 2022</option>
+            <Flex gap={8} justify="space-between" mb={6} as="form" role="search" aria-label="Upcoming Events">
+                <Select w="auto" onChange={(event) => setTrimester(event.target.value)}>
+                    {TrimesterOptions}
                 </Select>
                 <HStack gap={3}>
-                    <Checkbox sx={{marginBottom: 0}}>K-5th Grade</Checkbox>
-                    <Checkbox colorScheme="orange">Middle & High School</Checkbox>
-                    <Checkbox colorScheme="teal">Other</Checkbox>
+                    <Checkbox
+                        onChange={handleCategoryChange}
+                        value={categoryFilters.k5.slug}
+                        colorScheme="gray"
+                        sx={{marginBottom: 0}}
+                    >
+                        {categoryFilters.k5.name}
+                    </Checkbox>
+                    <Checkbox onChange={handleCategoryChange} value={categoryFilters.middle.slug} colorScheme="orange">
+                        {categoryFilters.middle.name}
+                    </Checkbox>
+                    <Checkbox onChange={handleCategoryChange} value={categoryFilters.other.slug} colorScheme="teal">
+                        {categoryFilters.other.name}
+                    </Checkbox>
                 </HStack>
             </Flex>
             <TableContainer boxShadow="0px 0.15rem 0.3rem rgb(0 0 0 / 30%)" borderRadius="0.75rem">
-                <Table variant="simple">
-                    <Tbody>
-                        <EventRow
-                            date={new Date()}
-                            category="Middle & High School"
-                            type="Online Tutoring:"
-                            organizer="John Stamos"
-                            link="https://www.google.com"
-                            colorScheme="white"
-                        />
-                        <EventRow
-                            date={new Date()}
-                            category="Middle & High School"
-                            type="Online Tutoring:"
-                            organizer="John Stamos"
-                            link="https://www.google.com"
-                            colorScheme="cyan"
-                        />
-                        <EventRow
-                            date={new Date()}
-                            category="Middle & High School"
-                            type="Online Tutoring:"
-                            organizer="John Stamos"
-                            link="https://www.google.com"
-                            rsvp={true}
-                            colorScheme="orange"
-                        />
-                        <EventRow
-                            date={new Date()}
-                            category="Middle & High School"
-                            type="Online Tutoring:"
-                            organizer="John Stamos"
-                            link="https://www.google.com"
-                            colorScheme="white"
-                        />
-                        <EventRow
-                            date={new Date()}
-                            category="Middle & High School"
-                            type="Online Tutoring:"
-                            organizer="John Stamos"
-                            link="https://www.google.com"
-                            rsvp={false}
-                            colorScheme="cyan"
-                        />
-                    </Tbody>
-                </Table>
+                {loading ? (
+                    <Center py={10}>
+                        <Spinner size="xl" thickness="4px" color="cyan.600" />
+                    </Center>
+                ) : events.length <= 0 ? (
+                    <Center py={10}>
+                        <Text>No events found.</Text>
+                    </Center>
+                ) : (
+                    <Table variant="simple">
+                        <Tbody>
+                            {events.map(({id, date, category, categorySlug, organizer, url}) => (
+                                <EventRow
+                                    key={id}
+                                    date={date}
+                                    category={category}
+                                    type="Online Tutoring:"
+                                    organizer={organizer}
+                                    link={url}
+                                    colorScheme={categoryColorScheme[categorySlug]}
+                                />
+                            ))}
+                        </Tbody>
+                    </Table>
+                )}
             </TableContainer>
         </Section>
     );
@@ -159,7 +228,7 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp}: Ev
                     <Text fontSize="md" color="neutral.500">
                         {type}
                     </Text>
-                    <Text fontSize="md">{category}</Text>
+                    <Text fontSize="md" dangerouslySetInnerHTML={{__html: category}} />
                 </VStack>
             </Td>
             <Td py={10}>
@@ -167,7 +236,7 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp}: Ev
                     <Text fontSize="md" color="neutral.500">
                         Organizer:
                     </Text>
-                    <Text fontSize="md">{organizer}</Text>
+                    <Text fontSize="md" dangerouslySetInnerHTML={{__html: organizer}} />
                 </VStack>
             </Td>
             <Td py={10}>
