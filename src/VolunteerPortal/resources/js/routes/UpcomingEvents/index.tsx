@@ -18,13 +18,15 @@ import {
     Spinner,
 } from '@chakra-ui/react';
 import {format} from 'date-fns';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {fetchRestApi} from '../../support/fetchRestApi';
+import rsvpToEvent from '../../support/rsvp';
+import produce from 'immer';
 
 interface EventResponse {
     events: Array<{
         id: number;
-        date: string;
+        start_date: string;
         url: string;
         categories: Array<{
             name: string;
@@ -69,10 +71,29 @@ export default function UpcomingEvents() {
     const [events, setEvents] = useState<Array<Event>>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const setEventAttendance = useCallback((id: number, attending: boolean) => {
+        setEvents(
+            produce<Array<Event>>((draft) => {
+                const event = draft.find((event) => event.id === id);
+                event.rsvpStatus = attending;
+            })
+        );
+    }, []);
+
     const toast = useToast({
         duration: 7500,
         position: 'bottom',
     });
+
+    const rsvpForEvent = async (eventId: number, attending: boolean) => {
+        const worked = rsvpToEvent(eventId, attending, toast);
+
+        if (!worked) {
+            return;
+        }
+
+        setEventAttendance(eventId, attending);
+    };
 
     function handleCategoryChange(event: React.ChangeEvent<HTMLInputElement>) {
         const include = event.target.checked;
@@ -109,7 +130,7 @@ export default function UpcomingEvents() {
                         events.events.map((event) => {
                             return {
                                 id: event.id,
-                                date: new Date(event.date),
+                                date: new Date(event.start_date),
                                 url: event.url,
                                 category: event.categories[0] ? event.categories[0].name : null,
                                 categorySlug: event.categories[0] ? event.categories[0].slug : null,
@@ -181,7 +202,7 @@ export default function UpcomingEvents() {
                 ) : (
                     <Table variant="simple">
                         <Tbody>
-                            {events.map(({id, date, category, categorySlug, organizer, url}) => (
+                            {events.map(({id, date, category, categorySlug, organizer, url, rsvpStatus}) => (
                                 <EventRow
                                     key={id}
                                     date={date}
@@ -190,6 +211,8 @@ export default function UpcomingEvents() {
                                     organizer={organizer}
                                     link={url}
                                     colorScheme={categoryColorScheme[categorySlug]}
+                                    rsvp={rsvpStatus}
+                                    handleRsvp={(attending) => rsvpForEvent(id, attending)}
                                 />
                             ))}
                         </Tbody>
@@ -208,9 +231,10 @@ interface EventRowProps {
     organizer: string;
     link: string;
     rsvp?: boolean;
+    handleRsvp(attending: boolean): void;
 }
 
-function EventRow({colorScheme, date, category, type, organizer, link, rsvp}: EventRowProps) {
+function EventRow({colorScheme, date, category, type, organizer, link, rsvp, handleRsvp}: EventRowProps) {
     return (
         <Tr bg={`${colorScheme}.50`}>
             <Td py={10}>
@@ -249,10 +273,10 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp}: Ev
             <Td py={10}>
                 <Center>
                     <ButtonGroup isAttached boxShadow="0px 0.1rem 0.3rem rgba(0, 0, 0, 0.4)" borderRadius="0.4rem">
-                        <Button isActive={rsvp === true} variant="group">
+                        <Button onClick={() => handleRsvp(true)} isActive={rsvp === true} variant="group">
                             RSVP YES
                         </Button>
-                        <Button isActive={rsvp === false} variant="group">
+                        <Button onClick={() => handleRsvp(false)} isActive={rsvp === false} variant="group">
                             RSVP NO
                         </Button>
                     </ButtonGroup>

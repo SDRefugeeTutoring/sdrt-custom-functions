@@ -17,7 +17,7 @@ import {
 import {ChevronRightIcon} from '@chakra-ui/icons';
 import {format, parse} from 'date-fns';
 import {Fragment} from 'react';
-import {fetchSdrtApi} from '../../../support/fetchRestApi';
+import rsvpToEvent from '../../../support/rsvp';
 
 export default function OrientationCard({orientation}) {
     const toast = useToast({
@@ -25,42 +25,7 @@ export default function OrientationCard({orientation}) {
         position: 'bottom',
     });
 
-    async function requestRSVP(eventId: number) {
-        const response = await fetchSdrtApi('requirements/orientation-rsvp', {
-            body: {eventId},
-        });
-
-        if (response.ok) {
-            toast({
-                title: "You have RSVP'd",
-                description: "Thank you for your RSVP! We'll see you at the orientation!",
-                status: 'success',
-            });
-        } else {
-            const error = await response.json();
-            const reason = error.reason ?? null;
-            let description: string,
-                status: AlertStatus = 'error';
-
-            if (reason === 'rsvp_already_exists') {
-                status = 'info';
-                description = "You have already RSVP'd to this event. No need to RSVP again.";
-            } else if (reason === 'event_not_orientation') {
-                status = 'warning';
-                description =
-                    'The event must be an orientation. If you believe this is an error, please contact the volunteer coordinator.';
-            } else {
-                description =
-                    'A problem occurred when creating your RSVP. Please refresh, try again, and contact the volunteer coordinator if the problem persists.';
-            }
-
-            toast({
-                title: 'Unable to RSVP',
-                description,
-                status,
-            });
-        }
-    }
+    const rsvpToOrientation = (eventId: number) => rsvpToEvent(eventId, true, toast);
 
     return (
         <RequirementCard header="Orientation Status" completed={orientation.completed}>
@@ -146,7 +111,7 @@ export default function OrientationCard({orientation}) {
                                                 <Button as="a" href={link} variant="red" target="_blank">
                                                     More Info
                                                 </Button>
-                                                <Button onClick={() => requestRSVP(id)}>RSVP</Button>
+                                                <Button onClick={() => rsvpToOrientation(id)}>RSVP</Button>
                                             </Fragment>
                                         );
                                     })}

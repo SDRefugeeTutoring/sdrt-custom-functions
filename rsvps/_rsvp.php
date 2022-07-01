@@ -135,6 +135,29 @@ function user_has_event_rsvp(int $userId, int $eventId): bool
     return (bool)get_user_rsvp_for_event($userId, $eventId);
 }
 
+function user_is_attending_event(int $userId, int $eventId, $attending = true): bool
+{
+    $rsvp = get_user_rsvp_for_event($userId, $eventId);
+
+    if ($rsvp === null) {
+        return ! $attending;
+    }
+
+    return $attending
+        ? $rsvp->attending === 'yes'
+        : $rsvp->attending !== 'yes';
+}
+
+function user_is_not_attending_event(int $userId, int $eventId): bool
+{
+    return user_is_attending_event($userId, $eventId, false);
+}
+
+function set_rsvp_to_attending(int $rsvpId, bool $attending = true)
+{
+    update_post_meta($rsvpId, 'attending', $attending ? 'yes' : 'no');
+}
+
 function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true, $content = null): WP_Post
 {
     $rsvpId = wp_insert_post([
@@ -161,9 +184,4 @@ function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true, $co
     }
 
     return get_post($rsvpId);
-}
-
-function create_orientation_rsvp(WP_User $user, WP_Post $event): WP_Post
-{
-    return create_event_rsvp($user, $event, "$user->first_name $user->last_name Orientation");
 }
