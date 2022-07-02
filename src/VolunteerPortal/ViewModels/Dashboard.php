@@ -33,4 +33,9 @@ class Dashboard
             ],
         ];
     }
+
+    private function getNextEvent(): ?array
+    {
+//        $event = get_even
+    }
 }

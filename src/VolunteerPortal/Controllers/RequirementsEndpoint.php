@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SDRT\CustomFunctions\VolunteerPortal\Controllers;
 
 use DateTime;
+use Exception;
 use SDRT\CustomFunctions\Checkr\Actions\CreateCandidate;
 use SDRT\CustomFunctions\Checkr\Actions\CreateInvitation;
 use WP_REST_Request;
@@ -96,10 +97,16 @@ class RequirementsEndpoint
 
         $rsvp = get_user_rsvp_for_event($user->ID, $eventId);
 
-        if ($rsvp) {
-            set_rsvp_to_attending($rsvp->ID, $attending);
-        } else {
-            $rsvp = create_event_rsvp($user, tribe_get_event($eventId), $attending);
+        try {
+            if ($rsvp) {
+                set_rsvp_to_attending($rsvp->ID, $attending);
+            } else {
+                $rsvp = create_event_rsvp($user, tribe_get_event($eventId), $attending);
+            }
+
+            send_rsvp_email($user, tribe_get_event($eventId), $attending);
+        } catch(Exception $exception) {
+            return new WP_REST_Response(['reason' => 'unexpected_failure'], 500);
         }
 
         return new WP_REST_Response($rsvp);

@@ -158,14 +158,14 @@ function set_rsvp_to_attending(int $rsvpId, bool $attending = true)
     update_post_meta($rsvpId, 'attending', $attending ? 'yes' : 'no');
 }
 
-function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true, $content = null): WP_Post
+function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true): WP_Post
 {
     $rsvpId = wp_insert_post([
         'post_type' => 'rsvp',
         'post_author' => $user->ID,
         'post_title' => $event->post_title,
         'post_status' => 'publish',
-        'post_content' => $content ?? "RSVP to $event->post_title for $user->display_name",
+        'post_content' => "RSVP to $event->post_title for $user->display_name",
         'meta_input' => [
             'volunteer_user_id' => $user->ID,
             'volunteer_name' => "$user->last_name, $user->first_name",
@@ -184,4 +184,24 @@ function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true, $co
     }
 
     return get_post($rsvpId);
+}
+
+function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending) {
+    if ($attending) {
+        $subject_will = 'WILL';
+    } else {
+        $subject_will = 'will NOT';
+    }
+
+    $subject = "RSVP: $user->first_name $user->last_name $subject_will attend the $event->post_title";
+
+    if ( strlen($subject) > 70 ) {
+        $subject = substr($subject, 0, 70);
+    }
+
+    sdrt_mail(
+        'info@sdrefugeetutoring.com',
+        $subject,
+        view('mail/send-admin-rsvp-notice', ['user' => $user, 'event' => $event, 'attending' => $attending])
+    );
 }
