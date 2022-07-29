@@ -12,7 +12,7 @@ export interface DashboardProps {
         text: string;
         urgency: MessageUrgency;
     };
-    nextEvent: NextEventProps;
+    nextEvent: NextEventProps | null;
     volunteerStats: {
         startDate: Date;
         eventsAttended: number;
@@ -26,10 +26,12 @@ export function dashboardPropsFromWindow(): DashboardProps {
     const dashboard = window.sdrtVolunteerPortal.dashboard;
     return {
         ...dashboard,
-        nextEvent: {
-            ...dashboard.nextEvent,
-            date: new Date(dashboard.nextEvent.date),
-        },
+        nextEvent: dashboard.nextEvent
+            ? {
+                  ...dashboard.nextEvent,
+                  date: new Date(dashboard.nextEvent.date),
+              }
+            : null,
         volunteerStats: {
             ...dashboard.volunteerStats,
             startDate: new Date(dashboard.volunteerStats.startDate),
@@ -44,7 +46,7 @@ export default function Dashboard({message, nextEvent, volunteerStats}: Dashboar
         <Container>
             <VStack spacing={10}>
                 {message && <Message {...getMessageProps(message.text, message.urgency)} />}
-                <NextEvent {...nextEvent} />
+                {nextEvent && <NextEvent {...nextEvent} />}
                 <SimpleGrid minChildWidth="16rem" spacing={5} width="100%" autoRows="1fr">
                     <Card>
                         <VStack alignItems="flex-start" spacing={7}>

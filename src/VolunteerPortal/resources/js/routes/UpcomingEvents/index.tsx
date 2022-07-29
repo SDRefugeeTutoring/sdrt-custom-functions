@@ -18,7 +18,7 @@ import {
     Spinner,
 } from '@chakra-ui/react';
 import {format} from 'date-fns';
-import {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {fetchRestApi} from '../../support/fetchRestApi';
 import rsvpToEvent from '../../support/rsvp';
 import produce from 'immer';

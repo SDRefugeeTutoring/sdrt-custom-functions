@@ -34,6 +34,56 @@ function get_rsvps(array $args = []): array
 }
 
 /**
+ * @return WP_Post[]|int[]
+ */
+function get_user_rsvps(int $userId, $args = []): array
+{
+    return get_rsvps(
+        [
+            'meta_query' => [
+                [
+                    'key' => 'volunteer_user_id',
+                    'value' => $userId,
+                ],
+            ],
+        ] + $args
+    );
+}
+
+/**
+ * @return WP_Post[]|int[]
+ */
+function get_attending_events(int $userId, array $args = []): array
+{
+    global $wpdb;
+
+    // queries the event ids for all events the user has RSVP'd to as attending
+    $eventIds = $wpdb->get_col(
+        $wpdb->prepare(
+            '
+        SELECT DISTINCT pm.meta_value events from wp_postmeta pm
+            INNER JOIN (
+                SELECT DISTINCT post_id from wp_postmeta
+                     WHERE meta_key = "volunteer_user_id" AND meta_value = %d
+            ) pm2 ON pm2.post_id = pm.post_id
+            INNER JOIN (
+                SELECT post_id from wp_postmeta
+                     WHERE meta_key = "attending" AND meta_value = "yes"
+            ) pm3 ON pm3.post_id = pm.post_id 
+            WHERE pm.meta_key = "event_id"
+	',
+            $userId
+        )
+    );
+
+    return tribe_get_events(
+        [
+            'post__in' => $eventIds,
+        ] + $args
+    );
+}
+
+/**
  * Retrieves the rsvps for a given event
  *
  * @param int|int[] $event_id
@@ -186,7 +236,8 @@ function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true): WP
     return get_post($rsvpId);
 }
 
-function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending) {
+function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
+{
     if ($attending) {
         $subject_will = 'WILL';
     } else {
@@ -195,7 +246,7 @@ function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending) {
 
     $subject = "RSVP: $user->first_name $user->last_name $subject_will attend the $event->post_title";
 
-    if ( strlen($subject) > 70 ) {
+    if (strlen($subject) > 70) {
         $subject = substr($subject, 0, 70);
     }
 
