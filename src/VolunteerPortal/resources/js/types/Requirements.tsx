@@ -6,6 +6,7 @@ type Requirement = {
 };
 
 export interface Requirements {
+    allPassed: boolean;
     backgroundCheck: {
         status: BackgroundCheckStatus;
         inviteUrl: string;

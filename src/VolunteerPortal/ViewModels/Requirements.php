@@ -31,20 +31,26 @@ class Requirements
                 $backgroundCheck = 'pending';
         }
 
+        $backgroundPassed = $backgroundCheck === 'passed';
+        $orientationPassed = $user->sdrt_orientation_attended === 'Yes';
+        $conductPassed = $user->sdrt_coc_consented === 'Yes';
+        $releasePassed = $user->sdrt_waiver_consented === 'Yes';
+
         return [
+            'allPassed' => $backgroundPassed && $orientationPassed && $conductPassed && $releasePassed,
             'backgroundCheck' => [
                 'status' => $backgroundCheck,
                 'inviteUrl' => $user->background_check_invite_url,
             ],
             'orientation' => [
-                'completed' => $user->sdrt_orientation_attended === 'Yes',
+                'completed' => $orientationPassed,
                 'upcomingEvents' => $this->getUpcomingOrientations(),
             ],
             'codeOfConduct' => [
-                'completed' => $user->sdrt_coc_consented === 'Yes',
+                'completed' => $conductPassed,
             ],
             'volunteerRelease' => [
-                'completed' => $user->sdrt_waiver_consented === 'Yes',
+                'completed' => $releasePassed,
             ],
         ];
     }

@@ -15,8 +15,9 @@ import {
     HStack,
     Checkbox,
     useToast,
-    Spinner,
+    Spinner, Alert, Link, AlertIcon,
 } from '@chakra-ui/react';
+import {NavLink as RouterNavLink} from 'react-router-dom';
 import {format} from 'date-fns';
 import React, {useEffect, useState, useCallback} from 'react';
 import {fetchRestApi} from '../../support/fetchRestApi';
@@ -109,6 +110,10 @@ export default function UpcomingEvents() {
     }
 
     useEffect(() => {
+        if (window.sdrtVolunteerPortal.requirements.allPassed) {
+            return;
+        }
+
         const fetchEvents = async () => {
             try {
                 setLoading(true);
@@ -162,6 +167,19 @@ export default function UpcomingEvents() {
 
         fetchEvents();
     }, [trimester, activeCategories]);
+
+    if ( !window.sdrtVolunteerPortal.requirements.allPassed ) {
+        return (
+            <Section heading="Upcoming Events">
+                <Alert status="warning">
+                    <AlertIcon />
+                    <div>
+                        In order to RSVP to events you must pass <Link as={RouterNavLink} to="/requirements" textColor="cyan.700"> all requirements</Link>.
+                    </div>
+                </Alert>
+            </Section>
+        );
+    }
 
     return (
         <Section heading="Upcoming Events">
@@ -231,6 +249,7 @@ interface EventRowProps {
     organizer: string;
     link: string;
     rsvp?: boolean;
+
     handleRsvp(attending: boolean): void;
 }
 
