@@ -28,6 +28,9 @@ export default async function rsvpToEvent(eventId: number, attending: boolean, t
         } else if (reason === 'not_event') {
             status = 'warning';
             description = 'Invalid event. If you believe this is an error, please contact the volunteer coordinator.';
+        } else if (reason === 'cannot_volunteer') {
+            status = 'warning';
+            description = 'You are not able to RSVP to volunteer events until all requirements have been met.';
         } else {
             description =
                 'A problem occurred when creating your RSVP. Please refresh, try again, and contact the volunteer coordinator if the problem persists.';

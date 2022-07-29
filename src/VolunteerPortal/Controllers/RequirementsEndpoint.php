@@ -95,6 +95,11 @@ class RequirementsEndpoint
             return new WP_REST_Response(['reason' => 'not_event'], 400);
         }
 
+        $categories = tribe_get_event_cat_slugs($eventId);
+        if ((in_array('k-5th-grade', $categories, true) || in_array('middle-high-school', $categories, true)) && !user_can_rsvp($user->ID)) {
+            return new WP_REST_Response(['reason' => 'cannot_volunteer'], 400);
+        }
+
         $rsvp = get_user_rsvp_for_event($user->ID, $eventId);
 
         try {
@@ -105,7 +110,7 @@ class RequirementsEndpoint
             }
 
             send_rsvp_email($user, tribe_get_event($eventId), $attending);
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return new WP_REST_Response(['reason' => 'unexpected_failure'], 500);
         }
 
