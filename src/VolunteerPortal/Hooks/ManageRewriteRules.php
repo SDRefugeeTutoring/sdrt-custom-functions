@@ -33,14 +33,14 @@ class ManageRewriteRules
      */
     public function renderVolunteerPortal(string $template): string
     {
+        if (get_query_var('sdrt-page') !== 'volunteer-portal') {
+            return $template;
+        }
+
         if ( ! is_user_logged_in()) {
             wp_redirect(wp_login_url(home_url('volunteer-portal')));
         }
 
-        if (get_query_var('sdrt-page') === 'volunteer-portal') {
-            return SDRT_FUNCTIONS_DIR . 'src/views/volunteer-portal/page.php';
-        }
-
-        return $template;
+        return SDRT_FUNCTIONS_DIR . 'src/views/volunteer-portal/page.php';
     }
 }
