@@ -9,7 +9,7 @@ export interface NextEventProps {
     date: Date;
     category: string;
     organizer: string;
-    location: {
+    location?: {
         name: string;
         address: string;
     };
@@ -35,12 +35,16 @@ export default function NextEvent({category, organizer, location, date}: NextEve
                     </VStack>
                     <VStack justify="space-between">
                         <Text color="gray.500">Organizer</Text>
-                        <Text>{organizer}</Text>
+                        <Text>{organizer ? organizer : 'No Organizer'}</Text>
                     </VStack>
-                    <VStack justify="space-between">
-                        <Text color="gray.500">{location.name}</Text>
-                        <Text>{location.address}</Text>
-                    </VStack>
+                    {
+                        location && (
+                            <VStack justify="space-between">
+                                <Text color="gray.500">{location.name}</Text>
+                                <Text>{location.address}</Text>
+                            </VStack>
+                        )
+                    }
                     <Button>Cancel RSVP</Button>
                 </Flex>
             </Flex>
