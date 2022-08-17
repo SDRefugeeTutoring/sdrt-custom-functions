@@ -7,6 +7,7 @@ export interface MessageProps {
     message: string;
     icon: typeof Icon;
     bgColor: string;
+    iconColor: string;
 }
 
 export enum MessageUrgency {
@@ -15,38 +16,41 @@ export enum MessageUrgency {
     Urgent = 'urgent',
 }
 
-export function getMessageProps(message: string, urgency: MessageUrgency): MessageProps {
+export function getMessageProps(message: string, heading: string, urgency: MessageUrgency): MessageProps {
     switch (urgency) {
         case MessageUrgency.Info:
             return {
                 message,
-                heading: 'Notice',
+                heading,
                 icon: InfoIcon,
                 bgColor: 'blue.100',
+                iconColor: 'blue.600',
             };
         case MessageUrgency.Warning:
             return {
                 message,
-                heading: 'Warning Message',
+                heading,
                 icon: WarningTwoIcon,
                 bgColor: 'orange.100',
+                iconColor: 'orange.600',
             };
         case MessageUrgency.Urgent:
             return {
                 message,
-                heading: 'Urgent Message',
+                heading,
                 icon: WarningTwoIcon,
                 bgColor: 'red.100',
+                iconColor: 'red.600',
             };
     }
 }
 
-export default function Message({message, heading, icon, bgColor}: MessageProps) {
+export default function Message({message, heading, icon, bgColor, iconColor}: MessageProps) {
     return (
         <Card bg={bgColor}>
             <VStack spacing={4} align="flex-start">
                 <HStack>
-                    <Icon as={icon} size="2x" color="red.600" />
+                    <Icon as={icon} size="2x" color={iconColor} />
                     <Heading as="h2" size="md" textTransform="uppercase">
                         {heading}
                     </Heading>

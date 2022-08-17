@@ -10,6 +10,7 @@ import {useUserContext} from '../../stores/UserStore';
 export interface DashboardProps {
     message: {
         text: string;
+        heading: string;
         urgency: MessageUrgency;
     };
     nextEvent: NextEventProps | null;
@@ -45,7 +46,7 @@ export default function Dashboard({message, nextEvent, volunteerStats}: Dashboar
     return (
         <Container>
             <VStack spacing={10}>
-                {message && <Message {...getMessageProps(message.text, message.urgency)} />}
+                {message && <Message {...getMessageProps(message.text, message.heading, message.urgency)} />}
                 {nextEvent && <NextEvent {...nextEvent} />}
                 <SimpleGrid minChildWidth="16rem" spacing={5} width="100%" autoRows="1fr">
                     <Card>

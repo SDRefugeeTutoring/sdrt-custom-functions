@@ -11,13 +11,21 @@ class Dashboard
     public function toArray(): array
     {
         return [
-//            'message' => [
-//                'text' => 'We take the safety and health of our students very seriously. At the same time, we are extremely fortunate to have such a generous group of volunteers eager and willing to tutor. It\'s our goal to ensure the safety of our students and also make volunteering have as low a barrier to entry as possible.',
-//                'urgency' => 'urgent',
-//            ],
-            'message' => null,
+            'message' => $this->getMessage(),
             'nextEvent' => $this->getNextEvent(),
             'volunteerStats' => $this->getVolunteerStats(),
+        ];
+    }
+
+    private function getMessage(): ?array {
+        if ( empty(get_option('sdrt_volunteer_message_enabled'))) {
+            return null;
+        }
+
+        return [
+            'heading' => wp_kses_post(get_option('sdrt_volunteer_message_heading')),
+            'text' => wp_kses_post(get_option('sdrt_volunteer_message')),
+            'urgency' => get_option('sdrt_volunteer_message_urgency'),
         ];
     }
 
