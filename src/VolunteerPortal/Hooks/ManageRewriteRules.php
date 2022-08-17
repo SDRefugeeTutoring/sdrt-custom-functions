@@ -38,7 +38,7 @@ class ManageRewriteRules
         }
 
         if ( ! is_user_logged_in()) {
-            wp_redirect(wp_login_url(home_url('volunteer-portal')));
+            wp_redirect(wp_login_url($_SERVER['REQUEST_URI']));
         }
 
         return SDRT_FUNCTIONS_DIR . 'src/views/volunteer-portal/page.php';
