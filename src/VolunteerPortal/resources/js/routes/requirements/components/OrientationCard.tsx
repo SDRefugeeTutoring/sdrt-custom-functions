@@ -6,6 +6,7 @@ import {
     AccordionPanel,
     AlertStatus,
     Button,
+    Center,
     Divider,
     Grid,
     HStack,
@@ -66,56 +67,66 @@ export default function OrientationCard({orientation}) {
                                 </HStack>
                             </AccordionButton>
                             <AccordionPanel bg="white" px={10} mt="-1rem" pt="1rem">
-                                <Grid templateColumns="1fr 1fr 1fr auto auto" gap={5} alignItems="center">
-                                    {orientation.upcomingEvents.map(({id, address, organizer, date, link}, index) => {
-                                        const eventDate = parse(date, 'yyyy-MM-dd HH:mm:ss', new Date());
-                                        return (
-                                            <Fragment key={date}>
-                                                {index > 0 && (
-                                                    <Divider
-                                                        borderWidth="0.07rem"
-                                                        borderColor="red.100"
-                                                        gridColumn="1 / -1"
-                                                    />
-                                                )}
-                                                <VStack>
-                                                    <Text fontSize="3xl" fontWeight="bolder" color="red.500">
-                                                        {format(eventDate, 'LLLL d')}
-                                                    </Text>
-                                                    <Text
-                                                        color="gray.500"
-                                                        fontWeight={400}
-                                                        sx={{marginTop: '0 !important'}}
-                                                    >
-                                                        {format(eventDate, 'EEEE - h:mmaaa')}
-                                                    </Text>
-                                                </VStack>
-                                                <VStack alignSelf="start" mt="2rem">
-                                                    <Text color="neutral.400">Address:</Text>
-                                                    <Link
-                                                        sx={{marginTop: '0 !important'}}
-                                                        color="cyan.500"
-                                                        fontSize="sm"
-                                                        href={address.mapLink}
-                                                        target="_blank"
-                                                    >
-                                                        {address.street}
-                                                        <br />
-                                                        {address.city}, {address.state} {address.zipCode}
-                                                    </Link>
-                                                </VStack>
-                                                <VStack alignSelf="start" mt="2rem">
-                                                    <Text color="neutral.400">Organizer:</Text>
-                                                    <Text sx={{marginTop: '0 !important'}}>{organizer}</Text>
-                                                </VStack>
-                                                <Button as="a" href={link} variant="red" target="_blank">
-                                                    More Info
-                                                </Button>
-                                                <Button onClick={() => rsvpToOrientation(id)}>RSVP</Button>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </Grid>
+                                {orientation.upcomingEvents.length > 0 ? (
+                                    <Grid templateColumns="1fr 1fr 1fr auto auto" gap={5} alignItems="center">
+                                        {orientation.upcomingEvents.map(
+                                            ({id, address, organizer, date, link}, index) => {
+                                                const eventDate = parse(date, 'yyyy-MM-dd HH:mm:ss', new Date());
+                                                return (
+                                                    <Fragment key={date}>
+                                                        {index > 0 && (
+                                                            <Divider
+                                                                borderWidth="0.07rem"
+                                                                borderColor="red.100"
+                                                                gridColumn="1 / -1"
+                                                            />
+                                                        )}
+                                                        <VStack>
+                                                            <Text fontSize="3xl" fontWeight="bolder" color="red.500">
+                                                                {format(eventDate, 'LLLL d')}
+                                                            </Text>
+                                                            <Text
+                                                                color="gray.500"
+                                                                fontWeight={400}
+                                                                sx={{marginTop: '0 !important'}}
+                                                            >
+                                                                {format(eventDate, 'EEEE - h:mmaaa')}
+                                                            </Text>
+                                                        </VStack>
+                                                        <VStack alignSelf="start" mt="2rem">
+                                                            <Text color="neutral.400">Address:</Text>
+                                                            <Link
+                                                                sx={{marginTop: '0 !important'}}
+                                                                color="cyan.500"
+                                                                fontSize="sm"
+                                                                href={address.mapLink}
+                                                                target="_blank"
+                                                            >
+                                                                {address.street}
+                                                                <br />
+                                                                {address.city}, {address.state} {address.zipCode}
+                                                            </Link>
+                                                        </VStack>
+                                                        <VStack alignSelf="start" mt="2rem">
+                                                            <Text color="neutral.400">Organizer:</Text>
+                                                            <Text sx={{marginTop: '0 !important'}}>{organizer}</Text>
+                                                        </VStack>
+                                                        <Button as="a" href={link} variant="red" target="_blank">
+                                                            More Info
+                                                        </Button>
+                                                        <Button onClick={() => rsvpToOrientation(id)}>RSVP</Button>
+                                                    </Fragment>
+                                                );
+                                            }
+                                        )}
+                                    </Grid>
+                                ) : (
+                                    <Center pt={10} pb={6}>
+                                        <Text>
+                                            There are no scheduled upcoming orientations. Please check again later.
+                                        </Text>
+                                    </Center>
+                                )}
                             </AccordionPanel>
                         </>
                     )}
