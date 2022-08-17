@@ -10,6 +10,7 @@ use SDRT\CustomFunctions\VolunteerPortal\Controllers\RequirementsEndpoint;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\EnqueueScripts;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\ManageRewriteRules;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\RegisterVolunteerMeta;
+use SDRT\CustomFunctions\VolunteerPortal\Settings\DashboardAdminSettings;
 
 class ServiceProvider implements ServiceProviderContract
 {
@@ -26,6 +27,10 @@ class ServiceProvider implements ServiceProviderContract
     public function boot(): void
     {
         Hooks::addAction('rest_api_init', RequirementsEndpoint::class, 'register');
+
+        if ( is_admin()) {
+            Hooks::addAction('init', DashboardAdminSettings::class );
+        }
 
         Hooks::addAction('init', RegisterVolunteerMeta::class);
         Hooks::addFilter('rewrite_rules_array', ManageRewriteRules::class, 'appendRewriteRules');
