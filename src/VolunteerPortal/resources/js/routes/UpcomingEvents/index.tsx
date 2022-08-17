@@ -110,7 +110,7 @@ export default function UpcomingEvents() {
     }
 
     useEffect(() => {
-        if (window.sdrtVolunteerPortal.requirements.allPassed) {
+        if (!window.sdrtVolunteerPortal.requirements.allPassed) {
             return;
         }
 
