@@ -79,6 +79,7 @@ function get_attending_events(int $userId, array $args = []): array
     return tribe_get_events(
         [
             'post__in' => $eventIds,
+            'ends_after' => 'now',
         ] + $args
     );
 }
