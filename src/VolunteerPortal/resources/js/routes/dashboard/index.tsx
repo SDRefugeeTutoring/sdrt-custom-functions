@@ -74,17 +74,17 @@ export default function Dashboard({message, nextEvent, volunteerStats}: Dashboar
                         </Center>
                     </Card>
                     <StatCard label="Total Events Attended" text={volunteerStats.eventsAttended} />
-                    <StatCard label="Total Hours Tutored" text={volunteerStats.totalHours} />
-                    <StatCard
-                        label="Attendance Rate"
-                        text={`${volunteerStats.currentTrimesterAttendanceRate * 100}%`}
-                        subText="(CURRENT TRIMESTER)"
-                    />
-                    <StatCard
-                        label="Attendance Rate"
-                        text={`${volunteerStats.previousTrimesterAttendanceRate * 100}%`}
-                        subText="(PREVIOUS TRIMESTER)"
-                    />
+                    {/*<StatCard label="Total Hours Tutored" text={volunteerStats.totalHours} />*/}
+                    {/*<StatCard*/}
+                    {/*    label="Attendance Rate"*/}
+                    {/*    text={`${volunteerStats.currentTrimesterAttendanceRate * 100}%`}*/}
+                    {/*    subText="(CURRENT TRIMESTER)"*/}
+                    {/*/>*/}
+                    {/*<StatCard*/}
+                    {/*    label="Attendance Rate"*/}
+                    {/*    text={`${volunteerStats.previousTrimesterAttendanceRate * 100}%`}*/}
+                    {/*    subText="(PREVIOUS TRIMESTER)"*/}
+                    {/*/>*/}
                 </SimpleGrid>
             </VStack>
         </Container>
