@@ -4,3 +4,9 @@ mix.ts('src/VolunteerPortal/resources/js/App.tsx', 'volunteer-portal.js')
     .sourceMaps(false, 'source-map')
     .react()
     .setPublicPath('assets');
+
+mix.options({
+    terser: {
+        extractComments: false,
+    },
+});
