@@ -14,6 +14,7 @@ function rsvp_metabox_markup()
     $rsvp_enable = get_post_meta($post->ID, "enable_rsvps", true);
     $rsvp_form_id = get_post_meta($post->ID, "rsvp_form", true);
     $rsvps_limit = get_post_meta($post->ID, "rsvps_limit", true);
+    $volunteer_time = get_post_meta($post->ID, "volunteer_time", true);
     $logged_in_status = get_post_meta($post->ID, "logged_in_status", true);
     $send_reminder = get_post_meta($post->ID, 'rsvp_send_reminder', true);
 
@@ -101,6 +102,11 @@ function rsvp_metabox_markup()
             <label for="rsvps_limit" class="main_label">Limit RSVPs</label>
             <input name="rsvps_limit" type="number" value="<?php
             echo $rsvps_limit; ?>" id="rsvps_limit">
+        </p>
+        <p>
+            <label for="volunteer_time" class="main_label">Volunteer Time (in minutes)</label>
+            <input name="volunteer_time" type="number" value="<?php
+            echo $volunteer_time; ?>" id="volunteer_time">
         </p>
         <p>
             <label for="logged_in_status" class="main_label">Must Users be Logged In?</label>
