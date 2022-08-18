@@ -14,7 +14,7 @@ class RegisterTrimesters
             [
                 'label' => __('Trimesters', 'sdrt'),
                 'rewrite' => ['slug' => 'trimester'],
-                'hierarchical' => false,
+                'hierarchical' => true,
             ]
         );
     }
