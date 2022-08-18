@@ -10,6 +10,7 @@ use SDRT\CustomFunctions\VolunteerPortal\Controllers\RequirementsEndpoint;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\EnqueueScripts;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\ManageRewriteRules;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\RegisterVolunteerMeta;
+use SDRT\CustomFunctions\VolunteerPortal\Hooks\SetPageTitle;
 use SDRT\CustomFunctions\VolunteerPortal\Settings\DashboardAdminSettings;
 
 class ServiceProvider implements ServiceProviderContract
@@ -33,6 +34,7 @@ class ServiceProvider implements ServiceProviderContract
         }
 
         Hooks::addAction('init', RegisterVolunteerMeta::class);
+        Hooks::addFilter('wpseo_title', SetPageTitle::class, '__invoke', 99999);
         Hooks::addFilter('rewrite_rules_array', ManageRewriteRules::class, 'appendRewriteRules');
         Hooks::addFilter('query_vars', ManageRewriteRules::class, 'appendQueryVars');
         Hooks::addFilter('template_include', ManageRewriteRules::class, 'renderVolunteerPortal');
