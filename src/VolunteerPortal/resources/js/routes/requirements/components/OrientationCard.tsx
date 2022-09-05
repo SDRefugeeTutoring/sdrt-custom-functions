@@ -82,7 +82,7 @@ export default function OrientationCard({orientation}) {
                                                             />
                                                         )}
                                                         <VStack>
-                                                            <Text fontSize="3xl" fontWeight="bolder" color="red.500">
+                                                            <Text fontSize="2xl" fontWeight="bolder" color="red.500">
                                                                 {format(eventDate, 'LLLL d')}
                                                             </Text>
                                                             <Text
