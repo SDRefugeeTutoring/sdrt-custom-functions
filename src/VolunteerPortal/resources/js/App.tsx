@@ -13,6 +13,8 @@ import User from './types/User';
 import {Requirements as RequirementsData} from './types/Requirements';
 import {UpcomingEvents as UpcomingEventsData} from './types/UpcomingEvents';
 import {RequirementsContextProvider} from './stores/RequirementsStore';
+import {ErrorBoundary} from "react-error-boundary";
+import RouteFallback from "./components/RouteFallback";
 
 declare global {
     interface Window {
@@ -49,15 +51,17 @@ function App() {
                                 <NavLink to="/upcoming-events" text="Upcoming Events" />
                             </SimpleGrid>
                         </Container>
-                        <Routes>
-                            <Route path="/" element={<Index {...dashboardProps} />} />
-                            <Route path="profile" element={<Profile />} />
-                            <Route
-                                path="requirements"
-                                element={<Requirements requirements={window.sdrtVolunteerPortal.requirements} />}
-                            />
-                            <Route path="upcoming-events" element={<UpcomingEvents />} />
-                        </Routes>
+                        <ErrorBoundary FallbackComponent={RouteFallback}>
+                            <Routes>
+                                <Route path="/" element={<Index {...dashboardProps} />} />
+                                <Route path="profile" element={<Profile />} />
+                                <Route
+                                    path="requirements"
+                                    element={<Requirements requirements={window.sdrtVolunteerPortal.requirements} />}
+                                />
+                                <Route path="upcoming-events" element={<UpcomingEvents />} />
+                            </Routes>
+                        </ErrorBoundary>
                     </RequirementsContextProvider>
                 </UserContextProvider>
             </BrowserRouter>
