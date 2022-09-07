@@ -58,8 +58,7 @@ class Requirements
     private function getUpcomingOrientations(): array
     {
         $orientations = tribe_get_events([
-            'posts_per_page' => 3,
-            'nopaging' => true,
+            'posts_per_page' => 5,
             'eventDisplay' => 'list',
             'tax_query' => [
                 [
@@ -81,6 +80,7 @@ class Requirements
                     'mapLink' => tribe_get_map_link($event->ID)
                 ],
                 'organizer' => tribe_get_organizer($event),
+                'title' => $event->post_title,
                 'date' => $event->event_date,
                 'link' => get_permalink($event),
             ];

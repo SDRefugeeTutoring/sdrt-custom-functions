@@ -4,16 +4,14 @@ import {
     AccordionButton,
     AccordionItem,
     AccordionPanel,
-    AlertStatus,
     Button,
     Center,
     Divider,
+    Flex,
     Grid,
     HStack,
-    Link,
     Text,
     useToast,
-    VStack,
 } from '@chakra-ui/react';
 import {ChevronRightIcon} from '@chakra-ui/icons';
 import {format, parse} from 'date-fns';
@@ -68,9 +66,9 @@ export default function OrientationCard({orientation}) {
                             </AccordionButton>
                             <AccordionPanel bg="white" px={10} mt="-1rem" pt="1rem">
                                 {orientation.upcomingEvents.length > 0 ? (
-                                    <Grid templateColumns="1fr 1fr 1fr auto auto" gap={5} alignItems="center">
+                                    <Grid templateColumns="2fr auto auto" gap={5} alignItems="center" pt={6}>
                                         {orientation.upcomingEvents.map(
-                                            ({id, address, organizer, date, link}, index) => {
+                                            ({id, address, organizer, date, link, title}, index) => {
                                                 const eventDate = parse(date, 'yyyy-MM-dd HH:mm:ss', new Date());
                                                 return (
                                                     <Fragment key={date}>
@@ -81,36 +79,17 @@ export default function OrientationCard({orientation}) {
                                                                 gridColumn="1 / -1"
                                                             />
                                                         )}
-                                                        <VStack>
-                                                            <Text fontSize="2xl" fontWeight="bolder" color="red.500">
-                                                                {format(eventDate, 'LLLL d')}
+                                                        <Flex alignItems="flex-start" flexDirection="column">
+                                                            <Text fontSize="xl" fontWeight="bolder" color="red.500">
+                                                                {title}
                                                             </Text>
-                                                            <Text
-                                                                color="gray.500"
-                                                                fontWeight={400}
-                                                                sx={{marginTop: '0 !important'}}
-                                                            >
-                                                                {format(eventDate, 'EEEE - h:mmaaa')}
+                                                            <Text color="gray.500" fontWeight={400}>
+                                                                {`${format(eventDate, 'LLLL d')} • ${format(
+                                                                    eventDate,
+                                                                    "EEEE '•' h:mmaaa"
+                                                                )}`}
                                                             </Text>
-                                                        </VStack>
-                                                        <VStack alignSelf="start" mt="2rem">
-                                                            <Text color="neutral.400">Address:</Text>
-                                                            <Link
-                                                                sx={{marginTop: '0 !important'}}
-                                                                color="cyan.500"
-                                                                fontSize="sm"
-                                                                href={address.mapLink}
-                                                                target="_blank"
-                                                            >
-                                                                {address.street}
-                                                                <br />
-                                                                {address.city}, {address.state} {address.zipCode}
-                                                            </Link>
-                                                        </VStack>
-                                                        <VStack alignSelf="start" mt="2rem">
-                                                            <Text color="neutral.400">Organizer:</Text>
-                                                            <Text sx={{marginTop: '0 !important'}}>{organizer}</Text>
-                                                        </VStack>
+                                                        </Flex>
                                                         <Button as="a" href={link} variant="red" target="_blank">
                                                             More Info
                                                         </Button>

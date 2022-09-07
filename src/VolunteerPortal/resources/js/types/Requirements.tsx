@@ -15,6 +15,7 @@ export interface Requirements {
         completed: boolean;
         upcomingEvents: Array<{
             id: string | number;
+            title: string;
             address: {
                 street: string;
                 city: string;
