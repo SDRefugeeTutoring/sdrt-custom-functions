@@ -245,7 +245,14 @@ function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
         $subject_will = 'will NOT';
     }
 
-    $subject = "RSVP: $user->first_name $user->last_name $subject_will attend the $event->post_title";
+    try {
+        $eventDate = new DateTime($event->_EventStartDate);
+        $eventDate = " on {$eventDate->format('m-d-Y')}";
+    } catch (Exception $e) {
+        $eventDate = '';
+    }
+
+    $subject = "RSVP: $user->first_name $user->last_name $subject_will attend the $event->post_title{$eventDate}";
 
     if (strlen($subject) > 70) {
         $subject = substr($subject, 0, 70);
