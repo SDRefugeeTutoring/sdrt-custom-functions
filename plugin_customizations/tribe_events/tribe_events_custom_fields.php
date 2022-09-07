@@ -170,4 +170,5 @@ function save_rsvp_options($post_id, $post, $update)
     $update_meta('rsvps_limit', '30');
     $update_meta('logged_in_status', 'yes');
     $update_meta('rsvp_send_reminder', 'no');
+    $update_meta('volunteer_time', 0);
 }
