@@ -11,21 +11,12 @@ import {
     Grid,
     HStack,
     Text,
-    useToast,
 } from '@chakra-ui/react';
 import {ChevronRightIcon} from '@chakra-ui/icons';
 import {format, parse} from 'date-fns';
 import {Fragment} from 'react';
-import rsvpToEvent from '../../../support/rsvp';
 
 export default function OrientationCard({orientation}) {
-    const toast = useToast({
-        duration: 7500,
-        position: 'bottom',
-    });
-
-    const rsvpToOrientation = (eventId: number) => rsvpToEvent(eventId, true, toast);
-
     return (
         <RequirementCard header="Orientation Status" completed={orientation.completed}>
             <Text>
@@ -93,7 +84,9 @@ export default function OrientationCard({orientation}) {
                                                         <Button as="a" href={link} variant="red" target="_blank">
                                                             More Info
                                                         </Button>
-                                                        <Button onClick={() => rsvpToOrientation(id)}>RSVP</Button>
+                                                        <Button as="a" href={`${link}#rsvp-form`} target="_blank">
+                                                            RSVP
+                                                        </Button>
                                                     </Fragment>
                                                 );
                                             }
