@@ -15,7 +15,10 @@ import {
     HStack,
     Checkbox,
     useToast,
-    Spinner, Alert, Link, AlertIcon,
+    Spinner,
+    Alert,
+    Link,
+    AlertIcon,
 } from '@chakra-ui/react';
 import {NavLink as RouterNavLink} from 'react-router-dom';
 import {format} from 'date-fns';
@@ -168,13 +171,16 @@ export default function UpcomingEvents() {
         fetchEvents();
     }, [trimester, activeCategories]);
 
-    if ( !window.sdrtVolunteerPortal.requirements.allPassed ) {
+    if (!window.sdrtVolunteerPortal.requirements.allPassed) {
         return (
             <Section heading="Upcoming Events">
                 <Alert status="warning">
                     <AlertIcon />
                     <div>
-                        In order to RSVP to events you must pass <Link as={RouterNavLink} to="/requirements" textColor="cyan.700"> all requirements</Link>.
+                        In order to RSVP to events you must pass{' '}
+                        <Link as={RouterNavLink} to="/requirements" textColor="cyan.700">
+                            all requirements.
+                        </Link>
                     </div>
                 </Alert>
             </Section>
@@ -185,7 +191,8 @@ export default function UpcomingEvents() {
         <Section heading="Upcoming Events">
             <Text mb={16}>
                 These are the upcoming events which you may be filter by trimester and event type. Please review the
-                events and RSVP as to whether you are able to attend.
+                events and RSVP if you are able to attend — only RSVP "no" to a session if that session is part of your
+                regular weekly attendance.
             </Text>
             <Flex gap={8} justify="space-between" mb={6} as="form" role="search" aria-label="Upcoming Events">
                 <Select w="auto" onChange={(event) => setTrimester(event.target.value)}>
