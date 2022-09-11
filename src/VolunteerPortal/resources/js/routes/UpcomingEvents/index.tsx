@@ -189,11 +189,14 @@ export default function UpcomingEvents() {
 
     return (
         <Section heading="Upcoming Events">
-            <Text mb={16}>
-                These are the upcoming events which you may be filter by trimester and event type. Please review the
-                events and RSVP if you are able to attend — only RSVP "no" to a session if that session is part of your
-                regular weekly attendance.
+            <Text mb={4}>
+                These are the upcoming events which you may filter by trimester and event type. Review and RSVP if you
+                are able to attend.
             </Text>
+            <Alert status="info" variant="subtle" mb={16}>
+                <AlertIcon />
+                Only RSVP "no" to a session if that session is part of your regular weekly attendance
+            </Alert>
             <Flex gap={8} justify="space-between" mb={6} as="form" role="search" aria-label="Upcoming Events">
                 <Select w="auto" onChange={(event) => setTrimester(event.target.value)}>
                     {TrimesterOptions}
