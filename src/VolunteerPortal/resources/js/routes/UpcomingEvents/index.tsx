@@ -294,10 +294,18 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp, han
             <Td py={10}>
                 <Center>
                     <ButtonGroup isAttached boxShadow="0px 0.1rem 0.3rem rgba(0, 0, 0, 0.4)" borderRadius="0.4rem">
-                        <Button onClick={() => handleRsvp(true)} isActive={rsvp === true} variant="group">
+                        <Button
+                            onClick={() => rsvp !== true && handleRsvp(true)}
+                            isActive={rsvp === true}
+                            variant="group"
+                        >
                             RSVP YES
                         </Button>
-                        <Button onClick={() => handleRsvp(false)} isActive={rsvp === false} variant="group">
+                        <Button
+                            onClick={() => rsvp !== false && handleRsvp(false)}
+                            isActive={rsvp === false}
+                            variant="group"
+                        >
                             RSVP NO
                         </Button>
                     </ButtonGroup>
