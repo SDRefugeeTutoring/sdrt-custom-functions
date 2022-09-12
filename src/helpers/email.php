@@ -21,6 +21,6 @@ function sdrt_mail(string $to, string $subject, $message, array $headers = []): 
     return wp_mail($to, $subject, $message, array_merge($headers, [
         'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
         'Reply-To: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
-        'Content-Type: text/html',
+        'Content-Type: text/html; charset=UTF-8',
     ]));
 }
