@@ -11,10 +11,10 @@ class Mix
 {
     public static function enqueueScript($file, $inFooter = true): void
     {
-        $file = self::getManifestFile($file);
+        $manifestFile = self::getManifestFile($file);
         wp_enqueue_script(
             sanitize_title("sdrt-$file"),
-            untrailingslashit(SDRT_ASSETS_URL) . $file,
+            untrailingslashit(SDRT_ASSETS_URL) . $manifestFile,
             [],
             '',
             $inFooter
