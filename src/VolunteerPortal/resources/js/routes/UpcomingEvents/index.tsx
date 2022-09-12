@@ -285,14 +285,6 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp, han
                 </VStack>
             </Td>
             <Td py={10}>
-                <VStack>
-                    <Text fontSize="md" color="neutral.500">
-                        Organizer:
-                    </Text>
-                    <Text fontSize="md" dangerouslySetInnerHTML={{__html: organizer}} />
-                </VStack>
-            </Td>
-            <Td py={10}>
                 <Center>
                     <Button as="a" variant="dark-outline" colorScheme="cyan" href={link} target="_blank">
                         More Info
