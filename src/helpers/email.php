@@ -22,5 +22,6 @@ function sdrt_mail(string $to, string $subject, $message, array $headers = []): 
         'From: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
         'Reply-To: SD Refugee Tutoring <info@sdrefugeetutoring.com>',
         'Content-Type: text/html; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
     ]));
 }

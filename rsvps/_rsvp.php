@@ -254,10 +254,6 @@ function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
 
     $subject = "RSVP: $user->first_name $user->last_name $subject_will attend $eventDate $event->post_title";
 
-    if (strlen($subject) > 70) {
-        $subject = substr($subject, 0, 70);
-    }
-
     sdrt_mail(
         'info@sdrefugeetutoring.com',
         $subject,
