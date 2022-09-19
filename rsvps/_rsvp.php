@@ -60,18 +60,23 @@ function get_attending_events(int $userId, array $args = []): array
     // queries the event ids for all events the user has RSVP'd to as attending
     $eventIds = $wpdb->get_col(
         $wpdb->prepare(
-            '
-        SELECT DISTINCT pm.meta_value events from wp_postmeta pm
-            INNER JOIN (
-                SELECT DISTINCT post_id from wp_postmeta
-                     WHERE meta_key = "volunteer_user_id" AND meta_value = %d
-            ) pm2 ON pm2.post_id = pm.post_id
-            INNER JOIN (
-                SELECT post_id from wp_postmeta
-                     WHERE meta_key = "attending" AND meta_value = "yes"
-            ) pm3 ON pm3.post_id = pm.post_id 
-            WHERE pm.meta_key = "event_id"
-	',
+            "
+                    SELECT DISTINCT
+                        pm.meta_value
+                    FROM
+                        $wpdb->posts p
+                        JOIN $wpdb->postmeta AS pm ON p.ID = pm.post_id
+                            AND pm.meta_key = 'event_id'
+                        JOIN $wpdb->postmeta AS pm2 ON p.ID = pm2.post_id
+                            AND pm2.meta_key = 'volunteer_user_id'
+                        JOIN $wpdb->postmeta AS pm3 ON p.ID = pm3.post_id
+                            AND pm3.meta_key = 'attending'
+                    WHERE
+                        p.post_type = 'rsvp'
+                        AND p.post_status = 'publish'
+                        AND pm2.meta_value = %d
+                        AND pm3.meta_value = 'yes'
+	        ",
             $userId
         )
     );

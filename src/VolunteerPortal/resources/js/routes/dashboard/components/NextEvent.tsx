@@ -15,7 +15,7 @@ export interface NextEventProps {
     };
 }
 
-export default function NextEvent({category, name, location, date}: NextEventProps) {
+export default function NextEvent({category, name, date}: NextEventProps) {
     return (
         <Card bg="blue.50">
             <Flex direction="column">
