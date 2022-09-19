@@ -76,8 +76,8 @@ export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundChe
         case BackgroundCheckStatus.INVITED:
             return (
                 <>
-                    You have been invited to take a background check, and your status is still pending. You can check
-                    your status on the Checkr website: <br />
+                    You have been invited to start a background check. Please click the link below to complete that
+                    process on the Checkr website or to check your status: <br />
                     <br />
                     <Link href={invitationUrl} target="_blank" rel="noopener noreferrer" fontWeight="semibold">
                         {invitationUrl}
