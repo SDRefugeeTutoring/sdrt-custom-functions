@@ -15,7 +15,7 @@ export interface NextEventProps {
     };
 }
 
-export default function NextEvent({category, organizer, location, date}: NextEventProps) {
+export default function NextEvent({category, name, location, date}: NextEventProps) {
     return (
         <Card bg="blue.50">
             <Flex direction="column">
@@ -23,28 +23,18 @@ export default function NextEvent({category, organizer, location, date}: NextEve
                     Next Scheduled Event
                 </Heading>
                 <Flex justify="space-between" fontSize="sm" flexBasis={0} flexGrow={0} alignItems="flex-end">
-                    <VStack align="flex-start" justify="space-between">
-                        <Text as="strong" fontSize="lg" color="cyan.600">
-                            {format(date, 'MMM do')}
+                    <Flex alignItems="flex-start" flexDirection="column">
+                        <Text fontSize="xl" fontWeight="bolder" color="cyan.600">
+                            {name}
                         </Text>
-                        <Text>{format(date, 'EEE • h:mmaaa')}</Text>
-                    </VStack>
+                        <Text color="gray.500" fontWeight={400}>
+                            {`${format(date, 'LLLL d')} • ${format(date, "EEEE '•' h:mmaaa")}`}
+                        </Text>
+                    </Flex>
                     <VStack justify="space-between">
                         <Text color="gray.500">Tutoring</Text>
                         <Text>{category}</Text>
                     </VStack>
-                    <VStack justify="space-between">
-                        <Text color="gray.500">Organizer</Text>
-                        <Text>{organizer ? organizer : 'No Organizer'}</Text>
-                    </VStack>
-                    {
-                        location && (
-                            <VStack justify="space-between">
-                                <Text color="gray.500">{location.name}</Text>
-                                <Text>{location.address}</Text>
-                            </VStack>
-                        )
-                    }
                     <Button>Cancel RSVP</Button>
                 </Flex>
             </Flex>
