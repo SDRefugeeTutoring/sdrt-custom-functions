@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace SDRT\CustomFunctions\Helpers;
+
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;

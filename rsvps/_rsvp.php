@@ -1,5 +1,8 @@
 <?php
 
+use function SDRT\CustomFunctions\Helpers\view;
+use function SDRT\CustomFunctions\Helpers\Email\mail;
+
 require_once SDRT_FUNCTIONS_DIR . 'rsvps/admin_menu.php';
 require_once SDRT_FUNCTIONS_DIR . 'rsvps/crons.php';
 require_once SDRT_FUNCTIONS_DIR . 'rsvps/ajax.php';
@@ -259,7 +262,7 @@ function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
 
     $subject = "RSVP: $user->first_name $user->last_name $subject_will attend $eventDate $event->post_title";
 
-    sdrt_mail(
+    mail(
         'info@sdrefugeetutoring.com',
         $subject,
         view('mail/send-admin-rsvp-notice', ['user' => $user, 'event' => $event, 'attending' => $attending])

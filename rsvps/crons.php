@@ -1,5 +1,7 @@
 <?php
 
+use function SDRT\CustomFunctions\Helpers\Email\mail;
+
 /**
  * Checks for any events happening tomorrow. If there are any, then it sends a reminder email to all volunteers that
  * have provided an RSVP and are planning to attend.
@@ -45,7 +47,7 @@ function event_rsvp_send_reminder()
                 continue;
             }
 
-            sdrt_mail($volunteer_email, "Reminder for $event->post_title tomorrow", [
+            mail($volunteer_email, "Reminder for $event->post_title tomorrow", [
                 'option' => 'sdrt_rsvp_upcoming_reminder',
                 'fname' => trim(explode(',', $volunteer_name)[1] ?: ''),
                 'event_title' => $event->post_title,

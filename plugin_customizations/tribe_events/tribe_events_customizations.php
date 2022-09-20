@@ -9,6 +9,8 @@
  *
  */
 
+use function SDRT\CustomFunctions\Helpers\view;
+
 add_action('tribe_events_single_event_after_the_meta', function () {
     global $post;
     $event = tribe_get_event($post);

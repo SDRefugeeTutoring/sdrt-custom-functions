@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace SDRT\CustomFunctions\Helpers\Email;
+
 /**
  * Sends an email with the usual SDRT headers and functions
  *
@@ -12,7 +14,7 @@ declare(strict_types=1);
  *
  * @return bool
  */
-function sdrt_mail(string $to, string $subject, $message, array $headers = []): bool
+function mail(string $to, string $subject, $message, array $headers = []): bool
 {
     if (is_array($message)) {
         $message = sdrt_send_email($message);

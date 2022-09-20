@@ -1,4 +1,7 @@
 <?php
+
+use function SDRT\CustomFunctions\Helpers\Email\mail;
+
 /**
  * All functions necessary for volunteer registration are here
  *
@@ -61,11 +64,11 @@ function sdrt_listen_for_checkr() {
 			// The update user function. We're only updating their user role
 			wp_update_user( array( 'ID' => $user_id, 'role' => 'volunteer' ) );
 
-			sdrt_mail($user_email, 'You can now RSVP for Refugee Tutoring Sessions!', $args);
+			mail($user_email, 'You can now RSVP for Refugee Tutoring Sessions!', $args);
 
 		} elseif ( $report_type === 'report.completed' && $report_status === 'consider') {
 
-			sdrt_mail( 'carolnarikim@gmail.com, matt@sdrefugeetutoring.com, melissa@sdrefugeetutoring.com', 'A Volunteers background check did not clear', sdrt_email_checkr_consider($user));
+			mail( 'carolnarikim@gmail.com, matt@sdrefugeetutoring.com, melissa@sdrefugeetutoring.com', 'A Volunteers background check did not clear', sdrt_email_checkr_consider($user));
 		}
         
 		wp_die('','',array('response'=>200));

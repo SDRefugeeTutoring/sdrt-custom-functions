@@ -1,5 +1,7 @@
 <?php
 
+use function SDRT\CustomFunctions\Helpers\Email\mail;
+
 /**
  * Handles request to send an email to attendees that did not show
  */
@@ -23,7 +25,7 @@ function sdrt_rsvp_email_no_show()
     $volunteer_name = get_post_meta($rsvp_id, 'volunteer_name', true);
     $volunteer_email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
-    sdrt_mail($volunteer_email, 'We Missed You!', [
+    mail($volunteer_email, 'We Missed You!', [
         'option' => 'sdrt_rsvp_no_show',
         'fname' => trim(explode(',', $volunteer_name)[1] ?: ''),
         'event_title' => $event->post_title,
@@ -69,7 +71,7 @@ function sdrt_rsvp_set_event_attendance()
     $volunteer_name = get_post_meta($rsvp_id, 'volunteer_name', true);
     $volunteer_email = get_post_meta($rsvp_id, 'volunteer_email', true);
 
-    sdrt_mail($volunteer_email, "Thank you for attending $event->post_title", [
+    mail($volunteer_email, "Thank you for attending $event->post_title", [
         'option' => 'sdrt_thanks_for_attending',
         'fname' => trim(explode(',', $volunteer_name)[1] ?: ''),
         'event_title' => $event->post_title,
