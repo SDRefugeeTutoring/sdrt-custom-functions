@@ -20,6 +20,7 @@
         "files": [
             "src/helpers/email.php",
             "src/helpers/views.php",
+            "src/helpers/events.php",
             "includes/hd-wp-settings-api/class-hd-wp-settings-api.php"
         ]
     }

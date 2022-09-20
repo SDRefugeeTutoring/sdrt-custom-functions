@@ -54,45 +54,6 @@ function get_user_rsvps(int $userId, $args = []): array
 }
 
 /**
- * @return WP_Post[]|int[]
- */
-function get_attending_events(int $userId, array $args = []): array
-{
-    global $wpdb;
-
-    // queries the event ids for all events the user has RSVP'd to as attending
-    $eventIds = $wpdb->get_col(
-        $wpdb->prepare(
-            "
-                    SELECT DISTINCT
-                        pm.meta_value
-                    FROM
-                        $wpdb->posts p
-                        JOIN $wpdb->postmeta AS pm ON p.ID = pm.post_id
-                            AND pm.meta_key = 'event_id'
-                        JOIN $wpdb->postmeta AS pm2 ON p.ID = pm2.post_id
-                            AND pm2.meta_key = 'volunteer_user_id'
-                        JOIN $wpdb->postmeta AS pm3 ON p.ID = pm3.post_id
-                            AND pm3.meta_key = 'attending'
-                    WHERE
-                        p.post_type = 'rsvp'
-                        AND p.post_status = 'publish'
-                        AND pm2.meta_value = %d
-                        AND pm3.meta_value = 'yes'
-	        ",
-            $userId
-        )
-    );
-
-    return tribe_get_events(
-        [
-            'post__in' => $eventIds,
-            'ends_after' => 'now',
-        ] + $args
-    );
-}
-
-/**
  * Retrieves the rsvps for a given event
  *
  * @param int|int[] $event_id
