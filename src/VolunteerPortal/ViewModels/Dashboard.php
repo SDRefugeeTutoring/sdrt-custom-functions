@@ -6,6 +6,9 @@ namespace SDRT\CustomFunctions\VolunteerPortal\ViewModels;
 
 use WP_User;
 
+use function SDRT\CustomFunctions\Helpers\Events\get_event_category_name;
+use function SDRT\CustomFunctions\Helpers\Events\get_next_user_event;
+
 class Dashboard
 {
     public function toArray(): array
@@ -31,36 +34,13 @@ class Dashboard
 
     private function getNextEvent(): ?array
     {
-        $nextEvent = get_attending_events(get_current_user_id(), [
-            'posts_per_page' => 1,
-        ]);
+        $event = get_next_user_event(get_current_user_id());
 
-        if (empty($nextEvent)) {
+        if ($event === null) {
             return null;
         }
 
-        $event = $nextEvent[0];
-
-        $categories = wp_get_post_terms($event->ID, 'tribe_events_cat', [
-            'number' => 1,
-            'fields' => 'names',
-        ]);
-
-        $hasVenue = tribe_has_venue($event->ID);
-
-        return [
-            'eventId' => $event->ID,
-            'name' => $event->post_title,
-            'date' => $event->event_date,
-            'category' => empty($categories) ? null : $categories[0],
-            'organizer' => tribe_get_organizer($event->ID),
-            'location' => $hasVenue ? [
-                'name' => tribe_get_venue($event->ID),
-                'address' => tribe_get_address($event->ID) . ' ' . tribe_get_city($event->ID) . ', ' . tribe_get_region(
-                        $event->ID
-                    ) . ' ' . tribe_get_zip($event->ID),
-            ] : null,
-        ];
+        return (new NextEvent($event))->toArray();
     }
 
     private function getVolunteerStats(): array
