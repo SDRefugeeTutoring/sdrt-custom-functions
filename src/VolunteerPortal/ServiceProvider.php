@@ -6,6 +6,7 @@ namespace SDRT\CustomFunctions\VolunteerPortal;
 
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider as ServiceProviderContract;
 use SDRT\CustomFunctions\Support\Hooks;
+use SDRT\CustomFunctions\VolunteerPortal\Controllers\PortalEndpoint;
 use SDRT\CustomFunctions\VolunteerPortal\Controllers\RequirementsEndpoint;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\EnqueueScripts;
 use SDRT\CustomFunctions\VolunteerPortal\Hooks\ManageRewriteRules;
@@ -28,6 +29,7 @@ class ServiceProvider implements ServiceProviderContract
     public function boot(): void
     {
         Hooks::addAction('rest_api_init', RequirementsEndpoint::class, 'register');
+        Hooks::addAction('rest_api_init', PortalEndpoint::class, 'register');
 
         if ( is_admin()) {
             Hooks::addAction('init', DashboardAdminSettings::class );

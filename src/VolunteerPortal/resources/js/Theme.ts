@@ -69,6 +69,10 @@ const Button: ComponentStyleConfig = {
                 border: '1px solid',
                 borderColor: 'cyan.600',
             },
+            '&:active,&:focus': {
+                bg: 'transparent',
+                color: 'cyan.400',
+            },
         },
         'dark-outline': {
             bg: 'transparent',

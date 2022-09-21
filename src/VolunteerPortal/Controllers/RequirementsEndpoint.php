@@ -15,17 +15,17 @@ use WP_User;
 
 class RequirementsEndpoint
 {
-    private const NAMESPACE = 'sdrt/v1/requirements';
+    private const NAMESPACE = 'sdrt/v1';
 
     public function register(): void
     {
-        register_rest_route(self::NAMESPACE, '/background-check', [
+        register_rest_route(self::NAMESPACE, 'requirements/background-check', [
             'methods' => WP_REST_Server::EDITABLE,
             'callback' => [$this, 'requestBackgroundCheck'],
             'permission_callback' => [$this, 'permissionCheck'],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/rsvp', [
+        register_rest_route(self::NAMESPACE, 'requirements/rsvp', [
             'methods' => WP_REST_Server::EDITABLE,
             'callback' => [$this, 'rsvpToEvent'],
             'permission_callback' => [$this, 'permissionCheck'],

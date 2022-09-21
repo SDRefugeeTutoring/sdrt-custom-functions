@@ -13,8 +13,8 @@ import User from './types/User';
 import {Requirements as RequirementsData} from './types/Requirements';
 import {UpcomingEvents as UpcomingEventsData} from './types/UpcomingEvents';
 import {RequirementsContextProvider} from './stores/RequirementsStore';
-import {ErrorBoundary} from "react-error-boundary";
-import RouteFallback from "./components/RouteFallback";
+import {ErrorBoundary} from 'react-error-boundary';
+import RouteFallback from './components/RouteFallback';
 
 declare global {
     interface Window {

@@ -37,6 +37,10 @@ function get_attending_events(int $userId, array $args = []): array
         )
     );
 
+    if (empty($eventIds)) {
+        return [];
+    }
+
     return tribe_get_events(
         [
             'post__in' => $eventIds,
@@ -61,7 +65,7 @@ function get_event_category_name(int $eventId): ?string
 {
     $categories = wp_get_post_terms($eventId, 'tribe_events_cat', [
         'fields' => 'names',
-        'number' => 1
+        'number' => 1,
     ]);
 
     return $categories[0] ?? null;
