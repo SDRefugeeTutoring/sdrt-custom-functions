@@ -127,7 +127,7 @@ export default function UpcomingEvents() {
                         : [categoryFilters.k5.slug, categoryFilters.middle.slug, categoryFilters.other.slug].join(',');
 
                 const response = await fetchRestApi(
-                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}`,
+                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}&per_page=100`,
                     {method: 'GET'}
                 );
 
@@ -266,7 +266,7 @@ interface EventRowProps {
 function EventRow({colorScheme, date, category, type, organizer, link, rsvp, handleRsvp}: EventRowProps) {
     return (
         <Tr bg={`${colorScheme}.50`}>
-            <Td py={10}>
+            <Td py={7}>
                 <VStack>
                     <Text fontSize="2xl" fontWeight="bolder" color="cyan.700">
                         {format(date, 'LLLL d')}
@@ -276,7 +276,7 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp, han
                     </Text>
                 </VStack>
             </Td>
-            <Td py={10}>
+            <Td py={7}>
                 <VStack>
                     <Text fontSize="md" color="neutral.500">
                         {type}
@@ -284,14 +284,14 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp, han
                     <Text fontSize="md" dangerouslySetInnerHTML={{__html: category}} />
                 </VStack>
             </Td>
-            <Td py={10}>
+            <Td py={7}>
                 <Center>
                     <Button as="a" variant="dark-outline" colorScheme="cyan" href={link} target="_blank">
                         More Info
                     </Button>
                 </Center>
             </Td>
-            <Td py={10}>
+            <Td py={7}>
                 <Center>
                     <ButtonGroup isAttached boxShadow="0px 0.1rem 0.3rem rgba(0, 0, 0, 0.4)" borderRadius="0.4rem">
                         <Button

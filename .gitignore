@@ -1,4 +1,4 @@
-
+.local-scripts
 /vendor/
 src/views/cache/*
 
