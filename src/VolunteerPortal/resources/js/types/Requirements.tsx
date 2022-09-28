@@ -70,7 +70,18 @@ export function getBackgroundCheckMessage({status, invitationUrl}: BackgroundChe
         case BackgroundCheckStatus.PASSED:
             return 'Your background check has cleared! Thank you!';
         case BackgroundCheckStatus.FAILED:
-            return 'Your background check did not clear. You are not allowed to tutor with us at this time. If you have questions about this at all, please contact boardmembers@sdrefugeetutoring.com';
+            return (
+                <>
+                    Your Background Check or{' '}
+                    <Link fontWeight="semibold" href="/volunteer/registration-for-minors/">
+                        Minors Registration Form
+                    </Link>{' '}
+                    is not up-to-date. For more information on how to start a new background check, please contact:{' '}
+                    <Link fontWeight="semibold" href="mailto:info@sdrefugeetutoring.com">
+                        info@sdrefugeetutoring.com
+                    </Link>
+                </>
+            );
         case BackgroundCheckStatus.CLEARED:
             return 'Your background check has cleared from the previous year and needs to be renewed.';
         case BackgroundCheckStatus.INVITED:
