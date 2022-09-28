@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {Button, Link, List, ListIcon, ListItem, Text, VStack} from '@chakra-ui/react';
-import {CheckIcon} from '@chakra-ui/icons';
+import {ChevronRightIcon} from '@chakra-ui/icons';
 
 import RequirementCard from './components/RequirementCard';
 import BackgroundCheckCard from './components/BackgroundCheckCard';
@@ -24,10 +24,10 @@ export default function Requirements({
                 </Text>
                 <Text>To volunteer, we currently require the following:</Text>
                 <List>
-                    <CheckListItem>Acceptance of our Code of Conduct</CheckListItem>
-                    <CheckListItem>Acceptance of our Virtual Tutoring Code of Conduct</CheckListItem>
-                    <CheckListItem>Attendance to a one-hour orientation session</CheckListItem>
-                    <CheckListItem>Pass an online background check</CheckListItem>
+                    <CheckListItem>Pass an Online Background Check</CheckListItem>
+                    <CheckListItem>Attendance of an Orientation Session</CheckListItem>
+                    <CheckListItem>Acceptance of the Code of Conduct</CheckListItem>
+                    <CheckListItem>Acceptance of the Volunteer Release & Waiver</CheckListItem>
                 </List>
                 <Text>
                     Each of those items and your current status are listed below. For any questions about your status
@@ -65,7 +65,7 @@ export default function Requirements({
 function CheckListItem({children}: {children: ReactNode}) {
     return (
         <ListItem>
-            <ListIcon as={CheckIcon} color="cyan.500" />
+            <ListIcon as={ChevronRightIcon} color="cyan.500" />
             {children}
         </ListItem>
     );
