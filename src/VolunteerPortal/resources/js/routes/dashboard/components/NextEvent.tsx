@@ -84,17 +84,25 @@ export default function NextEvent(initialNextEvent: NextEventProps) {
                     <Heading as="h2" size="md" mb={4}>
                         Next Scheduled Event
                     </Heading>
-                    <Flex justify="space-between" fontSize="sm" flexBasis={0} flexGrow={0} alignItems="flex-end">
-                        <Flex alignItems="flex-start" flexDirection="column">
+                    <Flex
+                        direction={{base: 'column', md: 'row'}}
+                        justify="space-between"
+                        fontSize="sm"
+                        flexBasis={0}
+                        flexGrow={0}
+                        gap={{base: 4, md: 0}}
+                        alignItems={{base: 'flex-start', md: 'flex-end'}}
+                    >
+                        <Flex alignItems="flex-start" flexDirection="column" gap={{base: 4, md: 0}}>
                             <Text as={Markup} content={name} fontSize="xl" fontWeight="bolder" color="cyan.600" />
                             <Text color="gray.500" fontWeight={400}>
                                 {`${format(date, 'LLLL d')} • ${format(date, "EEEE '•' h:mmaaa")}`}
                             </Text>
                         </Flex>
-                        <VStack justify="space-between">
+                        <Flex justify="space-between" direction={{base: 'row', md: 'column'}} gap={{base: 3, md: 0}}>
                             <Text color="gray.500">Tutoring</Text>
                             <Text as={Markup} content={category} />
-                        </VStack>
+                        </Flex>
                         <Button onClick={cancelState.onOpen}>Cancel RSVP</Button>
                     </Flex>
                 </Flex>

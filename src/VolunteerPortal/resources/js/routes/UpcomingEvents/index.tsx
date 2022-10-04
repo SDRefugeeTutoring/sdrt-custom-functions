@@ -197,11 +197,19 @@ export default function UpcomingEvents() {
                 <AlertIcon />
                 Only RSVP "no" to a session if that session is part of your regular weekly attendance
             </Alert>
-            <Flex gap={8} justify="space-between" mb={6} as="form" role="search" aria-label="Upcoming Events">
+            <Flex
+                gap={8}
+                direction={{base: 'column', md: 'row'}}
+                justify="space-between"
+                mb={6}
+                as="form"
+                role="search"
+                aria-label="Upcoming Events"
+            >
                 <Select w="auto" onChange={(event) => setTrimester(event.target.value)}>
                     {TrimesterOptions}
                 </Select>
-                <HStack gap={3}>
+                <Flex gap={3} direction={{base: 'column', md: 'row'}}>
                     <Checkbox
                         onChange={handleCategoryChange}
                         value={categoryFilters.k5.slug}
@@ -216,7 +224,7 @@ export default function UpcomingEvents() {
                     <Checkbox onChange={handleCategoryChange} value={categoryFilters.other.slug} colorScheme="teal">
                         {categoryFilters.other.name}
                     </Checkbox>
-                </HStack>
+                </Flex>
             </Flex>
             <TableContainer boxShadow="0px 0.15rem 0.3rem rgb(0 0 0 / 30%)" borderRadius="0.75rem">
                 {loading ? (

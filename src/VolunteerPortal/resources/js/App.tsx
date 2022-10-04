@@ -42,7 +42,7 @@ function App() {
                         <Container as="nav" centerContent bgColor="neutral.100">
                             <SimpleGrid
                                 gap={6}
-                                templateColumns={{md: 'repeat(4, max-content)', sm: '1fr'}}
+                                templateColumns={{md: 'repeat(4, max-content)', base: '1fr'}}
                                 justifyItems="center"
                             >
                                 <NavLink to="/" text="Dashboard" />

@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import Card from '../../../components/Card';
-import {Heading, HStack, Tag, Text, VStack} from '@chakra-ui/react';
+import {Heading, Flex, HStack, Tag, Text, VStack} from '@chakra-ui/react';
 
 export default function RequirementCard({
     children,
@@ -20,11 +20,11 @@ export default function RequirementCard({
     return (
         <Card bg={`${color}.100`}>
             <VStack gap={4} alignItems="flex-start">
-                <HStack justify="space-between" w="100%">
+                <Flex justify="space-between" w="100%" direction={{base: 'column', md: 'row'}} gap={{base: 4, md: 0}}>
                     <Heading as="h2" size="lg">
                         {header}
                     </Heading>
-                    <HStack>
+                    <Flex gap={4}>
                         <Text as="span" fontWeight={700} fontSize="sm" textTransform="uppercase">
                             Status:
                         </Text>
@@ -39,8 +39,8 @@ export default function RequirementCard({
                         >
                             {completed ? 'Completed' : 'Incomplete'}
                         </Tag>
-                    </HStack>
-                </HStack>
+                    </Flex>
+                </Flex>
                 {(!completed || alwaysShowChildren) && children}
             </VStack>
         </Card>
