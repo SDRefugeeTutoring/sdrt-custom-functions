@@ -7,6 +7,7 @@
     Name: {{ user.first_name }} {{ user.last_name }}<br/>
     Email: {{ user.user_email }}<br/>
     Session: {{ event.post_title }}<br/>
+    Date: {{ event._EventStartDate|date('F j, Y') }}<br/>
 </p>
 <p>Thanks for your help and support.</p>
 
