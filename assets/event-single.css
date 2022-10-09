@@ -1,3 +1,20 @@
+#rsvp-table :where(button[data-attended], .action) {
+    border: none;
+    box-shadow: none;
+    display: inline-block;
+}
+
+#rsvp-table [data-th="actions"] .dashicons {
+    border-radius: 50%;
+    background-color: darkred;
+    color: white;
+    padding: 6px;
+}
+
+#rsvp-table [data-th="actions"] .attended-email .dashicons {
+    background-color: deepskyblue;
+}
+
 .rwd-table {
     margin: 1em 0;
     width: 100%;

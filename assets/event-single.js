@@ -13,6 +13,14 @@ jQuery(document).ready(function ($) {
         };
     }
 
+    function printData() {
+        var divToPrint = document.getElementById("rsvp-table");
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }
+
     /**
      * Posts an AJAX action for the RSVP
      *
@@ -73,7 +81,7 @@ jQuery(document).ready(function ($) {
                 $this.hide();
                 $this
                     .closest('tr')
-                    .find('.js-set-attended[data-attended="' + ( attended ? 0 : 1 ) + '"]')
+                    .find('.js-set-attended[data-attended="' + (attended ? 0 : 1) + '"]')
                     .show();
             });
     });
@@ -85,4 +93,8 @@ jQuery(document).ready(function ($) {
             event.preventDefault();
         }
     });
+
+    $('.rsvp-download').on('click', function () {
+        printData();
+    })
 });

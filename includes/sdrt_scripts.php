@@ -1,28 +1,6 @@
 <?php
 
 /**
- *  FRONT-END SCRIPTS
- * Enqueues Scripts and Styles for front-end display and functionality
- *
- *
- */
-
-add_action( 'wp_enqueue_scripts', 'sdrt_enqueue_tableExport_scripts' );
-
-function sdrt_enqueue_tableExport_scripts() {
-
-	if ( is_singular('tribe_events') && current_user_can('can_view_rsvps') ) {
-		wp_enqueue_script('sdrt-exportHTML', SDRT_FUNCTIONS_URL . 'assets/exportHTML.js', false);
-		wp_register_style('rsvp-styles', SDRT_FUNCTIONS_URL . 'assets/rsvp-styles.css', array(), SDRT_FUNCTIONS_VERSION, 'all');
-
-		wp_enqueue_style('rsvp-styles');
-    }
-
-
-}
-
-
-/**
  *  BACK-END SCRIPTS
  *  Enqueues scripts for wp-admin purposes only
  */

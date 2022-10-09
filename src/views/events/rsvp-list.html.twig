@@ -24,32 +24,28 @@
             <td>{{ rsvp.volunteer_email }}</td>
             <td>
                 {% set isAttending = rsvp.attended in ['no', 'unknown'] %}
-                <a href="#"
-                   data-attended="1"
-                   class="button action attended attended-{{ rsvp.attended }} js-set-attended"
-                   style="display: {{ isAttending ? 'inherit' : 'none' }}"
+                <button
+                        data-attended="1"
+                        class="button action attended attended-{{ rsvp.attended }} js-set-attended"
+                        style="display: {{ isAttending ? 'inherit' : 'none' }}"
                 >
                     <span class="dashicons dashicons-editor-help" title="Click to change to Yes"></span>
-                </a>
-                <a href="#"
-                   data-attended="0"
-                   class="button action attended-email js-set-attended"
-                   style="display: {{ isAttending ? 'none' : 'inherit' }}"
+                </button>
+                <button
+                        data-attended="0"
+                        class="button action attended-email js-set-attended"
+                        style="display: {{ isAttending ? 'none' : 'inherit' }}"
                 >
                     <span class="dashicons dashicons-yes" title="Click to change to No"></span>
-                </a>
+                </button>
             </td>
             <td data-th="actions">
                 <a href="{{ getDeletePostLink(rsvp.ID)|raw }}" class="button action delete-rsvp js-delete-rsvp">
-                <span class="dashicons dashicons-no"
-                      style="border-radius: 50%; background: darkred; color: white; padding: 6px;"
-                      title="Click to delete RSVP">Delete</span>
+                    <span class="dashicons dashicons-no" title="Click to delete RSVP">Delete</span>
                 </a>
-                <a href="#" class="button action attended-email js-email-no-show">
-                    <span class="dashicons dashicons-email-alt"
-                          style="border-radius: 50%; background: deepskyblue; color: white; padding: 6px;"
-                          title="Click to email attendee for no-show">Email</span>
-                </a>
+                <button class="button action attended-email js-email-no-show">
+                    <span class="dashicons dashicons-email-alt" title="Click to email attendee for no-show">Email</span>
+                </button>
             </td>
         </tr>
     {% endfor %}

@@ -37,9 +37,7 @@ This folder holds all relevant CSS and JS files. If there were images we would p
 
 * **admin-styles.css** -- Enqueued only in the admin area, and only hides alerts currently. This is to prevent volunteers who have admin access from seeing admin notices. 
 * **autosize.min.js** -- this is used on the "RSVP > Emails" screen to auto-adjust the size of the textarea when users are typing into the textarea and avoid a scrollbox. It's a nice-to-have, not necessary file. But I think it's an improvement.
-* **exportHTML.js** -- this is used on the Event pages to export the RSVPs to a PDF. 
 * **rsvp-admin-styles.css** -- Just some basic styles to clean up the appearance of the RSVP single post in the admin
-* **rsvp-styles.css** -- Styles for the front-end RSVP table
 
 ## 📁 Includes
 
