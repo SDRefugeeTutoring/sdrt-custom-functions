@@ -49,6 +49,14 @@ add_action('tribe_events_single_event_after_the_meta', function () {
         'exportData' => [
             'nonce' => $rsvp_nonce,
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'eventName' => $event->post_title,
+            'rsvps' => array_map(static function($rsvp) {
+                return [
+                    'volunteerName' => $rsvp->volunteer_name,
+                    'volunteerEmail' => $rsvp->volunteer_email,
+                    'attended' => $rsvp->attended,
+                ];
+            }, $rsvps),
         ],
     ]);
 });

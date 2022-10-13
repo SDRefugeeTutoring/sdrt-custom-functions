@@ -94,7 +94,21 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    $('.rsvp-download').on('click', function () {
+    $('.rsvp-print').on('click', function () {
         printData();
     })
+
+    $('.rsvp-download').on('click', function () {
+        let csv = 'Name,Email,Attended\r\n';
+        rsvpExports.rsvps.forEach(function(row) {
+            csv += [`"${row.volunteerName}"`, row.volunteerEmail, row.attended].join(',');
+            csv += "\r\n";
+        });
+
+        const hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = `${rsvpExports.eventName}.csv`;
+        hiddenElement.click();
+    });
 });
