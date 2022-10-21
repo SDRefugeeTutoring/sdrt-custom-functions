@@ -40,22 +40,48 @@ export default function Requirements({
             <VStack gap={6}>
                 <BackgroundCheckCard />
                 <OrientationCard orientation={orientation} />
-                <RequirementCard header="Code of Conduct Status" completed={codeOfConduct.completed}>
-                    <Text>
-                        <strong>REQUIREMENT: </strong>To volunteer, you must agree to our Code of Conduct.
-                    </Text>
-                    <Button as="a" href="/volunteer/code-of-conduct/" target="_blank" variant="red">
-                        View & Submit Code of conduct
-                    </Button>
+                <RequirementCard header="Code of Conduct Status" completed={codeOfConduct.completed} alwaysShowChildren>
+                    {codeOfConduct.completed ? (
+                        <Text>
+                            Thank you for taking care of this! To reference this in the future you can visit the{' '}
+                            <Link href="/volunteer/code-of-conduct/" color="cyan.700">
+                                Code of Conduct page.
+                            </Link>
+                        </Text>
+                    ) : (
+                        <>
+                            <Text>
+                                <strong>REQUIREMENT: </strong>To volunteer, you must agree to our Code of Conduct.
+                            </Text>
+                            <Button as="a" href="/volunteer/code-of-conduct/" target="_blank" variant="red">
+                                View & Submit Code of conduct
+                            </Button>
+                        </>
+                    )}
                 </RequirementCard>
-                <RequirementCard header="Volunteer Release Status" completed={volunteerRelease.completed}>
-                    <Text>
-                        <strong>REQUIREMENT: </strong>To volunteer, you must agree to our Volunteer Release & Waiver of
-                        Liability.
-                    </Text>
-                    <Button as="a" href="/volunteer/waiver/" target="_blank" variant="red">
-                        View & Submit Volunteer Release
-                    </Button>
+                <RequirementCard
+                    header="Volunteer Release Status"
+                    completed={volunteerRelease.completed}
+                    alwaysShowChildren
+                >
+                    {volunteerRelease.completed ? (
+                        <Text>
+                            Thank you for taking care of this! To reference this in the future you can visit the{' '}
+                            <Link href="/volunteer/waiver" color="cyan.700">
+                                Release page.
+                            </Link>
+                        </Text>
+                    ) : (
+                        <>
+                            <Text>
+                                <strong>REQUIREMENT: </strong>To volunteer, you must agree to our Volunteer Release &
+                                Waiver of Liability.
+                            </Text>
+                            <Button as="a" href="/volunteer/waiver/" target="_blank" variant="red">
+                                View & Submit Volunteer Release
+                            </Button>
+                        </>
+                    )}
                 </RequirementCard>
             </VStack>
         </Section>
