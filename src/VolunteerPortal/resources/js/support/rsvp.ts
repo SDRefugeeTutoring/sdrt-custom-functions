@@ -25,7 +25,9 @@ export default async function rsvpToEvent(eventId: number, attending: boolean, t
         if (reason === 'rsvp_already_exists') {
             status = 'info';
             description = "You have already RSVP'd to this event. No need to RSVP again.";
-        } else if (reason === 'not_event') {
+        } else if (reason === 'past_event') {
+            description = "You can't RSVP to an event that has already passed.";
+        } else if (reason === 'event_full') {
             status = 'warning';
             description = 'Invalid event. If you believe this is an error, please contact the volunteer coordinator.';
         } else if (reason === 'cannot_volunteer') {

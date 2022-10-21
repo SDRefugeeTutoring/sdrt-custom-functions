@@ -90,9 +90,14 @@ class RequirementsEndpoint
 
         /** @var WP_User $user */
         $user = wp_get_current_user();
+        $event = tribe_get_event($eventId);
 
-        if (get_post_type($eventId) !== 'tribe_events') {
+        if ($event === null || $event->post_type !== 'tribe_events') {
             return new WP_REST_Response(['reason' => 'not_event'], 400);
+        }
+
+        if (strtotime($event->_EventStartDate) < strtotime('today')) {
+            return new WP_REST_Response(['reason' => 'past_event'], 400);
         }
 
         $categories = tribe_get_event_cat_slugs($eventId);
