@@ -62,9 +62,9 @@ class RequirementsEndpoint
             update_user_meta($user->ID, 'background_check_candidate_id', $candidateId);
         }
 
-        if ( ! $newCandidate) {
+        if (!$newCandidate) {
             $inviteUrl = get_user_meta($user->ID, 'background_check_invite_url', true);
-            if ( ! empty($inviteUrl)) {
+            if (!empty($inviteUrl)) {
                 update_user_meta($user->ID, 'background_check', 'Invited');
 
                 return $this->respondWithSuccess($inviteUrl);
@@ -101,8 +101,17 @@ class RequirementsEndpoint
         }
 
         $categories = tribe_get_event_cat_slugs($eventId);
-        if ((in_array('k-5th-grade', $categories, true) || in_array('middle-high-school', $categories, true)) && !user_can_rsvp($user->ID)) {
+        if ((in_array('k-5th-grade', $categories, true) || in_array(
+                    'middle-high-school',
+                    $categories,
+                    true
+                )) && !user_can_rsvp($user->ID)) {
             return new WP_REST_Response(['reason' => 'cannot_volunteer'], 400);
+        }
+
+        if ($attending && event_has_reached_capacity($eventId)) {
+            send_wait_list_email($event, $user);
+            return new WP_REST_Response(['reason' => 'event_full'], 400);
         }
 
         $rsvp = get_user_rsvp_for_event($user->ID, $eventId);
@@ -114,12 +123,12 @@ class RequirementsEndpoint
                 $rsvp = create_event_rsvp($user, tribe_get_event($eventId), $attending);
             }
 
-            send_rsvp_email($user, tribe_get_event($eventId), $attending);
+            send_rsvp_email($user, $event, $attending);
         } catch (Exception $exception) {
             return new WP_REST_Response(['reason' => 'unexpected_failure'], 500);
         }
 
-        return new WP_REST_Response($rsvp);
+        return new WP_REST_Response(['rsvp' => $rsvp, 'eventAtCapacity' => event_has_reached_capacity($eventId)]);
     }
 
     private function respondWithSuccess(string $inviteUrl): WP_REST_Response

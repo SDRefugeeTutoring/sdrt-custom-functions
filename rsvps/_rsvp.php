@@ -58,7 +58,7 @@ function get_user_rsvps(int $userId, $args = []): array
  *
  * @param int|int[] $event_id
  * @param array{attended: bool, attending: boolean}
- * @param array     $args additional WP_Query args to add or overload
+ * @param array $args additional WP_Query args to add or overload
  *
  * @return WP_Post[]|int[]
  */
@@ -89,6 +89,37 @@ function get_event_rsvps($event_id, array $options = [], array $args = []): arra
     $args['meta_query'] = $meta_query;
 
     return get_rsvps($args);
+}
+
+/**
+ * Returns the total number of RSVPs for a given event. Use the option parameter to filter by attending or attended.
+ * Defaults to attending.
+ *
+ * @param int|int[] $event_id
+ */
+function get_event_rsvp_count($event_id, array $options = [], array $args = []): int
+{
+    $args['fields'] = 'ids';
+
+    if (!isset($options['attending'])) {
+        $options['attending'] = true;
+    }
+
+    return count(get_event_rsvps($event_id, $options, $args));
+}
+
+/**
+ * Checks whether an event has reached its RSVP limit
+ */
+function event_has_reached_capacity(int $event_id): bool
+{
+    $limit = (int)get_post_meta($event_id, 'rsvps_limit', true);
+
+    if ($limit <= 0) {
+        return false;
+    }
+
+    return get_event_rsvp_count($event_id) >= $limit;
 }
 
 /**
@@ -144,10 +175,10 @@ function user_can_rsvp(int $user_id): bool
     $background_check = get_user_meta($user_id, 'background_check', true);
 
     return $role
-           && $background_check === 'Yes'
-           && $orientation === 'Yes'
-           && $coc === 'Yes'
-           && $waiver === 'Yes';
+        && $background_check === 'Yes'
+        && $orientation === 'Yes'
+        && $coc === 'Yes'
+        && $waiver === 'Yes';
 }
 
 function user_has_event_rsvp(int $userId, int $eventId): bool
@@ -160,7 +191,7 @@ function user_is_attending_event(int $userId, int $eventId, $attending = true): 
     $rsvp = get_user_rsvp_for_event($userId, $eventId);
 
     if ($rsvp === null) {
-        return ! $attending;
+        return !$attending;
     }
 
     return $attending
@@ -206,6 +237,24 @@ function create_event_rsvp(WP_User $user, WP_Post $event, $attending = true): WP
     return get_post($rsvpId);
 }
 
+function send_wait_list_email(WP_Post $event, WP_User $user)
+{
+    try {
+        $eventDate = new DateTime($event->_EventStartDate);
+        $eventDate = " on {$eventDate->format('m-d-Y')}";
+    } catch (Exception $e) {
+        $eventDate = '';
+    }
+
+    $subject = "$user->first_name $user->last_name tried to RSVP to $eventDate $event->post_title";
+
+    mail(
+        'info@sdrefugeetutoring.com',
+        $subject,
+        view('mail/send-admin-wait-list-notice', ['user' => $user, 'event' => $event])
+    );
+}
+
 function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
 {
     if ($attending) {
@@ -216,7 +265,7 @@ function send_rsvp_email(WP_User $user, WP_Post $event, bool $attending)
 
     try {
         $eventDate = new DateTime($event->_EventStartDate);
-        $eventDate = " on {$eventDate->format('m-d-Y')}";
+        $eventDate = " to {$eventDate->format('m-d-Y')}";
     } catch (Exception $e) {
         $eventDate = '';
     }

@@ -12,7 +12,6 @@ import {
     Center,
     Flex,
     Select,
-    HStack,
     Checkbox,
     useToast,
     Spinner,
@@ -53,6 +52,7 @@ interface Event {
     categorySlug: string | null;
     organizer: string | null;
     rsvpStatus: boolean | null;
+    atCapacity: boolean;
 }
 
 const TrimesterOptions = window.sdrtVolunteerPortal.upcomingEvents.trimesters.map(({id, name, slug}) => (
@@ -75,11 +75,12 @@ export default function UpcomingEvents() {
     const [events, setEvents] = useState<Array<Event>>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const setEventAttendance = useCallback((id: number, attending: boolean) => {
+    const setEventAttendance = useCallback((id: number, atCapacity: boolean, attending: boolean) => {
         setEvents(
             produce<Array<Event>>((draft) => {
                 const event = draft.find((event) => event.id === id);
                 event.rsvpStatus = attending;
+                event.atCapacity = atCapacity;
             })
         );
     }, []);
@@ -90,13 +91,13 @@ export default function UpcomingEvents() {
     });
 
     const rsvpForEvent = async (eventId: number, attending: boolean) => {
-        const worked = rsvpToEvent(eventId, attending, toast);
+        const rsvpData = await rsvpToEvent(eventId, attending, toast);
 
-        if (!worked) {
-            return;
+        if (rsvpData === true) {
+            setEventAttendance(eventId, false, attending);
+        } else if (rsvpData === 'atCapacity') {
+            setEventAttendance(eventId, true, null);
         }
-
-        setEventAttendance(eventId, attending);
     };
 
     function handleCategoryChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -144,6 +145,7 @@ export default function UpcomingEvents() {
                                 categorySlug: event.categories[0] ? event.categories[0].slug : null,
                                 organizer: event.organizer[0] ? event.organizer[0].organizer : null,
                                 rsvpStatus: event.rsvpStatus,
+                                atCapacity: false,
                             };
                         })
                     );
@@ -210,18 +212,23 @@ export default function UpcomingEvents() {
                     {TrimesterOptions}
                 </Select>
                 <Flex gap={3} direction={{base: 'column', md: 'row'}}>
-                    <Checkbox
-                        onChange={handleCategoryChange}
-                        value={categoryFilters.k5.slug}
-                        colorScheme="gray"
-                        sx={{marginBottom: 0}}
-                    >
+                    <Checkbox onChange={handleCategoryChange} value={categoryFilters.k5.slug} colorScheme="gray" mb={0}>
                         {categoryFilters.k5.name}
                     </Checkbox>
-                    <Checkbox onChange={handleCategoryChange} value={categoryFilters.middle.slug} colorScheme="orange">
+                    <Checkbox
+                        onChange={handleCategoryChange}
+                        value={categoryFilters.middle.slug}
+                        colorScheme="orange"
+                        mb={0}
+                    >
                         {categoryFilters.middle.name}
                     </Checkbox>
-                    <Checkbox onChange={handleCategoryChange} value={categoryFilters.other.slug} colorScheme="teal">
+                    <Checkbox
+                        onChange={handleCategoryChange}
+                        value={categoryFilters.other.slug}
+                        colorScheme="teal"
+                        mb={0}
+                    >
                         {categoryFilters.other.name}
                     </Checkbox>
                 </Flex>
@@ -238,19 +245,22 @@ export default function UpcomingEvents() {
                 ) : (
                     <Table variant="simple">
                         <Tbody>
-                            {events.map(({id, date, category, categorySlug, organizer, url, rsvpStatus}) => (
-                                <EventRow
-                                    key={id}
-                                    date={date}
-                                    category={category}
-                                    type="Online Tutoring:"
-                                    organizer={organizer}
-                                    link={url}
-                                    colorScheme={categoryColorScheme[categorySlug]}
-                                    rsvp={rsvpStatus}
-                                    handleRsvp={(attending) => rsvpForEvent(id, attending)}
-                                />
-                            ))}
+                            {events.map(
+                                ({id, date, category, categorySlug, organizer, url, rsvpStatus, atCapacity}) => (
+                                    <EventRow
+                                        key={id}
+                                        date={date}
+                                        category={category}
+                                        type="Online Tutoring:"
+                                        organizer={organizer}
+                                        link={url}
+                                        colorScheme={categoryColorScheme[categorySlug]}
+                                        rsvp={rsvpStatus}
+                                        atCapacity={atCapacity}
+                                        handleRsvp={(attending) => rsvpForEvent(id, attending)}
+                                    />
+                                )
+                            )}
                         </Tbody>
                     </Table>
                 )}
@@ -267,11 +277,12 @@ interface EventRowProps {
     organizer: string;
     link: string;
     rsvp?: boolean;
+    atCapacity: boolean;
 
     handleRsvp(attending: boolean): void;
 }
 
-function EventRow({colorScheme, date, category, type, organizer, link, rsvp, handleRsvp}: EventRowProps) {
+function EventRow({colorScheme, date, category, type, atCapacity, link, rsvp, handleRsvp}: EventRowProps) {
     return (
         <Tr bg={`${colorScheme}.50`}>
             <Td py={7}>
@@ -306,13 +317,16 @@ function EventRow({colorScheme, date, category, type, organizer, link, rsvp, han
                             onClick={() => rsvp !== true && handleRsvp(true)}
                             isActive={rsvp === true}
                             variant="group"
+                            disabled={rsvp !== true && atCapacity}
+                            width={28}
                         >
-                            RSVP YES
+                            {rsvp !== true && atCapacity ? 'AT LIMIT' : 'RSVP YES'}
                         </Button>
                         <Button
                             onClick={() => rsvp !== false && handleRsvp(false)}
                             isActive={rsvp === false}
                             variant="group"
+                            width={28}
                         >
                             RSVP NO
                         </Button>

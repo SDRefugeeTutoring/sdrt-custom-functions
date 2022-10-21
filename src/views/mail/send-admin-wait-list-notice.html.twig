@@ -1,8 +1,7 @@
 {# @var user \WP_User #}
 {# @var event \WP_Post #}
-{# @var attending boolean #}
 <p>Hi SDRT Volunteer</p>
-<p>The following volunteer just RSVP'd that they <strong>{{ attending ? 'WILL' : 'will NOT' }}</strong> attend the event.</p>
+<p>The following volunteer just attempted to RSVP to the following event, but it is full.</p>
 <p>
     Name: {{ user.first_name }} {{ user.last_name }}<br/>
     Email: {{ user.user_email }}<br/>

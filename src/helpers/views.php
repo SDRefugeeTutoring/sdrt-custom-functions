@@ -30,6 +30,7 @@ function view(string $view, array $data = []): string
         $twig->addFunction(new TwigFunction('userCanRsvp', 'user_can_rsvp'));
         $twig->addFunction(new TwigFunction('getUserRsvpForEvent', 'get_user_rsvp_for_event'));
         $twig->addFunction(new TwigFunction('gravityForm', 'gravity_form'));
+        $twig->addFunction(new TwigFunction('getEventRsvpCount', 'get_event_rsvp_count'));
     }
 
     return $twig->load("$view.html.twig")->render($data);

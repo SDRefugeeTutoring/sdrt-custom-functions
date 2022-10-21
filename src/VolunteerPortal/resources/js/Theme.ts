@@ -13,6 +13,10 @@ const Button: ComponentStyleConfig = {
             color: 'white',
             textDecoration: 'none',
         },
+        '&:disabled': {
+            color: 'gray.500',
+            borderColor: 'gray.500',
+        },
     },
     variants: {
         primary: {

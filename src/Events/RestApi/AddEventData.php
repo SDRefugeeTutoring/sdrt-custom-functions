@@ -10,11 +10,11 @@ class AddEventData
     {
         $user = wp_get_current_user();
 
-        if ( !$user ) {
+        if (!$user) {
             return $eventData;
         }
 
-        foreach($eventData['events'] as &$event) {
+        foreach ($eventData['events'] as &$event) {
             $rsvp = get_user_rsvp_for_event($user->ID, $event['id']);
 
             $event['rsvpStatus'] = $rsvp ? $rsvp->attending === 'yes' : null;
