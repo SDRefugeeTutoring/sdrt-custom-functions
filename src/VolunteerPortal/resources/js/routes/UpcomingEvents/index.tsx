@@ -136,8 +136,8 @@ export default function UpcomingEvents() {
                     const events: EventResponse = await response.json();
 
                     setEvents(
-                        events.events.map((event) => {
-                            return {
+                        events.events
+                            .map((event) => ({
                                 id: event.id,
                                 date: new Date(event.start_date),
                                 url: event.url,
@@ -146,8 +146,8 @@ export default function UpcomingEvents() {
                                 organizer: event.organizer[0] ? event.organizer[0].organizer : null,
                                 rsvpStatus: event.rsvpStatus,
                                 atCapacity: false,
-                            };
-                        })
+                            }))
+                            .filter((event) => event.date > new Date())
                     );
                 } else {
                     toast({
