@@ -1,6 +1,7 @@
 import {Heading, HStack, Icon, Text, VStack} from '@chakra-ui/react';
 import {InfoIcon, WarningTwoIcon} from '@chakra-ui/icons';
 import Card from '../../../components/Card';
+import {Markup} from 'interweave';
 
 export interface MessageProps {
     heading: string;
@@ -52,10 +53,12 @@ export default function Message({message, heading, icon, bgColor, iconColor}: Me
                 <HStack>
                     <Icon as={icon} size="2x" color={iconColor} />
                     <Heading as="h2" size="md" textTransform="uppercase">
-                        {heading}
+                        <Markup noWrap content={heading} />
                     </Heading>
                 </HStack>
-                <Text>{message}</Text>
+                <Text>
+                    <Markup noWrap content={message} />
+                </Text>
             </VStack>
         </Card>
     );
