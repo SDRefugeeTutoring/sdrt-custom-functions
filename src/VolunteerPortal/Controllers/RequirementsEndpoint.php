@@ -96,7 +96,7 @@ class RequirementsEndpoint
             return new WP_REST_Response(['reason' => 'not_event'], 400);
         }
 
-        if (strtotime($event->_EventStartDate) < strtotime('today')) {
+        if (strtotime($event->_EventStartDate) < current_time('U')) {
             return new WP_REST_Response(['reason' => 'past_event'], 400);
         }
 
