@@ -17,6 +17,7 @@ class AddEventData
         foreach ($eventData['events'] as &$event) {
             $rsvp = get_user_rsvp_for_event($user->ID, $event['id']);
 
+            $event['type'] = get_post_meta($event['id'], 'event_type', true);
             $event['rsvpStatus'] = $rsvp ? $rsvp->attending === 'yes' : null;
         }
 

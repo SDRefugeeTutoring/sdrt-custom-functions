@@ -26,11 +26,46 @@ import {fetchRestApi} from '../../support/fetchRestApi';
 import rsvpToEvent from '../../support/rsvp';
 import produce from 'immer';
 
+enum EventType {
+    TutoringInPerson = 'tutoring-in-person',
+    TutoringOnline = 'tutoring-online',
+    OrientationInPerson = 'orientation-in-person',
+    OrientationOnline = 'orientation-online',
+    RefresherInPerson = 'refresher-in-person',
+    RefresherOnline = 'refresher-online',
+    EventInPerson = 'event-in-person',
+    EventOnline = 'event-online',
+}
+
+function getEventTypeLabel(eventType: EventType): string {
+    switch (eventType) {
+        case EventType.TutoringInPerson:
+            return 'In-Person Tutoring';
+        case EventType.TutoringOnline:
+            return 'Online Tutoring';
+        case EventType.OrientationInPerson:
+            return 'In-Person Orientation';
+        case EventType.OrientationOnline:
+            return 'Online Orientation';
+        case EventType.RefresherInPerson:
+            return 'In-Person Refresher';
+        case EventType.RefresherOnline:
+            return 'Online Refresher';
+        case EventType.EventInPerson:
+            return 'In-Person Event';
+        case EventType.EventOnline:
+            return 'Online Event';
+        default:
+            return 'Event';
+    }
+}
+
 interface EventResponse {
     events: Array<{
         id: number;
         start_date: string;
         url: string;
+        type: EventType;
         categories: Array<{
             name: string;
             slug: string;
@@ -48,6 +83,8 @@ interface Event {
     id: number;
     date: Date;
     url: string;
+
+    type: EventType;
     category: string | null;
     categorySlug: string | null;
     organizer: string | null;
@@ -140,6 +177,7 @@ export default function UpcomingEvents() {
                             .map((event) => ({
                                 id: event.id,
                                 date: new Date(event.start_date),
+                                type: event.type,
                                 url: event.url,
                                 category: event.categories[0] ? event.categories[0].name : null,
                                 categorySlug: event.categories[0] ? event.categories[0].slug : null,
@@ -246,12 +284,13 @@ export default function UpcomingEvents() {
                     <Table variant="simple">
                         <Tbody>
                             {events.map(
-                                ({id, date, category, categorySlug, organizer, url, rsvpStatus, atCapacity}) => (
+                                ({id, date, type, category, categorySlug, organizer, url, rsvpStatus, atCapacity}) => (
                                     <EventRow
                                         key={id}
                                         date={date}
                                         category={category}
-                                        type="Online Tutoring:"
+                                        // type="Online Tutoring:"
+                                        type={`${getEventTypeLabel(type)}:`}
                                         organizer={organizer}
                                         link={url}
                                         colorScheme={categoryColorScheme[categorySlug]}

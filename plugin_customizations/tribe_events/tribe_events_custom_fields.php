@@ -17,6 +17,7 @@ function rsvp_metabox_markup()
     $volunteer_time = get_post_meta($post->ID, "volunteer_time", true);
     $logged_in_status = get_post_meta($post->ID, "logged_in_status", true);
     $send_reminder = get_post_meta($post->ID, 'rsvp_send_reminder', true);
+    $event_type = get_post_meta($post->ID, 'event_type', true);
 
     if (empty($rsvp_enable)) {
         $rsvp_enable = 'enabled';
@@ -99,6 +100,29 @@ function rsvp_metabox_markup()
         </p>
 
         <p>
+            <label for="event_type" class="main_label">Choose Your Event Type</label>
+
+            <select id="event_type" name="event_type">
+                <?php
+                $event_types = [
+                    'tutoring-in-person' => 'In-Person Tutoring',
+                    'tutoring-online' => 'Online Tutoring',
+                    'orientation-in-person' => 'In-Person Orientation',
+                    'orientation-online' => 'Online Orientation',
+                    'refresher-in-person' => 'In-Person Refresher',
+                    'refresher-online' => 'Online Refresher',
+                    'event-in-person' => 'In-Person Event',
+                    'event-online' => 'Online Event'
+                ];
+                foreach ($event_types as $key => $value) {
+                    $selected = selected($event_type, $key, false);
+                    echo "<option value='$key' $selected>$value</option>";
+                }
+                ?>
+            </select>
+        </p>
+
+        <p>
             <label for="rsvps_limit" class="main_label">Limit RSVPs</label>
             <input name="rsvps_limit" type="number" value="<?php
             echo $rsvps_limit; ?>" id="rsvps_limit">
@@ -171,4 +195,5 @@ function save_rsvp_options($post_id, $post, $update)
     $update_meta('logged_in_status', 'yes');
     $update_meta('rsvp_send_reminder', 'no');
     $update_meta('volunteer_time', 0);
+    $update_meta('event_type', '');
 }
