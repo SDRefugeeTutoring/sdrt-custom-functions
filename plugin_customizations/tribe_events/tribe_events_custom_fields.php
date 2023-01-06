@@ -100,7 +100,7 @@ function rsvp_metabox_markup()
         </p>
 
         <p>
-            <label for="event_type" class="main_label">Choose Your Event Type</label>
+            <label for="event_type" class="main_label">Type of Event</label>
 
             <select id="event_type" name="event_type">
                 <?php
