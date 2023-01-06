@@ -165,7 +165,7 @@ export default function UpcomingEvents() {
                         : [categoryFilters.k5.slug, categoryFilters.middle.slug, categoryFilters.other.slug].join(',');
 
                 const response = await fetchRestApi(
-                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}&per_page=100`,
+                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}&per_page=100&status=publish`,
                     {method: 'GET'}
                 );
 
