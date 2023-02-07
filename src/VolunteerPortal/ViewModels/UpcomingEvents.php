@@ -20,22 +20,28 @@ class UpcomingEvents
         ];
     }
 
+    /**
+     * Note: array_values is used since get_terms will return an array with missing elements if previous elements
+     * have no associated posts.
+     */
     private function getTrimesters(): array
     {
         return array_map([$this, 'termToArray'],
-            get_terms(
-                [
-                    'taxonomy' => 'trimester',
-                    'hide_empty' => true,
-                    'meta_query' => [
-                        [
-                            'key' => 'end_date',
-                            'value' => date('Ymd'),
-                            'compare' => '>=',
-                            'type' => 'DATE',
+            array_values(
+                get_terms(
+                    [
+                        'taxonomy' => 'trimester',
+                        'hide_empty' => true,
+                        'meta_query' => [
+                            [
+                                'key' => 'end_date',
+                                'value' => date('Ymd'),
+                                'compare' => '>=',
+                                'type' => 'DATE',
+                            ],
                         ],
-                    ],
-                ]
+                    ]
+                )
             )
         );
     }
