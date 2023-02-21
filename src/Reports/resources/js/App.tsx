@@ -2,6 +2,17 @@ import {createRoot} from 'react-dom/client';
 import {Container, TabList, Tabs, Tab, TabPanels, TabPanel, Heading, ChakraProvider} from '@chakra-ui/react';
 import TutoringSessions from './tabs/TutoringSessions';
 
+declare global {
+    interface Window {
+        sdrtReports: {
+            restApi: {
+                url: string;
+                nonce: string;
+            }
+        }
+    }
+}
+
 function App() {
     return (
         <ChakraProvider>

@@ -4,4 +4,5 @@ src/views/cache/*
 
 node_modules
 assets/volunteer-portal.js
-assets/volunteer-portal.js.map
+assets/reports.js
+assets/*.js.map

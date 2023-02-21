@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Button, Flex, FormControl, FormLabel, Input, Text} from '@chakra-ui/react';
-import {fetchReportFile} from '../support/fetchReportFile';
+import {fetchAndDownloadReportFile} from '../support/fetchReportFile';
 import {format} from 'date-fns';
 
 export default function TutoringSessions() {
@@ -13,15 +13,7 @@ export default function TutoringSessions() {
         formData.set('startDate', format(new Date(formData.get('startDate') as string), "yyyy-MM-dd '00:00:00'"));
         formData.set('endDate', format(new Date(formData.get('endDate') as string), "yyyy-MM-dd '23:59:59'"));
 
-        const data = await fetchReportFile('sessions', formData);
-        const file = await data.blob();
-
-        const url = window.URL.createObjectURL(file);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'sessions.csv');
-        document.body.appendChild(link);
-        link.click();
+        await fetchAndDownloadReportFile('sessions', formData);
     };
 
     return (
