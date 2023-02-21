@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SDRT\CustomFunctions\Reports\Repositories;
 
 use DateTimeInterface;
+use SDRT\CustomFunctions\Reports\DataTransferObjects\EventVolunteer;
 use SDRT\CustomFunctions\Reports\DataTransferObjects\Session;
 
 class ReportsRepository
@@ -98,6 +99,48 @@ class ReportsRepository
                 return Session::fromArray((array)$sessionData);
             },
             $sessionsData
+        );
+    }
+
+    /**
+     * @return array<EventVolunteer>
+     */
+    public function getEventVolunteers(int $eventId): array
+    {
+        global $wpdb;
+
+        $volunteerData = $wpdb->get_results(
+            $wpdb->prepare(
+                "
+                    SELECT
+                        rsvps.ID as id,
+                        rsvpNameMeta.meta_value AS name,
+                        rsvpAttendMeta.meta_value AS rsvp,
+                        rsvpAttendedMeta.meta_value AS attended
+                    FROM
+                        $wpdb->posts AS rsvps
+                        INNER JOIN $wpdb->postmeta AS eventMeta ON rsvps.ID = eventMeta.post_id
+                            AND eventMeta.meta_key = 'event_id'
+                        LEFT JOIN $wpdb->postmeta AS rsvpNameMeta ON rsvps.ID = rsvpNameMeta.post_id
+                            AND rsvpNameMeta.meta_key = 'volunteer_name'
+                        LEFT JOIN $wpdb->postmeta AS rsvpAttendMeta ON rsvps.ID = rsvpAttendMeta.post_id
+                            AND rsvpAttendMeta.meta_key = 'attending'
+                        LEFT JOIN $wpdb->postmeta AS rsvpAttendedMeta ON rsvps.ID = rsvpAttendedMeta.post_id
+                            AND rsvpAttendedMeta.meta_key = 'attended'
+                    WHERE
+                        rsvps.post_type = 'rsvp'
+                        AND eventMeta.meta_value = %d
+                ",
+                $eventId
+            ),
+            ARRAY_A
+        );
+
+        return array_map(
+            static function($volunteer) {
+                return EventVolunteer::fromArray($volunteer);
+            },
+            $volunteerData
         );
     }
 }

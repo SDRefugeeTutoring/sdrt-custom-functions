@@ -6,6 +6,7 @@ namespace SDRT\CustomFunctions\Reports\Controllers;
 
 use Closure;
 use DateTime;
+use SDRT\CustomFunctions\Reports\DataTransferObjects\EventVolunteer;
 use SDRT\CustomFunctions\Reports\DataTransferObjects\Session;
 use SDRT\CustomFunctions\Reports\Repositories\ReportsRepository;
 use WP_REST_Request;
@@ -43,7 +44,19 @@ class ReportsEndpoint
                     'type' => 'string',
                     'required' => false,
                 ],
-            ]
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/reports/event-volunteers', [
+            'methods' => 'GET',
+            'callback' => [$this, 'getEventVolunteers'],
+            'permission_callback' => [$this, 'reportsPermission'],
+            'args' => [
+                'eventId' => [
+                    'type' => 'integer',
+                    'required' => true,
+                ],
+            ],
         ]);
     }
 
@@ -63,6 +76,24 @@ class ReportsEndpoint
             ['Session ID', 'Name', 'Category', 'Total Attending', 'Total Attended', 'Start Date', 'End Date'],
             static function (Session $session) {
                 return $session->toArray();
+            }
+        );
+    }
+
+    public function getEventVolunteers(WP_REST_Request $request): WP_REST_Response
+    {
+        $eventId = $request->get_param('eventId');
+
+        $volunteers = $this->reportsRepository->getEventVolunteers($eventId);
+
+        $filename = "event_volunteers_$eventId.csv";
+
+        $this->outputCSV(
+            $filename,
+            $volunteers,
+            ['Volunteer ID', 'Name', 'RSVP', 'Attended'],
+            static function (EventVolunteer $volunteer) {
+                return $volunteer->toArray();
             }
         );
     }

@@ -2,7 +2,7 @@ export function fetchReportFile(endpoint: string, parameters: FormData) {
     // @ts-ignore
     const queryParams = new URLSearchParams(parameters).toString();
 
-    return fetch(`${window.sdrtReports.restApi.url}${endpoint}?${queryParams}`, {
+    return fetch(`${window.sdrtReports.restApi.reportsUrl}${endpoint}?${queryParams}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -12,7 +12,7 @@ export function fetchReportFile(endpoint: string, parameters: FormData) {
 }
 
 export async function fetchAndDownloadReportFile(endpoint: string, parameters: FormData): Promise<void> {
-    const data = await fetchReportFile('sessions', parameters);
+    const data = await fetchReportFile(endpoint, parameters);
     const fileName = getFileNameFromDisposition(data.headers.get('content-disposition'));
     const file = await data.blob();
 

@@ -37,7 +37,8 @@ class ReportsPage
         Mix::enqueueScript('reports.js');
         Mix::addInlineScript('reports.js', 'sdrtReports', [
             'restApi' => [
-                'url' => rest_url('sdrt/v1/reports/'),
+                'url' => rest_url(),
+                'reportsUrl' => rest_url('sdrt/v1/reports/'),
                 'nonce' => wp_create_nonce('wp_rest'),
             ],
         ]);

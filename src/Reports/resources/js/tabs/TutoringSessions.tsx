@@ -17,6 +17,7 @@ export default function TutoringSessions() {
     };
 
     return (
+        // @ts-ignore
         <Flex as="form" onSubmit={handleSubmit} ref={form} flexDir="column" gap={3}>
             <Text fontSize="lg">Export all sessions with attendance metrics</Text>
 
