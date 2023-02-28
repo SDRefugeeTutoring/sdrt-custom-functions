@@ -8,6 +8,7 @@ use Closure;
 use DateTime;
 use SDRT\CustomFunctions\Reports\DataTransferObjects\EventVolunteer;
 use SDRT\CustomFunctions\Reports\DataTransferObjects\Session;
+use SDRT\CustomFunctions\Reports\DataTransferObjects\Volunteer;
 use SDRT\CustomFunctions\Reports\Repositories\ReportsRepository;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -58,6 +59,12 @@ class ReportsEndpoint
                 ],
             ],
         ]);
+
+        register_rest_route(self::NAMESPACE, 'reports/volunteers', [
+            'methods' => 'GET',
+            'callback' => [$this, 'getVolunteers'],
+            'permission_callback' => [$this, 'reportsPermission'],
+        ]);
     }
 
     public function getSessions(WP_REST_Request $request): WP_REST_Response
@@ -93,6 +100,22 @@ class ReportsEndpoint
             $volunteers,
             ['Volunteer ID', 'Name', 'RSVP', 'Attended'],
             static function (EventVolunteer $volunteer) {
+                return $volunteer->toArray();
+            }
+        );
+    }
+
+    public function getVolunteers(WP_REST_Request $request): WP_REST_Response
+    {
+        $volunteers = $this->reportsRepository->getVolunteers();
+
+        $filename = 'volunteers.csv';
+
+        $this->outputCSV(
+            $filename,
+            $volunteers,
+            ['ID', 'Email', 'Total Sessions', 'K-5 Sessions', 'Middle & High Sessions', 'First Session Date', 'Latest Session Date', 'Years Active'],
+            static function (Volunteer $volunteer) {
                 return $volunteer->toArray();
             }
         );
