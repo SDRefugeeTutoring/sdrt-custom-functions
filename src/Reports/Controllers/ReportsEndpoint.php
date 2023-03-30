@@ -114,7 +114,7 @@ class ReportsEndpoint
         $this->outputCSV(
             $filename,
             $volunteers,
-            ['ID', 'Email', 'Total Sessions', 'K-5 Sessions', 'Middle & High Sessions', 'First Session Date', 'Latest Session Date', 'Years Active'],
+            ['ID', 'First Name', 'Last Name', 'Email', 'Total Sessions', 'K-5 Sessions', 'Middle & High Sessions', 'First Session Date', 'Latest Session Date', 'Years Active'],
             static function (Volunteer $volunteer) {
                 return $volunteer->toArray();
             }
@@ -132,10 +132,14 @@ class ReportsEndpoint
     private function outputCSV(string $fileName, array $data, array $headers, Closure $callback)
     {
         header("Access-Control-Expose-Headers: Content-Disposition", false);
-        header('Content-type: text/csv');
+        header('Content-Type: text/csv; charset=utf-8');
         header("Content-Disposition: attachment; filename=\"$fileName\"");
 
         $outputBuffer = fopen("php://output", 'wb');
+
+        // write the BOM to the file as UTF-8 — this improves compatibility with Excel
+        fwrite($outputBuffer, "\xEF\xBB\xBF");
+
         fputcsv($outputBuffer, $headers);
         foreach ($data as $val) {
             fputcsv($outputBuffer, $callback($val));

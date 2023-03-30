@@ -157,6 +157,8 @@ class ReportsRepository
                 "
                 SELECT
                     volunteers.ID AS id,
+                    firstNameMeta.meta_value AS firstName,
+                    lastNameMeta.meta_value AS lastName,
                     volunteers.user_email AS email,
                     volunteers.user_registered AS joinDate,
                     sessions.totalSessions,
@@ -164,9 +166,13 @@ class ReportsRepository
                     sessions.totalMiddleHigh,
                     sessions.firstSessionDate,
                     sessions.latestSessionDate,
-                    TIMESTAMPDIFF(YEAR, sessions.firstSessionDate, sessions.latestSessionDate) AS yearsActive
+                    ROUND(TIMESTAMPDIFF(MONTH, sessions.firstSessionDate, sessions.latestSessionDate) / 12, 1) AS yearsActive
                 FROM
                     wp_users AS volunteers
+                    LEFT JOIN wp_usermeta AS firstNameMeta ON volunteers.ID = firstNameMeta.user_id
+                        AND firstNameMeta.meta_key = 'first_name'
+                    LEFT JOIN wp_usermeta AS lastNameMeta ON volunteers.ID = lastNameMeta.user_id
+                        AND lastNameMeta.meta_key = 'last_name'
                     INNER JOIN (
                         SELECT
                             rsvpUserIdMeta.meta_value AS userId

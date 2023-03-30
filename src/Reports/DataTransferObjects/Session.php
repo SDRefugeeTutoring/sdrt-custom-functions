@@ -35,8 +35,8 @@ class Session
     {
         return [
             'id' => $this->id,
-            'name' => html_entity_decode($this->name),
-            'category' => $this->category,
+            'name' => html_entity_decode($this->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            'category' => html_entity_decode($this->category, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'totalAttending' => $this->totalAttending,
             'totalAttended' => $this->totalAttended,
             'startDate' => $this->startDate->format('Y-m-d H:i:s'),
