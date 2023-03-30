@@ -1,19 +1,23 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Button, Flex, FormControl, FormLabel, Input, Text} from '@chakra-ui/react';
 import {fetchAndDownloadReportFile} from '../support/fetchReportFile';
 import {format} from 'date-fns';
 
 export default function TutoringSessions() {
     const form = useRef<HTMLFormElement>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        setLoading(true);
 
         const formData = new FormData(form.current);
         formData.set('startDate', format(new Date(formData.get('startDate') as string), "yyyy-MM-dd '00:00:00'"));
         formData.set('endDate', format(new Date(formData.get('endDate') as string), "yyyy-MM-dd '23:59:59'"));
 
         await fetchAndDownloadReportFile('sessions', formData);
+        setLoading(false);
     };
 
     return (
@@ -29,7 +33,7 @@ export default function TutoringSessions() {
                 <FormLabel>End Date</FormLabel>
                 <Input name="endDate" type="date" defaultValue={format(Date.now(), 'yyyy-MM-dd')} required />
             </FormControl>
-            <Button type="submit">Export</Button>
+            <Button isLoading={loading} loadingText="Exporting..." type="submit">Export</Button>
         </Flex>
     );
 }

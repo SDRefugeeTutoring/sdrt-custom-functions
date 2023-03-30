@@ -1,5 +1,5 @@
-import React, {FormEvent, ReactNode, useRef} from "react";
-import {Button, Flex, FormControl, FormLabel, Text} from "@chakra-ui/react";
+import React, {FormEvent, ReactNode, useRef, useState} from "react";
+import {Button, Flex, FormControl, FormHelperText, FormLabel, Text} from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
 import {fetchRestApi} from "../support/fetchRestApi";
 import {fetchAndDownloadReportFile} from "../support/fetchReportFile";
@@ -19,13 +19,16 @@ interface EventResponse {
 
 export default function EventVolunteers() {
     const form = useRef<HTMLFormElement>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setLoading(true);
         const formData = new FormData(form.current);
 
-        fetchAndDownloadReportFile('event-volunteers', formData);
+        await fetchAndDownloadReportFile('event-volunteers', formData);
+        setLoading(false);
     }
 
     return (
@@ -35,9 +38,10 @@ export default function EventVolunteers() {
 
             <FormControl isRequired>
                 <FormLabel>Event</FormLabel>
+                <FormHelperText>Search for an event by name or ID</FormHelperText>
                 <AsyncSelect name="eventId" cacheOptions loadOptions={loadEvents} />
             </FormControl>
-            <Button type="submit">Export</Button>
+            <Button isLoading={loading} loadingText="Exporting..." type="submit">Export</Button>
         </Flex>
     );
 }
