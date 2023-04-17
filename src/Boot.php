@@ -10,6 +10,7 @@ use SDRT\CustomFunctions\Reports\ReportsServiceProvider;
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider;
 use SDRT\CustomFunctions\VolunteerPortal\ServiceProvider as VolunteerPortalServiceProvider;
 use SDRT\CustomFunctions\Events\ServiceProvider as EventsServiceProvider;
+use SDRT\CustomFunctions\GiveWP\AprilChallenge\ServiceProvider as AprilChallengeServiceProvider;
 
 use function Sentry\init as initSentry;
 
@@ -23,6 +24,7 @@ class Boot
         VolunteerPortalServiceProvider::class,
         EventsServiceProvider::class,
         ReportsServiceProvider::class,
+        AprilChallengeServiceProvider::class,
     ];
 
     /**
@@ -42,7 +44,7 @@ class Boot
         /** @var ServiceProvider[] $providers */
         $providers = [];
         foreach ($this->serviceProviders as $providerClass) {
-            if ( ! is_subclass_of($providerClass, ServiceProvider::class)) {
+            if (!is_subclass_of($providerClass, ServiceProvider::class)) {
                 throw new InvalidArgumentException("$providerClass class must implement the ServiceProvider interface");
             }
 
@@ -60,7 +62,7 @@ class Boot
 
     private function setupSentry(): void
     {
-        if ( ! defined('SENTRY_DSN')) {
+        if (!defined('SENTRY_DSN')) {
             return;
         }
 
