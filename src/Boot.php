@@ -6,6 +6,7 @@ namespace SDRT\CustomFunctions;
 
 use InvalidArgumentException;
 use SDRT\CustomFunctions\GravityForms\GravityFormsServiceProvider;
+use SDRT\CustomFunctions\Reports\ReportsServiceProvider;
 use SDRT\CustomFunctions\Support\Contracts\ServiceProvider;
 use SDRT\CustomFunctions\VolunteerPortal\ServiceProvider as VolunteerPortalServiceProvider;
 use SDRT\CustomFunctions\Events\ServiceProvider as EventsServiceProvider;
@@ -21,6 +22,7 @@ class Boot
         GravityFormsServiceProvider::class,
         VolunteerPortalServiceProvider::class,
         EventsServiceProvider::class,
+        ReportsServiceProvider::class,
     ];
 
     /**
