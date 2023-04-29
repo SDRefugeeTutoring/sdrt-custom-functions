@@ -15,7 +15,7 @@ class AddFixedAmountToGoal
             return $stats;
         }
 
-        $fixed_amount = 200;
+        $fixed_amount = 500;
         $stats['income'] += $fixed_amount;
 
         return $stats;
