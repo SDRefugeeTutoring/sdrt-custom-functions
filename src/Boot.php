@@ -11,6 +11,7 @@ use SDRT\CustomFunctions\Support\Contracts\ServiceProvider;
 use SDRT\CustomFunctions\VolunteerPortal\ServiceProvider as VolunteerPortalServiceProvider;
 use SDRT\CustomFunctions\Events\ServiceProvider as EventsServiceProvider;
 use SDRT\CustomFunctions\GiveWP\AprilChallenge\ServiceProvider as AprilChallengeServiceProvider;
+use SDRT\CustomFunctions\GiveWP\GivingTuesday2023\ServiceProvider as GivingTuesday2023ServiceProvider;
 
 use function Sentry\init as initSentry;
 
@@ -25,6 +26,7 @@ class Boot
         EventsServiceProvider::class,
         ReportsServiceProvider::class,
         AprilChallengeServiceProvider::class,
+        GivingTuesday2023ServiceProvider::class,
     ];
 
     /**
