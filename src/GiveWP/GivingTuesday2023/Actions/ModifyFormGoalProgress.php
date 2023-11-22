@@ -22,8 +22,13 @@ class ModifyFormGoalProgress
             return $stats;
         }
 
+        // The amount that is being used to double the revenue, which we want to hide from the goal
+        $doubleOffset = 4900;
+
+        // The revenue for the fund that's come in from any form
         $fundRevenue = $this->revenueRepository->getFundRevenue(4);
-        $stats['income'] = $fundRevenue * 2;
+
+        $stats['income'] = ($fundRevenue * 2) - $doubleOffset;
 
         return $stats;
     }
