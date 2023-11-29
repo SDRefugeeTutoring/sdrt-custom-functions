@@ -23,12 +23,15 @@ class ModifyFormGoalProgress
         }
 
         // The amount that is being used to double the revenue, which we want to hide from the goal
-        $doubleOffset = 4900;
+        $doubleOffset = 2450;
+
+        // Amount that boosts the goal, representing money given offline
+        $boostOffset = 1300;
 
         // The revenue for the fund that's come in from any form
         $fundRevenue = $this->revenueRepository->getFundRevenue(4);
 
-        $stats['income'] = ($fundRevenue * 2) - $doubleOffset;
+        $stats['income'] = ( ($fundRevenue - $doubleOffset) * 2 ) + $boostOffset;
 
         return $stats;
     }
