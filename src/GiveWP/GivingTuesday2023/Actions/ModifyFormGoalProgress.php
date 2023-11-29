@@ -26,12 +26,12 @@ class ModifyFormGoalProgress
         $doubleOffset = 2450;
 
         // Amount that boosts the goal, representing money given offline
-        $boostOffset = 1300;
+        $boostOffset = 4300;
 
         // The revenue for the fund that's come in from any form
         $fundRevenue = $this->revenueRepository->getFundRevenue(4);
 
-        $stats['income'] = ( ($fundRevenue - $doubleOffset) * 2 ) + $boostOffset;
+        $stats['income'] = ($fundRevenue - $doubleOffset + $boostOffset) * 2;
 
         return $stats;
     }
