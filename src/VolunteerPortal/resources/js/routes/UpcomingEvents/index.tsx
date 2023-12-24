@@ -171,6 +171,8 @@ export default function UpcomingEvents() {
 
                 if (response.ok) {
                     const events: EventResponse = await response.json();
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
 
                     setEvents(
                         events.events
@@ -185,7 +187,7 @@ export default function UpcomingEvents() {
                                 rsvpStatus: event.rsvpStatus,
                                 atCapacity: false,
                             }))
-                            .filter((event) => event.date > new Date())
+                            .filter((event) => event.date > today)
                     );
                 } else {
                     toast({
