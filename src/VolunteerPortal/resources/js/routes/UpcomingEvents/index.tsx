@@ -92,12 +92,6 @@ interface Event {
     atCapacity: boolean;
 }
 
-const TrimesterOptions = window.sdrtVolunteerPortal.upcomingEvents.trimesters.map(({id, name, slug}) => (
-    <option key={id} value={slug}>
-        {name}
-    </option>
-));
-
 const categoryFilters = window.sdrtVolunteerPortal.upcomingEvents.categories;
 
 const categoryColorScheme = {
@@ -107,7 +101,6 @@ const categoryColorScheme = {
 };
 
 export default function UpcomingEvents() {
-    const [trimester, setTrimester] = useState<string>(window.sdrtVolunteerPortal.upcomingEvents.trimesters[0].slug);
     const [activeCategories, setActiveCategories] = useState<Array<string>>([]);
     const [events, setEvents] = useState<Array<Event>>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -165,7 +158,7 @@ export default function UpcomingEvents() {
                         : [categoryFilters.k5.slug, categoryFilters.middle.slug, categoryFilters.other.slug].join(',');
 
                 const response = await fetchRestApi(
-                    `tribe/events/v1/events?trimester=${trimester}&categories=${categories}&per_page=100&status=publish`,
+                    `tribe/events/v1/events?categories=${categories}&per_page=100&status=publish`,
                     {method: 'GET'}
                 );
 
@@ -211,7 +204,7 @@ export default function UpcomingEvents() {
         };
 
         fetchEvents();
-    }, [trimester, activeCategories]);
+    }, [activeCategories]);
 
     if (!window.sdrtVolunteerPortal.requirements.allPassed) {
         return (
@@ -232,7 +225,7 @@ export default function UpcomingEvents() {
     return (
         <Section heading="Upcoming Events">
             <Text mb={4}>
-                These are the upcoming events which you may filter by trimester and event type. Review and RSVP if you
+                These are the upcoming events which you may filter by event type. Review and RSVP if you
                 are able to attend.
             </Text>
             <Alert status="info" variant="subtle" mb={16}>
@@ -248,9 +241,6 @@ export default function UpcomingEvents() {
                 role="search"
                 aria-label="Upcoming Events"
             >
-                <Select w="auto" onChange={(event) => setTrimester(event.target.value)}>
-                    {TrimesterOptions}
-                </Select>
                 <Flex gap={3} direction={{base: 'column', md: 'row'}}>
                     <Checkbox onChange={handleCategoryChange} value={categoryFilters.k5.slug} colorScheme="gray" mb={0}>
                         {categoryFilters.k5.name}
