@@ -8,7 +8,7 @@ class HideInPersonEventsInEventsArchive
 {
     public function __invoke(WP_Query $query)
     {
-        if ($query->is_main_query() && $query->is_archive()) {
+        if (!is_admin() && $query->is_main_query() && $query->is_archive()) {
             $query->set('meta_query', [
                 [
                     'key' => 'event_type',
