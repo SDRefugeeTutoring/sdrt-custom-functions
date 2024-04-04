@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SDRT\CustomFunctions\Events;
 
+use SDRT\CustomFunctions\Events\Hooks\HideInPersonEventsInEventsArchive;
 use SDRT\CustomFunctions\Events\RestApi\AddEventData;
 use SDRT\CustomFunctions\Events\RestApi\AddTrimesterQuerySupport;
 use SDRT\CustomFunctions\Events\Trimesters\RegisterTrimesters;
@@ -28,5 +29,7 @@ class ServiceProvider implements ServiceProviderContract
 
         Hooks::addFilter('tribe_rest_events_archive_data', AddEventData::class);
         Hooks::addFilter('tribe_events_archive_get_args', AddTrimesterQuerySupport::class, '__invoke', 10, 3);
+
+        Hooks::addAction('tribe_events_pre_get_posts', HideInPersonEventsInEventsArchive::class);
     }
 }
