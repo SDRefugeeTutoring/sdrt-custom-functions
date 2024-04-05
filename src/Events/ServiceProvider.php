@@ -30,6 +30,6 @@ class ServiceProvider implements ServiceProviderContract
         Hooks::addFilter('tribe_rest_events_archive_data', AddEventData::class);
         Hooks::addFilter('tribe_events_archive_get_args', AddTrimesterQuerySupport::class, '__invoke', 10, 3);
 
-        Hooks::addAction('tribe_events_pre_get_posts', HideInPersonEventsInEventsArchive::class);
+        Hooks::addAction('pre_get_posts', HideInPersonEventsInEventsArchive::class);
     }
 }
